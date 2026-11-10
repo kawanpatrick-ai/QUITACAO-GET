@@ -1,7 +1,7 @@
 // Provisionamento permitido somente a uma sessão válida do administrador original.
 import { createClient } from 'npm:@supabase/supabase-js@2.58.0';
 
-const site='https://projectw1sc-crm.vercel.app';
+const site='https://quitacao-get.vercel.app';
 const cors={
  'Access-Control-Allow-Origin':site,
  'Access-Control-Allow-Headers':'authorization, x-client-info, apikey, content-type',
