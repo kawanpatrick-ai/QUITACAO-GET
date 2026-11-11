@@ -6,7 +6,7 @@ test('uses the single verified ProjectW1SC email, without an editable email typo
   let payload;
   const auth = {signInWithPassword: async x => {payload=x;return {data:{session:{user:{email:ADMIN_EMAIL}}},error:null}}};
   const response=await signInWithPassword(auth, 'senha de teste suficientemente longa');
-  assert.equal(ADMIN_EMAIL, 'intermedioesenegociacoes@gmail.com');
+  assert.equal(ADMIN_EMAIL, 'patrickkawan719@gmail.com');
   assert.deepEqual(payload, {email: ADMIN_EMAIL,password:'senha de teste suficientemente longa'});
   assert.ok(response.session);
 });
