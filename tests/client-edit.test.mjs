@@ -30,3 +30,12 @@ test('rejects malformed CPF/CNPJ and non-numeric operational values', () => {
   assert.throws(()=>buildClientPatch({name:'Cliente',doc_digits:'12345678901',contract_age_days:'um'}),/numérico/);
   assert.throws(()=>buildClientPatch({name:'Cliente',doc_digits:'12345678901',overdue_installments:'1.5'}),/inteiro/);
 });
+
+
+test('calculates the next return automatically from last contact and business-day wait', () => {
+  const patch = buildClientPatch({
+    name:'Cliente',doc_digits:'12345678901',last_contact:'2026-11-06',
+    waiting_business_days:'1',next_return:'2026-11-07'
+  });
+  assert.equal(patch.next_return,'2026-11-09');
+});
