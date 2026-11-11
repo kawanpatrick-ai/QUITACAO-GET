@@ -145,3 +145,20 @@ html[data-crm-theme] .reference-institutions .reference-status{font-size:11px!im
   -webkit-print-color-adjust:exact!important;print-color-adjust:exact!important
  }
 }
+
+/* Acessibilidade: títulos, abas e rótulos acompanham as cores validadas em Configurações. */
+html[data-crm-theme] .app-content :is(.reference-header h1,.reference-header h2,.reference-panel h2,.reference-panel h3,.reference-panel-title h2,.settings-section-heading h2,.processes-panel h2,.processes-timeline-heading h3,.efferd-kpi-label){
+ color:var(--ui-ink)!important
+}
+html[data-crm-theme] .app-content :is(.reference-header p,.reference-panel p,.reference-dashboard label,.reference-dashboard small,.processes-add-form label,.processes-date-filter label,.processes-entry small,.processes-movement time,.settings-section-heading p){
+ color:var(--ui-muted)!important
+}
+html[data-crm-theme] .app-content :is(.task-queue-tabs button,.processes-tabs button,.reference-tabs button,[role="tab"]){
+ background:var(--ui-surface)!important;color:var(--ui-ink)!important;border-color:var(--ui-border)!important
+}
+html[data-crm-theme] .app-content :is(.task-queue-tabs button.active,.task-queue-tabs button[aria-selected="true"],.processes-tabs button.active,.reference-tabs button.active,[role="tab"][aria-selected="true"]){
+ background:var(--ui-accent)!important;color:var(--ui-accent-ink)!important;border-color:var(--ui-accent)!important
+}
+html[data-crm-theme] .app-content :is(.reference-overline,.task-kicker,.reference-meta-label){
+ color:var(--ui-muted)!important
+}
