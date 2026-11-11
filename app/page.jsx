@@ -10,6 +10,7 @@ import InstitutionLogo from '../components/institution-logo';
 import {normalizeInstitutionName} from '../lib/institution-brands.mjs';
 import {validateImageFile} from '../lib/appearance-settings.mjs';
 import {buildClientPatch} from '../lib/client-edit.mjs';
+import {calculateNextReturn} from '../lib/return-date.mjs';
 import {crmAreaHref,areaFromQuery} from '../lib/crm-navigation.mjs';
 import {getClient} from '../lib/supabase-client';
 import {useCrmAccess} from '../lib/use-crm-access';
@@ -182,7 +183,17 @@ export default function Page(){
  }
  
  async function openClient(c){setSelected(c);setClientDraft({...c,name:c.name||'',doc_digits:c.doc_digits||'',stage:c.stage||'a_analisar',evidence_status:c.evidence_status||'sem_validacao',evidence_url:c.evidence_url||'',priority_level:c.priority_level||'normal',homologation_signed:c.homologation_signed==null?'':String(c.homologation_signed)});setStage(c.stage);setEvidence(c.evidence_status);setEvidenceUrl(c.evidence_url||'');setNote('');setCriticidade(c.priority_level||'normal');const r=await db.from('crm_activities').select('id,kind,body,created_at').eq('client_id',c.id).order('created_at',{ascending:false}).limit(40);setActivities(r.data||[])}
- function updateClientDraft(key,value){setClientDraft(current=>({...current,[key]:value}));if(key==='stage')setStage(value);if(key==='evidence_status')setEvidence(value);if(key==='evidence_url')setEvidenceUrl(value);if(key==='priority_level')setCriticidade(value)}
+ function updateClientDraft(key,value){
+  setClientDraft(current=>{
+   const next={...current,[key]:value};
+   if(key==='last_contact'||key==='waiting_business_days'){
+    try{next.next_return=calculateNextReturn(next.last_contact,next.waiting_business_days)||''}
+    catch{next.next_return=''}
+   }
+   return next;
+  });
+  if(key==='stage')setStage(value);if(key==='evidence_status')setEvidence(value);if(key==='evidence_url')setEvidenceUrl(value);if(key==='priority_level')setCriticidade(value)
+ }
  async function save(){
   if(!selected||!clientDraft||busy)return;
   let annotation='';
@@ -275,7 +286,7 @@ export default function Page(){
      {key:'contract_age_days',label:'TEMPO (dias)',type:'number',step:'1'},
      {key:'homologation_signed',label:'HMLG',type:'select',options:[['','Não informado'],['true','Sim'],['false','Não']]},
      {key:'last_contact',label:'ULTM. CONTATO',type:'date'},{key:'waiting_business_days',label:'TEMPO ESPERA (dias úteis)',type:'number',step:'1'},
-     {key:'next_return',label:'RETORNO',type:'date'},{key:'institution',label:'FINANCEIRA'},
+     {key:'next_return',label:'RETORNO (calculado automaticamente)',type:'date',readOnly:true},{key:'institution',label:'FINANCEIRA'},
      {key:'debtor_balance',label:'SALDO DEVEDOR',type:'number',step:'0.01'},
      {key:'estimated_amount',label:'ESTIMADO',type:'number',step:'0.01'},
      {key:'current_amount',label:'VALOR ATUAL',type:'number',step:'0.01'},
@@ -296,7 +307,7 @@ export default function Page(){
       ?<select className="input" value={clientDraft[field.key]??''} onChange={e=>updateClientDraft(field.key,e.target.value)}>{field.options.map(([value,label])=><option key={value} value={value}>{label}</option>)}</select>
       :field.type==='textarea'
        ?<textarea className="input" rows={3} value={clientDraft[field.key]??''} onChange={e=>updateClientDraft(field.key,e.target.value)}/>
-       :<input className="input" type={field.type||'text'} step={field.step} required={field.required||false} value={clientDraft[field.key]??''} onChange={e=>updateClientDraft(field.key,e.target.value)}/>}</label>)}
+       :<input className="input" type={field.type||'text'} step={field.step} required={field.required||false} readOnly={field.readOnly||false} value={clientDraft[field.key]??''} onChange={e=>updateClientDraft(field.key,e.target.value)}/>}</label>)}
    </div>
    <div className="form-row"><label>Link privado do comprovante<input className="input" value={evidenceUrl} onChange={e=>{setEvidenceUrl(e.target.value);updateClientDraft('evidence_url',e.target.value)}} placeholder="Link de acesso restrito"/></label></div>
    <div className="form-row"><label>Nova anotação de histórico<textarea className="input" rows={3} value={note} onChange={e=>setNote(e.target.value)} placeholder="Nova anotação interna; o histórico anterior não será sobrescrito."/></label></div>
