@@ -52,7 +52,7 @@ export default function Page(){
   }
   return()=>{alive=false;subscription.unsubscribe()};
  },[db]);
- async function load(){if(!db)return;setBusy(true);const [a,b,c,d]=await Promise.all([db.from('crm_clients').select('*').order('name').limit(1000),db.from('crm_parties').select('*').order('name'),db.from('crm_import_runs').select('id,status,started_at,finished_at,rows_read,clients_merged,error').order('started_at',{ascending:false}).limit(10),db.from('crm_unmatched_sources').select('source_ref,client_name,source_tab,reason').order('created_at',{ascending:false}).limit(700)]);if(a.error)setNotice('Erro ao consultar dados: '+a.error.message);else{setClients(a.data||[]);setUpdated(new Date())}if(!b.error){
+ async function load(){if(!db)return;setBusy(true);const [a,b,c,d]=await Promise.all([db.from('crm_clients').select('*').order('name').limit(1000),db.from('crm_parties').select('*').order('name'),db.from('crm_import_runs').select('id,status,started_at,finished_at,rows_read,clients_merged,error').order('started_at',{ascending:false}).limit(10),db.from('crm_unmatched_sources').select('source_ref,client_name,source_tab,reason').order('created_at',{ascending:false}).limit(700)]);if(a.error)setNotice('Erro ao consultar dados: '+a.error.message);else{setClients((a.data||[]).map(client=>{try{const nextReturn=calculateNextReturn(client.last_contact,client.waiting_business_days);return nextReturn?{...client,next_return:nextReturn}:client}catch{return client}}));setUpdated(new Date())}if(!b.error){
   const entries=b.data||[];setParties(entries);
   const uploaded=entries.filter(x=>x.logo_path);
   if(uploaded.length){
@@ -182,7 +182,13 @@ export default function Page(){
   setBusy(false);
  }
  
- async function openClient(c){setSelected(c);setClientDraft({...c,name:c.name||'',doc_digits:c.doc_digits||'',stage:c.stage||'a_analisar',evidence_status:c.evidence_status||'sem_validacao',evidence_url:c.evidence_url||'',priority_level:c.priority_level||'normal',homologation_signed:c.homologation_signed==null?'':String(c.homologation_signed)});setStage(c.stage);setEvidence(c.evidence_status);setEvidenceUrl(c.evidence_url||'');setNote('');setCriticidade(c.priority_level||'normal');const r=await db.from('crm_activities').select('id,kind,body,created_at').eq('client_id',c.id).order('created_at',{ascending:false}).limit(40);setActivities(r.data||[])}
+ async function openClient(c){
+  let nextReturn='';
+  try{nextReturn=calculateNextReturn(c.last_contact,c.waiting_business_days)||''}catch{}
+  setSelected(c);setClientDraft({...c,next_return:nextReturn||c.next_return||'',name:c.name||'',doc_digits:c.doc_digits||'',stage:c.stage||'a_analisar',evidence_status:c.evidence_status||'sem_validacao',evidence_url:c.evidence_url||'',priority_level:c.priority_level||'normal',homologation_signed:c.homologation_signed==null?'':String(c.homologation_signed)});
+  setStage(c.stage);setEvidence(c.evidence_status);setEvidenceUrl(c.evidence_url||'');setNote('');setCriticidade(c.priority_level||'normal');
+  const r=await db.from('crm_activities').select('id,kind,body,created_at').eq('client_id',c.id).order('created_at',{ascending:false}).limit(40);setActivities(r.data||[])
+ }
  function updateClientDraft(key,value){
   setClientDraft(current=>{
    const next={...current,[key]:value};
