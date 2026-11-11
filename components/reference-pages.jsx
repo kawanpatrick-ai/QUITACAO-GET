@@ -58,12 +58,13 @@ function Overview({clients,kpis,last,updated,onGo,onSelectClient,onRefresh,onImp
 }
 function Clients({clients,kpis,onGo,onSelectClient,onRefresh,onCreate,busy,partyLogos={}}){
  const today=todayBrazil(),sum=queueCounts(clients,today);
- const [q,setQ]=useState(''),[state,setState]=useState('todos'),[step,setStep]=useState('todos'),[institution,setInstitution]=useState('todos'),[focused,setFocused]=useState(null),[p,setP]=useState(1);
+ const [q,setQ]=useState(''),[state,setState]=useState('todos'),[step,setStep]=useState('todos'),[institution,setInstitution]=useState('todos'),[operationalStatus,setOperationalStatus]=useState('todos'),[focused,setFocused]=useState(null),[p,setP]=useState(1);
  const institutions=useMemo(()=>[...new Set(clients.map(c=>txt(c.institution)).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR')),[clients]);
+ const operationalStatuses=useMemo(()=>[...new Set(clients.map(c=>c.operational_status_code).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR')),[clients]);
  const list=useMemo(()=>clients.filter(c=>{
   const st=getStatus(c,today).code;const query=q.toLocaleLowerCase('pt-BR').trim();
-  return (state==='todos'||st===state)&&(step==='todos'||c.stage===step)&&(institution==='todos'||c.institution===institution)&&(!query||[c.name,c.doc_digits,c.phone,c.institution,c.consultant].some(v=>txt(v).toLocaleLowerCase('pt-BR').includes(query)))
- }),[clients,q,state,step,institution,today]);
+  return (state==='todos'||st===state)&&(step==='todos'||c.stage===step)&&(institution==='todos'||c.institution===institution)&&(operationalStatus==='todos'||c.operational_status_code===operationalStatus)&&(!query||[c.name,c.doc_digits,c.phone,c.institution,c.consultant,c.operational_status_code,c.source_month].some(v=>txt(v).toLocaleLowerCase('pt-BR').includes(query)))
+ }),[clients,q,state,step,institution,operationalStatus,today]);
  const pages=Math.max(1,Math.ceil(list.length/8)),page=Math.min(p,pages),rows=list.slice((page-1)*8,page*8);
  const focus=list.find(c=>c.id===focused)||rows[0]||null;
  const filterSet=(fn,value)=>{fn(value);setP(1)};
@@ -83,9 +84,10 @@ function Clients({clients,kpis,onGo,onSelectClient,onRefresh,onCreate,busy,party
      <label className="reference-filter-label">Situação<select value={state} onChange={e=>filterSet(setState,e.target.value)}><option value="todos">Todas</option><option value="vencido">Vencido</option><option value="hoje">Hoje</option><option value="em_dia">Em dia</option><option value="sem_data">Sem data</option><option value="finalizado">Finalizado</option></select></label>
      <label className="reference-filter-label">Etapa<select value={step} onChange={e=>filterSet(setStep,e.target.value)}><option value="todos">Todas</option>{[...new Set(clients.map(c=>c.stage).filter(Boolean))].map(x=><option key={x} value={x}>{x.replaceAll('_',' ')}</option>)}</select></label>
      <label className="reference-filter-label">Financeira<select value={institution} onChange={e=>filterSet(setInstitution,e.target.value)}><option value="todos">Todas</option>{institutions.map(x=><option key={x} value={x}>{x}</option>)}</select></label>
+     <label className="reference-filter-label">Status da planilha<select value={operationalStatus} onChange={e=>filterSet(setOperationalStatus,e.target.value)}><option value="todos">Todos</option>{operationalStatuses.map(x=><option key={x} value={x}>{x}</option>)}</select></label>
     </div>
-    <div className="reference-table-scroll"><table className="reference-table reference-clients-table"><thead><tr><th>Cliente</th><th>Financeira</th><th>Situação</th><th>Próximo retorno</th><th>Consultor</th><th>Contato</th><th></th></tr></thead><tbody>
-     {rows.map(c=><tr key={c.id} className={focus?.id===c.id?'selected':''} onClick={()=>setFocused(c.id)}><td><ClientName client={c}/></td><td><InstitutionLogo name={c.institution} customUrl={partyLogos[normalizeInstitutionName(c.institution)]||''} showName/></td><td><Status client={c} today={today}/></td><td>{brDate(dueDate(c))}</td><td>{c.consultant||'—'}</td><td>{c.phone||'—'}</td><td><button className="reference-more" aria-label={'Detalhes de '+c.name} onClick={e=>{e.stopPropagation();onSelectClient(c)}}><MoreHorizontal size={16}/></button></td></tr>)}
+    <div className="reference-table-scroll"><table className="reference-table reference-clients-table"><thead><tr><th>Cliente</th><th>Financeira</th><th>Situação</th><th>Status da planilha</th><th>Mês de origem</th><th>Próximo retorno</th><th>Consultor</th><th>Contato</th><th></th></tr></thead><tbody>
+     {rows.map(c=><tr key={c.id} className={focus?.id===c.id?'selected':''} onClick={()=>setFocused(c.id)}><td><ClientName client={c}/></td><td><InstitutionLogo name={c.institution} customUrl={partyLogos[normalizeInstitutionName(c.institution)]||''} showName/></td><td><Status client={c} today={today}/></td><td><strong title={c.operational_status_description||'Status da origem'}>{c.operational_status_code||'—'}</strong></td><td>{c.source_month||'—'}</td><td>{brDate(dueDate(c))}</td><td>{c.consultant||'—'}</td><td>{c.phone||'—'}</td><td><button className="reference-more" aria-label={'Detalhes de '+c.name} onClick={e=>{e.stopPropagation();onSelectClient(c)}}><MoreHorizontal size={16}/></button></td></tr>)}
     </tbody></table>{rows.length===0&&<div className="reference-empty">Nenhum cliente corresponde aos filtros.</div>}</div>
     <Pager page={page} pages={pages} count={list.length} size={8} onPage={setP}/>
    </section>
@@ -96,8 +98,17 @@ function Clients({clients,kpis,onGo,onSelectClient,onRefresh,onCreate,busy,party
       <div><Activity size={20}/><span>Etapa<b>{focus.stage?.replaceAll('_',' ')||'—'}</b></span></div>
       <div><UserRound size={20}/><span>Consultor<b>{focus.consultant||'—'}</b></span></div>
       <div><CalendarDays size={20}/><span>Próximo retorno<b>{brDate(dueDate(focus))}</b></span></div>
+      <div><ShieldCheck size={20}/><span>Status da planilha<b title={focus.operational_status_description||''}>{focus.operational_status_code||'—'}</b></span></div>
+      <div><CalendarDays size={20}/><span>Mês da origem<b>{focus.source_month||'—'}</b></span></div>
+      <div><FileCheck2 size={20}/><span>HMLG assinada<b>{focus.homologation_signed===true?'Sim':focus.homologation_signed===false?'Não':'Não informado'}</b></span></div>
+      <div><Clock3 size={20}/><span>Tempo em tratativa<b>{focus.contract_age_days==null?'—':focus.contract_age_days+' dias'}</b></span></div>
+      <div><CalendarDays size={20}/><span>Tempo de espera<b>{focus.waiting_business_days==null?'—':focus.waiting_business_days+' dias úteis'}</b></span></div>
+      <div><FileCheck2 size={20}/><span>Último informativo<b>{brDate(focus.info_document_date)}</b></span></div>
+      <div><CalendarDays size={20}/><span>Última negociação<b>{brDate(focus.last_financial_negotiation)}</b></span></div>
+      <div><AlertTriangle size={20}/><span>Parcelas em atraso<b>{focus.overdue_installments==null?'—':focus.overdue_installments}</b></span></div>
      </div>
-     <div className="reference-detail-note"><div><FileCheck2 size={17}/><b>Última anotação</b></div><p>{focus.notes||'Nenhuma anotação registrada para este cliente.'}</p></div>
+     <div className="reference-detail-note"><div><FileCheck2 size={17}/><b>Observações da planilha</b></div><p>{focus.source_observations||'Nenhuma observação de origem registrada.'}</p></div>
+     <div className="reference-detail-note"><div><FileCheck2 size={17}/><b>Última anotação no CRM</b></div><p>{focus.notes||'Nenhuma anotação registrada para este cliente.'}</p></div>
      <div className="reference-detail-note"><div><Activity size={17}/><b>Próxima ação</b></div><p>{getStatus(focus,today).code==='vencido'?'Retorno vencido: registrar o atendimento ou definir nova data.':getStatus(focus,today).code==='finalizado'?'Acompanhamento encerrado. Pode ser reaberto na aba Finalizados.':'Acompanhar o retorno conforme a data cadastrada.'}</p></div>
      <div className="reference-detail-actions"><Action primary icon={FileCheck2} onClick={()=>onSelectClient(focus)}>Editar cliente</Action><Action icon={History} onClick={()=>onSelectClient(focus)}>Ver histórico</Action></div>
     </>:<div className="reference-empty">Selecione um cliente para ver os detalhes.</div>}
