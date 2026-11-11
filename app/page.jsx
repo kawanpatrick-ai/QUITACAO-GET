@@ -182,7 +182,7 @@ export default function Page(){
  }
  
  async function openClient(c){setSelected(c);setClientDraft({...c,doc_digits:c.doc_digits||'',homologation_signed:c.homologation_signed==null?'':String(c.homologation_signed)});setStage(c.stage);setEvidence(c.evidence_status);setEvidenceUrl(c.evidence_url||'');setNote('');setCriticidade(c.priority_level||'normal');const r=await db.from('crm_activities').select('id,kind,body,created_at').eq('client_id',c.id).order('created_at',{ascending:false}).limit(40);setActivities(r.data||[])}
- function updateClientDraft(key,value){setClientDraft(current=>({...current,[key]:value}))}
+ function updateClientDraft(key,value){setClientDraft(current=>({...current,[key]:value}));if(key==='stage')setStage(value);if(key==='evidence_status')setEvidence(value);if(key==='evidence_url')setEvidenceUrl(value);if(key==='priority_level')setCriticidade(value)}
  async function save(){
   if(!selected||!clientDraft||busy)return;
   let annotation='';
