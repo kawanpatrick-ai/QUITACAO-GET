@@ -181,7 +181,7 @@ export default function Page(){
   setBusy(false);
  }
  
- async function openClient(c){setSelected(c);setClientDraft({...c,doc_digits:c.doc_digits||'',homologation_signed:c.homologation_signed==null?'':String(c.homologation_signed)});setStage(c.stage);setEvidence(c.evidence_status);setEvidenceUrl(c.evidence_url||'');setNote('');setCriticidade(c.priority_level||'normal');const r=await db.from('crm_activities').select('id,kind,body,created_at').eq('client_id',c.id).order('created_at',{ascending:false}).limit(40);setActivities(r.data||[])}
+ async function openClient(c){setSelected(c);setClientDraft({...c,name:c.name||'',doc_digits:c.doc_digits||'',stage:c.stage||'a_analisar',evidence_status:c.evidence_status||'sem_validacao',evidence_url:c.evidence_url||'',priority_level:c.priority_level||'normal',homologation_signed:c.homologation_signed==null?'':String(c.homologation_signed)});setStage(c.stage);setEvidence(c.evidence_status);setEvidenceUrl(c.evidence_url||'');setNote('');setCriticidade(c.priority_level||'normal');const r=await db.from('crm_activities').select('id,kind,body,created_at').eq('client_id',c.id).order('created_at',{ascending:false}).limit(40);setActivities(r.data||[])}
  function updateClientDraft(key,value){setClientDraft(current=>({...current,[key]:value}));if(key==='stage')setStage(value);if(key==='evidence_status')setEvidence(value);if(key==='evidence_url')setEvidenceUrl(value);if(key==='priority_level')setCriticidade(value)}
  async function save(){
   if(!selected||!clientDraft||busy)return;
