@@ -3,7 +3,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2.58.0';
 import {
   normalizeNewMemberInput,
   normalizeMembershipChange,
-} from '../../../lib/user-provisioning.mjs';
+} from '../_shared/user-provisioning.mjs';
 
 const PRODUCTION_ORIGIN = 'https://quitacao-get.vercel.app';
 const exactOrigins = new Set([
