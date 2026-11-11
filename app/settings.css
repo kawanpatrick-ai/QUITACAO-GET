@@ -81,3 +81,30 @@ html[data-crm-theme] .reference-institution-text{color:var(--ui-ink)!important}
  .reference-institution-text{max-width:140px}
 }
 @media(prefers-reduced-motion:reduce){.settings-theme-option{transition:none!important}}
+
+.settings-members-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:24px 0 10px;padding-top:18px;border-top:1px solid var(--ui-border,#e8dae0)}
+.settings-members-heading h3{margin:0;color:var(--ui-ink,#422636);font:700 18px Georgia,serif}
+.settings-members-heading p{margin:5px 0 0;color:var(--ui-muted,#7d6771);font-size:11px}
+.settings-members-list{display:grid;gap:9px}
+.settings-member-row{display:grid;grid-template-columns:minmax(180px,1.5fr) minmax(130px,.65fr) minmax(130px,.65fr) auto;align-items:center;gap:12px;padding:12px;border:1px solid var(--ui-border,#e8dae0);border-radius:12px;background:var(--ui-surface,#fff)}
+.settings-member-identity{display:grid;gap:5px;min-width:0}
+.settings-member-identity strong{color:var(--ui-ink,#422636);font-size:12px;overflow-wrap:anywhere}
+.settings-member-identity small{color:var(--ui-muted,#7d6771);font-size:10px}
+.settings-member-row>label:not(.settings-member-enabled){display:grid;gap:5px;color:var(--ui-muted,#7d6771);font-size:10px;font-weight:700}
+.settings-member-row select{width:100%;min-height:37px;padding:7px 9px;border:1px solid var(--ui-border,#e8dae0);border-radius:8px;background:var(--ui-surface,#fff);color:var(--ui-ink,#422636);font-size:11px}
+.settings-member-enabled{display:flex;align-items:center;gap:7px;color:var(--ui-ink,#422636);font-size:11px;white-space:nowrap}
+.settings-member-enabled input{accent-color:var(--ui-accent,#7a2e50)}
+.settings-member-row button{font-size:11px;white-space:nowrap}
+html[data-crm-theme] .settings-members-heading h3,
+html[data-crm-theme] .settings-member-identity strong{color:var(--ui-ink)!important}
+html[data-crm-theme] .settings-members-heading p,
+html[data-crm-theme] .settings-member-row>label:not(.settings-member-enabled),
+html[data-crm-theme] .settings-member-identity small{color:var(--ui-muted)!important}
+html[data-crm-theme] .settings-member-row{background:var(--ui-surface)!important;border-color:var(--ui-border)!important}
+html[data-crm-theme] .settings-member-row select{background:var(--ui-surface)!important;color:var(--ui-ink)!important;border-color:var(--ui-border)!important}
+@media(max-width:780px){
+ .settings-members-heading{align-items:flex-start;flex-direction:column}
+ .settings-member-row{grid-template-columns:1fr 1fr}
+ .settings-member-identity{grid-column:1/-1}
+ .settings-member-row button{justify-self:start}
+}
