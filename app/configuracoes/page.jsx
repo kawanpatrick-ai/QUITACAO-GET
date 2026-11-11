@@ -5,7 +5,7 @@ import CrmShell from '../../components/crm-shell';
 import ProfessionalAuth from '../../components/professional-auth';
 import {getClient} from '../../lib/supabase-client';
 import {useCrmAccess} from '../../lib/use-crm-access';
-import {ADMIN_EMAIL,changePassword} from '../../lib/login.mjs';
+import {changePassword} from '../../lib/login.mjs';
 import {CRM_THEMES,resolveTheme} from '../../lib/crm-themes.mjs';
 import {PROFILE_BUCKET,validateProfileName,validateAvatarFile,avatarPathFor,validatePasswordChange,ownerAvatarPath} from '../../lib/profile-settings.mjs';
 import {APP_COLORS,APPEARANCE_BUCKET,appearanceDefaults,validateAppearance,validateImageFile,appearancePathFor,applyAppearanceToDocument} from '../../lib/appearance-settings.mjs';
@@ -16,12 +16,21 @@ export default function SettingsPage(){
  const [session,setSession]=useState(null),[loading,setLoading]=useState(true);
  const access=useCrmAccess(db,session?.user);
  const [displayName,setDisplayName]=useState(''),[photo,setPhoto]=useState(null),[photoPreview,setPhotoPreview]=useState(''),[avatarUrl,setAvatarUrl]=useState('');
- const [newMemberEmail,setNewMemberEmail]=useState(''),[newMemberPassword,setNewMemberPassword]=useState(''),[memberSaving,setMemberSaving]=useState(false);
+ const [newMemberEmail,setNewMemberEmail]=useState(''),[newMemberPassword,setNewMemberPassword]=useState(''),[newMemberRole,setNewMemberRole]=useState('operator'),[memberSaving,setMemberSaving]=useState(false);
+ const [membershipRole,setMembershipRole]=useState(null),[members,setMembers]=useState([]),[membersLoading,setMembersLoading]=useState(false),[memberActionSaving,setMemberActionSaving]=useState('');
  const [currentPassword,setCurrentPassword]=useState(''),[newPassword,setNewPassword]=useState(''),[confirmPassword,setConfirmPassword]=useState(''),[showPassword,setShowPassword]=useState(false);
  const [theme,setTheme]=useState('vinho'),[saving,setSaving]=useState(''),[message,setMessage]=useState(''),[error,setError]=useState('');
  const [colors,setColors]=useState(()=>appearanceDefaults(CRM_THEMES[0]));
  const [backgroundFile,setBackgroundFile]=useState(null),[backgroundPreview,setBackgroundPreview]=useState(''),[backgroundUrl,setBackgroundUrl]=useState(''),[removeBackground,setRemoveBackground]=useState(false);
  const user=session?.user;
+ useEffect(()=>{
+  if(!db||!user?.id){setMembershipRole(null);setMembers([]);return}
+  let active=true;
+  db.from('crm_memberships').select('role,enabled').eq('user_id',user.id).maybeSingle().then(({data,error})=>{
+   if(active)setMembershipRole(!error&&data?.enabled===true?data.role:null);
+  }).catch(()=>{if(active)setMembershipRole(null)});
+  return()=>{active=false};
+ },[db,user?.id]);
  useEffect(()=>{
   let saved='vinho';try{saved=localStorage.getItem('projectw1sc.crm-theme')||'vinho'}catch{}
   const selected=resolveTheme(saved);setTheme(selected);setColors(appearanceDefaults(CRM_THEMES.find(t=>t.id===selected)));
@@ -175,20 +184,47 @@ export default function SettingsPage(){
   }catch(err){setError(err.message||'Não foi possível atualizar a senha.')}
   finally{setSaving('')}
  }
+ async function loadMembers(){
+  if(!db||membershipRole!=='admin')return;
+  setMembersLoading(true);
+  try{
+   const {data,error}=await db.functions.invoke('projectw1sc-provision-account',{body:{action:'list'}});
+   if(error)throw new Error(data?.error||error.message||'Não foi possível consultar os usuários.');
+   if(!data?.ok)throw new Error(data?.error||'A consulta de usuários não foi confirmada.');
+   setMembers(data.users||[]);
+  }catch(err){setError(err.message||'Falha ao consultar usuários.')}
+  finally{setMembersLoading(false)}
+ }
+ useEffect(()=>{if(membershipRole==='admin')loadMembers()},[membershipRole,db]);
  async function createMember(e){
   e.preventDefault();
-  if(memberSaving||!db)return;
+  if(memberSaving||!db||membershipRole!=='admin')return;
   setMemberSaving(true);setError('');setMessage('');
   try{
    const {data,error}=await db.functions.invoke('projectw1sc-provision-account',{
-    body:{email:newMemberEmail.trim().toLowerCase(),password:newMemberPassword}
+    body:{action:'create',email:newMemberEmail.trim().toLowerCase(),password:newMemberPassword,role:newMemberRole}
    });
    if(error)throw new Error(data?.error||error.message||'Não foi possível cadastrar a conta.');
    if(!data?.ok)throw new Error(data?.error||'O cadastro não foi confirmado.');
    setMessage('Conta criada e autorizada a acessar a mesma carteira do CRM.');
-   setNewMemberPassword('');
+   setNewMemberEmail('');setNewMemberPassword('');setNewMemberRole('operator');
+   await loadMembers();
   }catch(e){setError(e.message||'Falha ao adicionar usuário.')}
   finally{setMemberSaving(false)}
+ }
+ async function saveMember(member){
+  if(!db||memberActionSaving||member.id===user?.id)return;
+  setMemberActionSaving(member.id);setError('');setMessage('');
+  try{
+   const {data,error}=await db.functions.invoke('projectw1sc-provision-account',{body:{
+    action:'set_membership',user_id:member.id,role:member.role||'operator',enabled:member.enabled===true
+   }});
+   if(error)throw new Error(data?.error||error.message||'Não foi possível salvar as permissões.');
+   if(!data?.ok)throw new Error(data?.error||'A alteração não foi confirmada.');
+   setMessage('Permissões do usuário atualizadas.');
+   await loadMembers();
+  }catch(err){setError(err.message||'Falha ao atualizar usuário.')}
+  finally{setMemberActionSaving('')}
  }
  if(!db)return <main className="reference-auth">Configuração do Supabase indisponível.</main>;
  if(loading)return <main className="reference-auth">Verificando sua sessão...</main>;
@@ -257,14 +293,24 @@ export default function SettingsPage(){
      </form>
     </section>
    </div>
-   {user.email?.toLowerCase()===ADMIN_EMAIL&&<section className="reference-panel settings-panel" aria-label="Gestão de acesso">
+   {membershipRole==='admin'&&<section className="reference-panel settings-panel" aria-label="Gestão de acesso">
     <div className="settings-section-heading"><span className="settings-section-icon"><Users size={21}/></span><div><h2>Adicionar usuário ao CRM</h2><p>Crie uma conta individual com acesso aos mesmos clientes, processos, tarefas e relatórios. Os dados continuam na mesma base.</p></div></div>
     <form className="settings-form" onSubmit={createMember}>
      <label>E-mail da nova pessoa<input type="email" required autoComplete="off" value={newMemberEmail} onChange={e=>setNewMemberEmail(e.target.value)} placeholder="exemplo@empresa.com"/></label>
      <label>Senha inicial<input type="password" required minLength={8} maxLength={128} autoComplete="new-password" value={newMemberPassword} onChange={e=>setNewMemberPassword(e.target.value)} placeholder="Escolha uma senha temporária"/></label>
-     <p className="settings-security-note"><ShieldCheck size={15}/> Apenas o administrador principal pode criar contas. Recomenda-se trocar a senha temporária no primeiro acesso.</p>
-     <button className="reference-primary" type="submit" disabled={memberSaving}><Users size={16}/>{memberSaving?'Criando acesso...':'Criar usuário com acesso completo'}</button>
+     <label>Perfil de acesso<select value={newMemberRole} onChange={e=>setNewMemberRole(e.target.value)}><option value="operator">Operador — acesso operacional</option><option value="admin">Administrador — gestão de usuários e carteira</option></select></label>
+     <p className="settings-security-note"><ShieldCheck size={15}/> Novas contas começam como operador. Conceda perfil de administrador somente quando necessário. A senha inicial não é exibida novamente após o cadastro.</p>
+     <button className="reference-primary" type="submit" disabled={memberSaving}><Users size={16}/>{memberSaving?'Criando acesso...':'Criar usuário'}</button>
     </form>
+    <div className="settings-members-heading"><div><h3>Usuários da carteira</h3><p>Contas do Supabase Auth e respectivas permissões neste CRM.</p></div><button className="reference-outline" type="button" onClick={loadMembers} disabled={membersLoading}>{membersLoading?'Atualizando...':'Atualizar lista'}</button></div>
+    {membersLoading&&<p className="settings-security-note">Carregando usuários...</p>}
+    {!membersLoading&&members.length===0&&<p className="settings-security-note">Nenhuma conta cadastrada foi retornada.</p>}
+    <div className="settings-members-list">{members.map(member=><article className="settings-member-row" key={member.id}>
+     <div className="settings-member-identity"><strong>{member.email||'Conta sem e-mail'}</strong><small>{member.id===user?.id?'Sua conta':member.last_sign_in_at?'Último acesso: '+new Date(member.last_sign_in_at).toLocaleString('pt-BR'):'Ainda não acessou'}{!member.email_confirmed_at?' · e-mail pendente de confirmação':''}</small></div>
+     <label>Perfil<select value={member.role||'operator'} disabled={member.id===user?.id||memberActionSaving===member.id} onChange={e=>setMembers(current=>current.map(row=>row.id===member.id?{...row,role:e.target.value}:row))}><option value="operator">Operador</option><option value="admin">Administrador</option></select></label>
+     <label className="settings-member-enabled"><input type="checkbox" checked={member.enabled===true} disabled={member.id===user?.id||memberActionSaving===member.id} onChange={e=>setMembers(current=>current.map(row=>row.id===member.id?{...row,enabled:e.target.checked}:row))}/> Acesso ativo</label>
+     <button className="reference-outline" type="button" disabled={member.id===user?.id||memberActionSaving===member.id} onClick={()=>saveMember(member)}>{memberActionSaving===member.id?'Salvando...':'Salvar acesso'}</button>
+    </article>)}</div>
    </section>}
   </main>
  </CrmShell>;
