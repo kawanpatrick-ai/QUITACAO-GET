@@ -1,0 +1,220 @@
+/* Theme compliance layer.
+   Loaded last so legacy page-level colors cannot override the selected CRM theme.
+   All content surfaces and text roles resolve from the same semantic theme tokens. */
+html[data-crm-theme] {
+  color-scheme: light;
+  background: var(--ui-page);
+  color: var(--ui-ink);
+}
+html[data-crm-theme="grafite"],
+html[data-crm-theme="noturno"],
+html[data-crm-theme="sasuke"] { color-scheme: dark; }
+
+html[data-crm-theme] body,
+html[data-crm-theme] .app-shell,
+html[data-crm-theme] .app-content,
+html[data-crm-theme] .reference-dashboard,
+html[data-crm-theme] .task-shell,
+html[data-crm-theme] .task-main {
+  background-color: var(--ui-page) !important;
+  color: var(--ui-ink) !important;
+}
+
+/* Shared panels, cards, metrics, modals and data containers. */
+html[data-crm-theme] .app-content :is(
+  .reference-panel,.reference-kpi,.reference-client-detail,.reference-activity-card,
+  .reference-related,.reference-auth-card,.reference-creation-modal,.reference-detail-grid,
+  .reference-detail-note,.reference-timesheet,.reference-timesheet-head,.reference-check,
+  .reference-timer,.task-board,.task-metric,.task-item,.task-modal,.task-modal-content,
+  .settings-panel,.settings-member-row,.settings-theme-option,.settings-appearance-preview,
+  .settings-preview-card,.processes-panel,.processes-source,.processes-entry,
+  .sales-workspace-panel,.sales-card,.sales-metric,.sales-focus-card,.efferd-kpi,
+  .dashboard-chart-card,.dashboard-chart-date,.report-filters,.report-mini-stats>div,
+  .report-donut>div,.mvp-workspace-panel,.mvp-new-client,.mvp-detail-panel,
+  .mvp-metric-card,.mvp-list-panel,.mvp-panel,.panel,.metric,.dialog-inner,.task-board-head
+) {
+  background-color: var(--ui-surface) !important;
+  color: var(--ui-ink) !important;
+  border-color: var(--ui-border) !important;
+}
+
+/* Content text defaults to the theme's foreground; secondary copy is explicit. */
+html[data-crm-theme] .app-content :is(
+  h1,h2,h3,h4,h5,h6,strong,b,label,th,td,p,li,dt,dd,legend,figcaption,
+  .reference-client-name,.task-name-row,.task-item strong,.processes-head strong
+) { color: var(--ui-ink) !important; }
+
+html[data-crm-theme] .app-content :is(
+  .reference-header p,.reference-panel p,.reference-kpi small,.reference-kpi span,
+  .reference-overline,.reference-meta-label,.reference-footer,.reference-pager,
+  .reference-entry-footer,.reference-detail-head>div>span,.reference-detail-grid span,
+  .reference-detail-note p,.reference-related-grid span,.reference-activity-card>p,
+  .reference-activity-card span,.reference-activity-form label,.reference-creation-modal label,
+  .task-header p,.task-board p,.task-board span,.task-metric small,.task-metric em,
+  .task-item-description,.task-item-meta,.task-item-meta span,.task-list-footer,
+  .task-day-marker,.task-kicker,.task-queue-tabs button,.processes-add-form label,
+  .processes-date-filter label,.processes-entry small,.processes-movement time,
+  .processes-movement p,.processes-source span,.processes-source small,
+  .settings-section-heading p,.settings-hint,.settings-form>label,
+  .settings-members-heading p,.settings-member-identity small,
+  .settings-member-row>label,.report-dashboard small,.report-section-head p,
+  .report-category-list span,.report-legend,.report-timeline-labels,.report-footer,
+  .report-subtitle,.dashboard-chart-card p,.dashboard-chart-legend,
+  .mvp-subtitle,.mvp-panel-header p,.mvp-client-copy>span,.mvp-due,
+  .mvp-detail-list dt,.muted,.empty
+) { color: var(--ui-muted) !important; }
+
+/* Headings and high-priority labels always remain legible on cards. */
+html[data-crm-theme] .app-content :is(
+  .reference-header h1,.reference-panel h2,.reference-panel h3,.reference-panel-title h2,
+  .task-header h1,.task-board h2,.processes-panel h2,.processes-timeline-heading h3,
+  .settings-section-heading h2,.settings-members-heading h3,
+  .dashboard-chart-section-head h2,.dashboard-chart-card h3,
+  .report-section-head h2,.report-dashboard h2,.report-dashboard h3,
+  .mvp-heading-row h1,.mvp-panel-header h2,.mvp-form-heading h2,.mvp-detail-head h2
+) { color: var(--ui-ink) !important; }
+
+/* Inputs, selects, textareas, search fields and dropdown options. */
+html[data-crm-theme] .app-content :is(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+  textarea,select,.reference-search,.task-search,.task-select-wrap,
+  .task-select-institution,.processes-search,.mvp-search
+) {
+  background-color: var(--ui-surface) !important;
+  color: var(--ui-ink) !important;
+  border-color: var(--ui-border) !important;
+}
+html[data-crm-theme] .app-content :is(input,textarea)::placeholder {
+  color: var(--ui-muted) !important;
+  opacity: 1 !important;
+}
+html[data-crm-theme] .app-content select option {
+  background: var(--ui-surface) !important;
+  color: var(--ui-ink) !important;
+}
+
+/* Table headers, body cells, separators and hover states. */
+html[data-crm-theme] .app-content :is(
+  .reference-table thead th,.reference-clients-table thead th,table thead th
+) {
+  background: var(--ui-tint) !important;
+  color: var(--ui-tint-ink) !important;
+  border-color: var(--ui-border) !important;
+}
+html[data-crm-theme] .app-content :is(
+  .reference-table tbody td,.reference-clients-table tbody td,table tbody td,
+  .task-item,.task-board-head,.task-list-footer
+) { border-color: var(--ui-border) !important; }
+html[data-crm-theme] .app-content :is(
+  .reference-table tbody tr:hover td,.reference-clients-table tr.selected td,
+  .task-item:hover,.processes-entry:hover,.processes-entry.active
+) { background: var(--ui-tint) !important; }
+
+/* Tabs: inactive tabs use surface/ink; selected tabs use accent/accent-ink. */
+html[data-crm-theme] .app-content :is(
+  .task-queue-tabs button,.processes-tabs button,.reference-tabs button,[role="tab"]
+) {
+  background: var(--ui-surface) !important;
+  color: var(--ui-ink) !important;
+  border: 1px solid var(--ui-border) !important;
+}
+html[data-crm-theme] .app-content :is(
+  .task-queue-tabs button.active,.task-queue-tabs button[aria-selected="true"],
+  .processes-tabs button.active,.reference-tabs button.active,
+  [role="tab"][aria-selected="true"]
+) {
+  background: var(--ui-accent) !important;
+  color: var(--ui-accent-ink) !important;
+  border-color: var(--ui-accent) !important;
+}
+
+/* Actions and badges keep a tested foreground/background pair. */
+html[data-crm-theme] .app-content :is(
+  .reference-primary,.task-button-primary,.app-content .btn:not(.ghost),
+  .crm-reopen-button,.mvp-primary-button
+) {
+  background: var(--ui-accent) !important;
+  color: var(--ui-accent-ink) !important;
+  border-color: var(--ui-accent) !important;
+}
+html[data-crm-theme] .app-content :is(
+  .reference-outline,.task-button-outline,.task-button-subtle,.btn.ghost,
+  .reference-more,.reference-pager button,.reference-text-button,
+  .reference-activity-actions button,.processes-tabs button:not(.active)
+) {
+  background: var(--ui-surface) !important;
+  color: var(--ui-accent) !important;
+  border-color: var(--ui-border) !important;
+}
+html[data-crm-theme] .app-content :is(
+  .reference-status.good,.task-badge-em_dia,.pill.ok,.settings-feedback.good,
+  .task-status-ok,.status-success
+) { background: var(--ui-success-bg) !important; color: var(--ui-success-ink) !important; }
+html[data-crm-theme] .app-content :is(
+  .reference-status.danger,.task-badge-vencido,.task-priority-urgente,.pill.danger,
+  .error,.settings-feedback.bad,.status-danger
+) { background: var(--ui-danger-bg) !important; color: var(--ui-danger-ink) !important; }
+html[data-crm-theme] .app-content :is(
+  .reference-status.pending,.reference-status.neutral,.task-badge-hoje,
+  .task-badge-sem_data,.task-source-warning,.task-priority-alta,.pill.warn,
+  .reference-notice,.notice,.task-notice,.status-warning
+) {
+  background: var(--ui-warning-bg) !important;
+  color: var(--ui-warning-ink) !important;
+  border-color: var(--ui-border) !important;
+}
+html[data-crm-theme] .app-content :is(
+  .reference-status.finished,.reference-status.finalizado,.task-badge-finalizado,
+  .task-status-finalizado,.pill.finished,.status-neutral
+) { background: var(--ui-neutral-bg) !important; color: var(--ui-neutral-ink) !important; }
+
+/* Chart/report surfaces and executive banners. */
+html[data-crm-theme] .app-content :is(
+  .dashboard-chart-card,.dashboard-chart-date,.report-mini-stats>div,
+  .report-donut>div,.report-segments
+) { background: var(--ui-surface) !important; color: var(--ui-ink) !important; border-color: var(--ui-border) !important; }
+html[data-crm-theme] .app-content :is(.report-segments button:not(.active)) {
+  background: var(--ui-tint) !important;
+  color: var(--ui-tint-ink) !important;
+}
+html[data-crm-theme] .app-content .report-executive-hero {
+  background: linear-gradient(125deg,var(--ui-nav),color-mix(in srgb,var(--ui-nav) 88%,var(--ui-accent))) !important;
+  color: var(--ui-nav-ink) !important;
+}
+html[data-crm-theme] .app-content .report-executive-hero * { color: var(--ui-nav-ink) !important; }
+
+/* Navigation is intentionally separate from the content palette. */
+html[data-crm-theme] .app-sidebar {
+  background: var(--ui-nav) !important;
+  color: var(--ui-nav-ink) !important;
+}
+html[data-crm-theme] .app-sidebar :is(a,button,span,strong,small,svg) {
+  color: var(--ui-nav-ink) !important;
+}
+html[data-crm-theme] .app-sidebar .app-nav-link:is(:hover,.active,[aria-current="page"]) {
+  background: color-mix(in srgb,var(--ui-nav-ink) 22%,var(--ui-nav)) !important;
+  color: var(--ui-nav-ink) !important;
+}
+html[data-crm-theme] .reference-top-avatar {
+  background: var(--ui-accent) !important;
+  color: var(--ui-accent-ink) !important;
+}
+html[data-crm-theme] .app-content :focus-visible,
+html[data-crm-theme] .app-sidebar :focus-visible {
+  outline: 3px solid var(--ui-accent) !important;
+  outline-offset: 2px !important;
+}
+
+/* Keep custom background images behind opaque, theme-colored work surfaces. */
+html[data-crm-theme][data-crm-background="image"] .app-content {
+  background-color: var(--ui-page) !important;
+  background-image: linear-gradient(
+    color-mix(in srgb,var(--ui-page) 93%,transparent),
+    color-mix(in srgb,var(--ui-page) 95%,transparent)
+  ),var(--crm-background-image) !important;
+}
+html[data-crm-theme][data-crm-background="image"] .app-content :is(
+  .reference-panel,.reference-kpi,.task-board,.task-metric,.task-item,
+  .settings-panel,.processes-panel,.efferd-kpi,.dashboard-chart-card,
+  .report-filters,.sales-card,.sales-workspace-panel
+) { background: var(--ui-surface) !important; }
