@@ -18,6 +18,6 @@ test('returns null when the contact date or waiting interval is missing', () => 
 
 test('rejects invalid dates and negative or fractional waiting intervals', () => {
   assert.throws(() => calculateNextReturn('2026-02-30', 2), /data válida/);
-  assert.throws(() => calculateNextReturn('2026-11-06', -1), /não negativo/);
+  assert.throws(() => calculateNextReturn('2026-11-06', -1), /não pode ser negativo/);
   assert.throws(() => calculateNextReturn('2026-11-06', 1.5), /inteiro/);
 });
