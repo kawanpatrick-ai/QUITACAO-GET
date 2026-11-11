@@ -110,9 +110,8 @@ export default function TarefasPage(){
  }
  function startAttendance(client){
   setSelected(client);
-  const waitingDays=client.waiting_business_days==null||client.waiting_business_days===''?30:client.waiting_business_days;
   let nextDue='';
-  try{nextDue=calculateNextReturn(today,waitingDays)||''}catch{}
+  try{nextDue=calculateNextReturn(today,client.waiting_business_days)||''}catch{}
   setAttendance({channel:'whatsapp',outcome:'contatado',body:'',next_due:nextDue,responsible:client.assigned_to||'Davi Alves Figueredo',priority_level:client.priority_level||'normal',note:''});
   setModal('attendance');
  }
@@ -278,7 +277,7 @@ export default function TarefasPage(){
       </div>
       <label>O que foi conversado ou tentado? <span className="task-required">*</span><textarea required minLength={5} maxLength={4000} rows={4} placeholder="Ex.: Contato pelo WhatsApp, cliente informou que aguarda resposta da financeira..." value={attendance.body} onChange={e=>setAttendance({...attendance,body:e.target.value})}/></label>
       <div className="task-form-grid">
-       <label>Próximo retorno (calculado)<input type="date" value={attendance.next_due} readOnly/><small>Calculado a partir da data do atendimento e do tempo de espera cadastrado na ficha. Se não houver prazo informado, aplica 30 dias úteis.</small></label>
+       <label>Próximo retorno (calculado)<input type="date" value={attendance.next_due} readOnly/><small>Calculado a partir da data do atendimento e do tempo de espera cadastrado na ficha. Se estiver vazio, cadastre o tempo de espera na ficha do cliente para gerar a data.</small></label>
        <label>Responsável<input value={attendance.responsible} maxLength={150} onChange={e=>setAttendance({...attendance,responsible:e.target.value})}/></label>
        <label>Nível de criticidade<select value={attendance.priority_level} onChange={e=>setAttendance({...attendance,priority_level:e.target.value})}><option value="normal">Normal</option><option value="alta">Alta</option><option value="urgente">Urgente</option></select><small>Atualiza a prioridade da fila junto com o atendimento.</small></label>
       </div>
