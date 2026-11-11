@@ -39,3 +39,8 @@ test('calculates the next return automatically from last contact and business-da
   });
   assert.equal(patch.next_return,'2026-11-09');
 });
+
+test('preserves an existing return date when calculation inputs are unavailable', () => {
+  const patch = buildClientPatch({name:'Cliente',doc_digits:'12345678901',next_return:'2026-12-01'});
+  assert.equal(patch.next_return,'2026-12-01');
+});
