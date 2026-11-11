@@ -1,13 +1,49 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="sharingan" width="300" height="300">
- <defs id="defs"><radialGradient id="gr"><stop offset="0" style="stop-color:#660000;stop-opacity:1"/><stop style="stop-color:#c30000;stop-opacity:1" offset="0.5"/><stop style="stop-color:#a00000;stop-opacity:1" offset="1"/></radialGradient></defs>
- <circle style="fill:url(#gr);stroke:#000;stroke-width:10" cx="150" cy="150" r="145" id="iris"/>
- <g id="tomoe-1">
-  <circle style="fill:none;stroke:#000;stroke-width:15" cx="150" cy="60" r="30" id="tomoe-1a"/>
-  <path style="fill:#000" d="M 151.1 24.6 L 174.1 43.1 L 180 82.5 C 240.9 62.8 255 166.9 244.1 161.2 C 255 183.2 264.5 185 262.9 181.9 C 260.5 177.2 260.8 175.4 260.8 171 C 264.9 103.6 227 34 151.1 24.6 z" id="tomoe-1b"/>
-  <path style="fill:#000" d="M 115,250 L 115,290 L 150,295 L 185,290 L 185,250 L 115,250 z" id="tomoe-1c"/>
- </g>
- <use xlink:href="#tomoe-1" transform="rotate(120 150 150)" id="tomoe-2"/>
- <use xlink:href="#tomoe-1" transform="rotate(-120 150 150)" id="tomoe-3"/>
- <circle style="fill:#000" cx="150" cy="150" r="28" id="center"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Madara Uchiha — Eternal Mangekyo Sharingan (Choku Tomoe)
+  Reconstructed vector based on ShounenSuki's Wikimedia Commons reference:
+  https://commons.wikimedia.org/wiki/File:Mangekyou_Sharingan_Madara_(Eternal).svg
+  CC BY-SA 3.0. This derivative retains the reference's three straight-tomoe
+  satellites and the combined central/outer geometry.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-labelledby="title desc">
+  <title id="title">Mangekyō Sharingan Eterno de Madara Uchiha</title>
+  <desc id="desc">Íris vermelha com pupila central preta, três círculos vermelhos orbitais e três extensões retas pretas do padrão Choku Tomoe.</desc>
+  <defs>
+    <radialGradient id="iris-gradient" cx="48%" cy="45%" r="62%">
+      <stop offset="0" stop-color="#f21b26"/>
+      <stop offset=".72" stop-color="#c60012"/>
+      <stop offset="1" stop-color="#87000b"/>
+    </radialGradient>
+    <clipPath id="iris-clip"><circle cx="256" cy="256" r="238"/></clipPath>
+  </defs>
+
+  <circle id="ems-outer-iris" cx="256" cy="256" r="246" fill="#050505"/>
+  <circle cx="256" cy="256" r="235" fill="url(#iris-gradient)" stroke="#050505" stroke-width="9"/>
+
+  <g id="ems-straight-tomoe" clip-path="url(#iris-clip)">
+    <!-- Straight extensions that distinguish Madara's Eternal Mangekyo. -->
+    <g fill="#050505">
+      <path class="ems-radial-bar" d="M232 7h48v91h-48z"/>
+      <path class="ems-radial-bar" d="M26 356l78-45 47 82-78 45z"/>
+      <path class="ems-radial-bar" d="M361 393l47-82 78 45-47 82z"/>
+    </g>
+
+    <!-- Three interlocking curved arms around the central pupil. -->
+    <g fill="none" stroke="#050505" stroke-width="48" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M256 151 C286 151 307 169 318 193 C329 218 320 243 301 256 C284 268 264 268 248 257"/>
+      <path d="M369 321 C354 347 330 355 305 350 C279 345 264 326 264 304 C264 284 275 267 293 258"/>
+      <path d="M143 321 C158 347 182 355 207 350 C233 345 248 326 248 304 C248 284 237 267 219 258"/>
+      <path d="M256 151 C226 151 205 169 194 193 C183 218 192 243 211 256 C228 268 248 268 264 257"/>
+    </g>
+
+    <!-- The three red circular terminals are part of the canonical EMS silhouette. -->
+    <g fill="#d20a18" stroke="#050505" stroke-width="17">
+      <circle class="ems-satellite" cx="256" cy="112" r="39"/>
+      <circle class="ems-satellite" cx="132" cy="327" r="39"/>
+      <circle class="ems-satellite" cx="380" cy="327" r="39"/>
+    </g>
+  </g>
+
+  <circle id="ems-central-pupil" cx="256" cy="256" r="39" fill="#050505"/>
 </svg>
