@@ -13,5 +13,6 @@ import './anime-immersive.css';
 import './anime-header-banners.css';
 import './brand-auth.css';
 import './theme-accessibility.css';
+import './madara-theme.css';
 export const metadata={title:'W1 Capital • CRM de Quitações',description:'Gestão operacional de clientes, negociações, tarefas e processos.'};
 export default function RootLayout({children}){return <html lang="pt-BR"><body>{children}</body></html>}
