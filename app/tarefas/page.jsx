@@ -8,6 +8,7 @@ import EfferdKpi from '../../components/efferd-kpi';
 import {useCrmAccess} from '../../lib/use-crm-access';
 import {ADMIN_EMAIL,signInWithPassword} from '../../lib/login.mjs';
 import {ATTENDANCE_CHANNELS,ATTENDANCE_OUTCOMES,dueDate,filterTaskQueue,queueCounts,taskStatus,todayBrazil,validateAttendance,validateCriticidade,validateNote,validISO} from '../../lib/tarefas.mjs';
+import {calculateNextReturn} from '../../lib/return-date.mjs';
 import './tarefas.css';
 
 const queueViews=[
@@ -24,7 +25,6 @@ const outcomeOptions={contatado:'Contato realizado',sem_resposta:'Não respondeu
 const prioOptions={normal:'Normal',alta:'Alta',urgente:'Urgente'};
 const dateBR=d=>d&&validISO(d)?new Date(d+'T12:00:00Z').toLocaleDateString('pt-BR',{timeZone:'UTC'}):'Não informado';
 const timestampBR=d=>d?new Date(d).toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo'}):'—';
-const nextAfter=(date,days=30)=>new Date(Date.parse(date+'T12:00:00Z')+days*86400000).toISOString().slice(0,10);
 const normalText=t=>String(t||'').trim();
 function statusDescription(status){
  if(status.code==='vencido')return `${-status.days} ${-status.days===1?'dia':'dias'} em atraso`;
@@ -86,7 +86,7 @@ export default function TarefasPage(){
   setLoading(true);
   const {data,error}=await db.from('crm_clients').select('*').order('name',{ascending:true}).limit(1000);
   if(error)setNotice('Não foi possível carregar a fila: '+error.message);
-  else{setClients(data||[]);setNotice('')}
+  else{setClients((data||[]).map(client=>{try{const nextReturn=calculateNextReturn(client.last_contact,client.waiting_business_days);return nextReturn?{...client,next_return:nextReturn}:client}catch{return client}}));setNotice('')}
   setLoading(false);
  },[db]);
  useEffect(()=>{if(session?.user?.email?.toLowerCase()===ADMIN_EMAIL)load();else setClients([])},[session?.user?.id,load]);
@@ -110,7 +110,10 @@ export default function TarefasPage(){
  }
  function startAttendance(client){
   setSelected(client);
-  setAttendance({channel:'whatsapp',outcome:'contatado',body:'',next_due:nextAfter(today,30),responsible:client.assigned_to||'Davi Alves Figueredo',priority_level:client.priority_level||'normal',note:''});
+  const waitingDays=client.waiting_business_days==null||client.waiting_business_days===''?30:client.waiting_business_days;
+  let nextDue='';
+  try{nextDue=calculateNextReturn(today,waitingDays)||''}catch{}
+  setAttendance({channel:'whatsapp',outcome:'contatado',body:'',next_due:nextDue,responsible:client.assigned_to||'Davi Alves Figueredo',priority_level:client.priority_level||'normal',note:''});
   setModal('attendance');
  }
  function startNote(client){setSelected(client);setNoteBody('');setModal('note');setNotice('')}
@@ -270,12 +273,12 @@ export default function TarefasPage(){
       </div>
       <label>O que foi conversado ou tentado? <span className="task-required">*</span><textarea required minLength={5} maxLength={4000} rows={4} placeholder="Ex.: Contato pelo WhatsApp, cliente informou que aguarda resposta da financeira..." value={attendance.body} onChange={e=>setAttendance({...attendance,body:e.target.value})}/></label>
       <div className="task-form-grid">
-       <label>Próximo retorno<input type="date" value={attendance.next_due} onChange={e=>setAttendance({...attendance,next_due:e.target.value})}/><small>30 dias é apenas uma sugestão; altere conforme o combinado.</small></label>
+       <label>Próximo retorno (calculado)<input type="date" value={attendance.next_due} readOnly/><small>Calculado a partir da data do atendimento e do tempo de espera cadastrado na ficha. Se não houver prazo informado, aplica 30 dias úteis.</small></label>
        <label>Responsável<input value={attendance.responsible} maxLength={150} onChange={e=>setAttendance({...attendance,responsible:e.target.value})}/></label>
        <label>Nível de criticidade<select value={attendance.priority_level} onChange={e=>setAttendance({...attendance,priority_level:e.target.value})}><option value="normal">Normal</option><option value="alta">Alta</option><option value="urgente">Urgente</option></select><small>Atualiza a prioridade da fila junto com o atendimento.</small></label>
       </div>
       <label>Anotação interna (opcional)<textarea rows={3} maxLength={4000} value={attendance.note||''} onChange={e=>setAttendance({...attendance,note:e.target.value})} placeholder="Observações adicionais, sem registrar contato fictício."/></label>
-      <div className="task-form-hint"><CalendarDays size={16}/><button type="button" onClick={()=>setAttendance({...attendance,next_due:nextAfter(today,30)})}>Agendar em 30 dias</button><span>O agendamento é confirmado ao salvar.</span></div>
+      <div className="task-form-hint"><CalendarDays size={16}/><span>O próximo retorno é calculado automaticamente em dias úteis e confirmado ao salvar.</span></div>
       <div className="task-modal-actions"><button type="button" className="task-button task-button-outline" onClick={closeModal} disabled={saving}>Cancelar</button><button className="task-button task-button-primary" disabled={saving}>{saving?<Loader2 size={16} className="task-spin"/>:<CheckCircle2 size={16}/>} Salvar atendimento</button></div>
     </form>}
     {modal==='edit'&&<form onSubmit={saveEdit} className="task-modal-body">
