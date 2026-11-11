@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {normalizeNewMemberInput,normalizeMembershipChange} from '../lib/user-provisioning.mjs';
+import {normalizeNewMemberInput,normalizeMembershipChange} from '../supabase/functions/_shared/user-provisioning.mjs';
 
 test('novo usuário recebe perfil operador por padrão e e-mail normalizado',()=>{
  const value=normalizeNewMemberInput({email:'  Operador@Empresa.com ',password:'senha inicial 123'});
