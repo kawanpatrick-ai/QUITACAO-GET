@@ -2,6 +2,26 @@
    This layer is intentionally scoped to one selectable theme. All CRM records,
    controls and workflows remain live components; only artwork and presentation change. */
 html[data-crm-theme="madara"] {
+  --ui-page: #0b080a;
+  --ui-surface: #171012;
+  --ui-ink: #fff4f3;
+  --ui-muted: #d7b9bb;
+  --ui-accent: #b91c2b;
+  --ui-accent-ink: #ffffff;
+  --ui-nav: #100708;
+  --ui-nav-ink: #fff3f2;
+  --ui-border: #592126;
+  --ui-tint: #2a1318;
+  --ui-tint-ink: #fff0f0;
+  --ui-warning-bg: #402714;
+  --ui-warning-ink: #ffe2a8;
+  --ui-success-bg: #11351f;
+  --ui-success-ink: #c1ffcf;
+  --ui-danger-bg: #4a151b;
+  --ui-danger-ink: #ffc5cb;
+  --ui-neutral-bg: #302427;
+  --ui-neutral-ink: #f0dddd;
+
   --madara-banner-image: url('/themes/madara-banner.webp');
   --madara-sidebar-image: url('/themes/madara-sidebar.webp');
   --madara-ems-image: url('/themes/madara-ems.svg');
