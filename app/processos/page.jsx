@@ -1,6 +1,6 @@
 'use client';
 import {useCallback,useEffect,useMemo,useRef,useState} from 'react';
-import {Activity,AlertCircle,ArrowRight,CalendarDays,CheckCircle2,Clock3,ExternalLink,FileSearch,Gavel,History,Landmark,Loader2,Plus,RefreshCw,Search,ShieldCheck,Trash2} from 'lucide-react';
+import {Activity,AlertCircle,ArrowRight,CalendarDays,CheckCircle2,Clock3,ExternalLink,FileSearch,Gavel,History,Landmark,Loader2,Plus,RefreshCw,Search,ShieldCheck,Trash2,Pencil} from 'lucide-react';
 import CrmShell from '../../components/crm-shell';
 import ProfessionalAuth from '../../components/professional-auth';
 import EfferdKpi from '../../components/efferd-kpi';
@@ -46,6 +46,7 @@ export default function ProcessosPage(){
  const [saved,setSaved]=useState([]),[activityRecords,setActivityRecords]=useState([]),[clients,setClients]=useState([]);
  const [pageLoading,setPageLoading]=useState(false),[saving,setSaving]=useState(false),[notice,setNotice]=useState('');
  const [number,setNumber]=useState(''),[processType,setProcessType]=useState('comum'),[clientId,setClientId]=useState('');
+ const [editingProcess,setEditingProcess]=useState(null);
  const [selected,setSelected]=useState(''),[search,setSearch]=useState(''),[tab,setTab]=useState('todas');
  const [start,setStart]=useState(twoYearsAgo()),[end,setEnd]=useState(todayBrazil());
  const [sourceStatus,setSourceStatus]=useState({datajud:emptySource(),djen:emptySource()});
@@ -112,6 +113,18 @@ export default function ProcessosPage(){
   setSaving(true);const {error}=await db.from('crm_processes').delete().eq('id',p.savedId).eq('actor_id',session.user.id);
   if(error)setNotice('Erro ao remover: '+error.message);else{await load();setNotice('Cadastro manual removido. Atividades preservadas.');if(p.number===selected){requestId.current++;setSelected('');setSourceStatus({datajud:emptySource(),djen:emptySource()})}}
   setSaving(false);
+ }
+ function startEditProcess(p){setEditingProcess({id:p.savedId||null,process_number:p.number,process_type:p.type||'comum',client_id:p.clientId||''})}
+ async function saveProcessEdit(e){
+  e.preventDefault();if(!editingProcess||saving)return;
+  let formatted;try{formatted=formatProcessNumber(editingProcess.process_number)}catch(err){setNotice(err.message);return}
+  setSaving(true);setNotice('');
+  const payload={actor_id:session.user.id,process_number:formatted,process_type:editingProcess.process_type,client_id:editingProcess.client_id||null};
+  let result;
+  if(editingProcess.id)result=await db.from('crm_processes').update(payload).eq('id',editingProcess.id).eq('actor_id',session.user.id).select('id');
+  else result=await db.from('crm_processes').upsert(payload,{onConflict:'actor_id,process_number'}).select('id');
+  if(result.error||!result.data?.length){setNotice('Não foi possível atualizar o cadastro processual: '+(result.error?.message||'registro não encontrado ou sem permissão.'));setSaving(false);return}
+  setEditingProcess(null);await load();setSelected(formatted);setSourceStatus({datajud:emptySource(),djen:emptySource()});setNotice('Cadastro processual atualizado. O histórico oficial não foi alterado.');setSaving(false);
  }
  async function consult(){
   if(!current||loadingSources||!db)return;
@@ -190,6 +203,7 @@ export default function ProcessosPage(){
    <section className="reference-panel processes-panel">
     {!current?<div className="processes-empty"><Gavel size={28}/><h2>Selecione um processo</h2><p>Ao selecionar um CNJ, você poderá consultar as movimentações do DataJud e as publicações do DJEN.</p></div>:<>
      <div className="processes-head"><div><div className="reference-overline">HISTÓRICO PROCESSUAL</div><strong>{current.number}</strong><small>{current.type==='busca_apreensao'?'Busca e apreensão':'Processo comum'} · {clientById.get(current.clientId)?.name||'Sem vínculo'}</small></div><div className="processes-actions">
+      <button type="button" className="reference-outline" disabled={saving} onClick={()=>startEditProcess(current)}><Pencil size={14}/> Editar cadastro</button>
       {current.savedId&&<button type="button" className="reference-outline processes-delete" disabled={saving} onClick={()=>removeProcess(current)}><Trash2 size={14}/> Remover cadastro</button>}
       <button type="button" className="reference-primary" disabled={loadingSources} onClick={consult}>{loadingSources?<Loader2 size={15} className="task-spin"/>:<RefreshCw size={15}/>} Consultar APIs oficiais</button>
      </div></div>
@@ -211,5 +225,14 @@ export default function ProcessosPage(){
   </div>
   <p style={{fontSize:11,color:'var(--ui-muted)',marginTop:17}}>Fontes: CNJ DataJud e Diário de Justiça Eletrônico Nacional. Resultados públicos podem ter atraso, exclusões de sigilo ou indisponibilidade. A consulta não altera o status do cliente.</p>
  </main>
+ {editingProcess&&<div className="dialog" role="dialog" aria-modal="true" aria-label="Editar cadastro processual" onClick={e=>{if(e.target===e.currentTarget&&!saving)setEditingProcess(null)}}>
+  <form className="dialog-inner reference-creation-modal" onSubmit={saveProcessEdit}>
+   <div className="reference-row-between"><h2>Editar cadastro processual</h2><button type="button" className="reference-outline" disabled={saving} onClick={()=>setEditingProcess(null)}>Fechar</button></div>
+   <label>Número CNJ *<input required maxLength={32} value={editingProcess.process_number} onChange={e=>setEditingProcess(x=>({...x,process_number:e.target.value}))}/></label>
+   <label>Tipo de processo<select value={editingProcess.process_type} onChange={e=>setEditingProcess(x=>({...x,process_type:e.target.value}))}><option value="comum">Comum</option><option value="busca_apreensao">Busca e apreensão</option></select></label>
+   <label>Cliente vinculado<select value={editingProcess.client_id} onChange={e=>setEditingProcess(x=>({...x,client_id:e.target.value}))}><option value="">Sem vínculo</option>{clients.map(client=><option key={client.id} value={client.id}>{client.name}</option>)}</select></label>
+   <div className="reference-actions"><button type="button" className="reference-outline" disabled={saving} onClick={()=>setEditingProcess(null)}>Cancelar</button><button type="submit" className="reference-primary" disabled={saving}>{saving?'Salvando...':'Salvar processo'}</button></div>
+  </form>
+ </div>}
  </CrmShell>;
 }
