@@ -1,0 +1,69 @@
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:#f6f5f2;color:#252526}button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}.layout{display:flex;min-height:100vh}.side{background:#35141c;color:white;width:246px;padding:30px 19px;flex-shrink:0}.brand{font-size:23px;font-weight:800;letter-spacing:-.7px}.brand small{font-size:11px;letter-spacing:2px;color:#dbb9b7;display:block;margin-top:3px}.nav{margin-top:38px;display:grid;gap:8px}.nav button{border:0;background:transparent;color:#f0dce0;text-align:left;border-radius:10px;padding:12px;font-size:14px}.nav button.active{background:#63333e;color:white;font-weight:700}.side-foot{font-size:12px;line-height:1.6;color:#cab3b9;margin-top:45px}.main{flex:1;min-width:0;padding:32px max(22px,4vw)}.top{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}.eyebrow{color:#9c6670;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase}h1{font-size:30px;letter-spacing:-1px;margin:7px 0 8px}h2{font-size:18px}p{line-height:1.6;color:#666}.btn{background:#612a39;color:white;border:1px solid #612a39;border-radius:10px;padding:11px 16px;font-weight:700;font-size:13px}.btn.ghost{background:#fff;color:#562333;border-color:#e4dbde}.btn:disabled{opacity:.55;cursor:not-allowed}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:26px 0}.metric,.panel{background:white;border:1px solid #e9e4e2;border-radius:15px;padding:22px}.metric strong{display:block;font-size:29px;margin-top:13px;letter-spacing:-1px}.metric span{color:#81777b;font-size:12px}.metric em{font-size:11px;font-style:normal;color:#a35c6c}.panel{margin-top:18px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}.input{background:#fff;border:1px solid #ded7d5;border-radius:9px;padding:11px 13px;min-width:160px;max-width:100%}.input.search{flex:1;min-width:220px}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:13px;white-space:nowrap}th{text-align:left;font-size:10px;letter-spacing:1px;color:#81767c;text-transform:uppercase;border-bottom:1px solid #eee7e8;padding:14px 10px}td{border-bottom:1px solid #f2eef0;padding:15px 10px}tr:hover td{background:#faf8f8}.name{font-weight:700;color:#31272b}.muted{font-size:12px;color:#97888d}.pill{display:inline-block;background:#f0e7e9;color:#724651;border-radius:30px;padding:5px 10px;font-size:11px;font-weight:700}.pill.warn{background:#fcf0df;color:#8a5a18}.pill.ok{background:#e4f3eb;color:#1d6b44}.notice{padding:14px 16px;border:1px solid #e9ddbb;background:#fffaf0;border-radius:10px;color:#745829;font-size:13px;line-height:1.5}.error{color:#9c2738}.details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.details b{display:block;font-size:11px;color:#8b7f84;text-transform:uppercase;margin-bottom:6px}.details span{font-size:14px}.login{max-width:450px;background:white;padding:34px;margin:12vh auto;border:1px solid #e8e2e1;border-radius:18px}.login input{width:100%;margin:12px 0}.empty{padding:40px 20px;text-align:center;color:#8b7d81}.actions{display:flex;gap:9px;align-items:center}.dialog{position:fixed;inset:0;background:#16101499;display:flex;align-items:center;justify-content:center;padding:16px;z-index:5}.dialog-inner{background:white;border-radius:16px;padding:25px;max-width:750px;max-height:90vh;overflow:auto;width:100%}.form-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px}.form-row label{display:grid;gap:5px;flex:1;min-width:180px;font-size:12px;color:#6d5f66}.form-row input,.form-row select,.form-row textarea{width:100%}@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}.side{width:190px}}@media(max-width:650px){.layout{display:block}.side{width:100%;padding:16px}.nav{display:flex;margin-top:14px;overflow:auto}.nav button{white-space:nowrap;padding:8px}.side-foot{display:none}.main{padding:22px 14px}.grid{grid-template-columns:1fr 1fr;gap:8px}.metric,.panel{padding:15px}.metric strong{font-size:24px}}
+
+.login input[type="checkbox"]{width:auto;margin:0;accent-color:#612a39}.login button{max-width:100%}.login label{display:block;margin-top:8px}
+
+
+
+/* Estrutura compartilhada: um CRM, uma barra lateral. Tarefas é uma aba, não outro aplicativo. */
+.app-shell{display:flex;align-items:stretch;min-height:100vh;background:#f7f6f4;color:#302831}
+.app-sidebar{position:sticky;top:0;align-self:flex-start;height:100vh;min-height:100vh;width:247px;flex:0 0 247px;background:#32151f;color:#f4e9ec;padding:30px 17px 20px;display:flex;flex-direction:column;z-index:20}
+.app-identity{padding:3px 13px 35px}
+.app-identity strong{display:block;font-weight:900;font-size:21px;letter-spacing:-1.2px;color:white}
+.app-identity strong span{color:#d6b4c0}
+.app-identity small{display:block;font-size:9px;color:#c6aeb8;letter-spacing:1.65px;font-weight:800;margin-top:4px}
+.app-section-name{padding:0 13px 12px;font-size:10px;letter-spacing:1.7px;color:#ab8795;font-weight:800}
+.app-nav{display:grid;gap:6px}
+.app-nav-link{display:flex;align-items:center;gap:12px;min-height:44px;padding:12px 13px;color:#e4d4d9!important;font-size:13px;font-weight:600;border-radius:10px;transition:background .15s,color .15s;text-decoration:none;white-space:nowrap}
+.app-nav-link svg{flex:none;color:#b896a3}
+.app-nav-link:hover{background:#51303b;color:white!important}
+.app-nav-link.active,.app-nav-link[aria-current="page"]{background:#724756!important;color:white!important;font-weight:800}
+.app-nav-link.active svg{color:#fff}
+.app-nav-footer{margin-top:auto;padding:20px 11px 3px;display:grid;gap:13px;border-top:1px solid #66414d;color:#d2bfc5}
+.app-private{display:flex;align-items:center;gap:8px;font-size:12px;color:#d5c1c8}
+.app-indicator{width:7px;height:7px;flex:none;background:#8fd1a7;border-radius:50%}
+.app-nav-footer small{font-size:10px;line-height:1.4;overflow-wrap:anywhere;color:#b8a1a8}
+.app-account-actions{display:flex;gap:10px;flex-wrap:wrap}
+.app-account-actions button,.app-account-actions a{color:#e5d1d9;background:transparent;border:0;display:inline-flex;align-items:center;gap:5px;padding:5px 0;font-size:11px;text-decoration:none}
+.app-account-actions button:hover,.app-account-actions a:hover{color:white}
+.app-content{flex:1;min-width:0;min-height:100vh}
+.app-content .main{min-height:100vh;width:100%;padding:33px clamp(20px,3.2vw,52px)}
+/* A mesma navegação permanece ao alternar entre as filas: apenas o conteúdo central muda. */
+.app-content .task-shell{display:block;min-height:0;width:100%;background:transparent}
+.app-content .task-main{width:100%;max-width:1590px;padding:33px clamp(20px,3.2vw,52px) 50px}
+@media(max-width:900px){
+ .app-sidebar{width:204px;flex-basis:204px;padding:21px 11px}
+ .app-identity{padding:3px 9px 28px}
+ .app-nav-link{padding:10px}
+ .app-content .task-main{padding:24px 17px}
+}
+@media(max-width:700px){
+ .app-shell{display:block}
+ .app-sidebar{height:auto;min-height:0;width:100%;position:sticky;top:0;align-self:auto;padding:13px 12px 9px;box-shadow:0 3px 10px #2b142023}
+ .app-identity{padding:0 4px 10px}
+ .app-identity strong{font-size:17px}
+ .app-identity small{font-size:8px;margin-top:1px}
+ .app-section-name,.app-nav-footer{display:none}
+ .app-nav{display:flex;gap:4px;overflow-x:auto;scrollbar-width:thin;padding-bottom:2px}
+ .app-nav-link{min-height:35px;padding:9px 10px;border-radius:8px;gap:6px;flex-shrink:0;font-size:11px}
+ .app-nav-link svg{width:15px;height:15px}
+ .app-content{min-height:calc(100vh - 95px)}
+ .app-content .main{padding:19px 14px}
+ .app-content .task-main{padding:20px 13px 32px}
+}
+
+.app-mobile-account{display:none}
+@media(max-width:700px){
+ .app-mobile-account{display:flex;position:absolute;top:11px;right:12px;align-items:center;gap:6px}
+ .app-mobile-account a,.app-mobile-account button{display:grid;place-items:center;color:#f3dfe6;background:#51303e;border:1px solid #754c5b;border-radius:8px;width:31px;height:31px;padding:0}
+ .app-identity{padding-right:90px}
+}
+
+/* Finalizados é uma área do CRM, não uma fila paralela; reabrir mantém trilha de auditoria. */
+.crm-row-actions{display:flex;align-items:center;gap:7px;justify-content:flex-end}
+.crm-reopen-button{background:#714355;border:1px solid #714355;color:#fff;white-space:nowrap}
+.crm-reopen-button:hover{background:#5d3042}
+.crm-reopen-modal{display:grid;gap:12px}
+.crm-reopen-modal .crm-reopen-label{font-size:12px;font-weight:750;color:#5c4050}
+.crm-reopen-modal textarea{min-width:100%;max-width:100%;resize:vertical}
+.crm-reopen-modal .actions{display:flex;justify-content:flex-end;flex-wrap:wrap}
+@media(max-width:700px){.crm-row-actions{flex-wrap:wrap}.crm-reopen-modal{padding:19px}}
