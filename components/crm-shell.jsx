@@ -33,7 +33,7 @@ export default function CrmShell({active='Visão geral',email='',onNavigate,onSi
    setAvatarUrl(photo.error?'':photo.data?.signedUrl||'');
    const colors=metadata.crm_colors&&typeof metadata.crm_colors==='object'?metadata.crm_colors:{};
    appearanceRef.current={colors,backgroundUrl:background?.data?.signedUrl||''};
-   const currentTheme=resolveTheme(window.localStorage.getItem('projectw1sc.crm-theme')||'vinho');
+   const currentTheme=resolveTheme(window.localStorage.getItem('projectw1sc.crm-theme')||'madara');
    try{applyAppearanceToDocument(document.documentElement,CRM_THEMES.find(t=>t.id===currentTheme),colors,appearanceRef.current.backgroundUrl)}
    catch{applyAppearanceToDocument(document.documentElement,CRM_THEMES.find(t=>t.id===currentTheme),{},appearanceRef.current.backgroundUrl)}
   }
@@ -47,8 +47,8 @@ export default function CrmShell({active='Visão geral',email='',onNavigate,onSi
   const sidebarRef=useRef(null);
  useEffect(()=>{
   function applyStoredTheme(){
-   let stored='vinho';
-   try{stored=window.localStorage.getItem('projectw1sc.crm-theme')||'vinho'}catch{}
+   let stored='madara';
+   try{stored=window.localStorage.getItem('projectw1sc.crm-theme')||'madara'}catch{}
    const id=resolveTheme(stored);
    document.documentElement.dataset.crmTheme=id;
    const t=CRM_THEMES.find(x=>x.id===id);try{applyAppearanceToDocument(document.documentElement,t,appearanceRef.current.colors,appearanceRef.current.backgroundUrl)}catch{applyAppearanceToDocument(document.documentElement,t,{},appearanceRef.current.backgroundUrl)}
