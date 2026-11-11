@@ -4,6 +4,7 @@ import {parseExcelSheets} from '../lib/excel.mjs';
 import {isFinalizedClient,finalizedClients,reopenClientPatch} from '../lib/finalizados.mjs';
 import {queueCounts,todayBrazil,validateCriticidade,validateNote} from '../lib/tarefas.mjs';
 import CrmShell from '../components/crm-shell';
+import MvpDemo from '../components/mvp-demo';
 import ProfessionalAuth from '../components/professional-auth';
 import ReferencePages from '../components/reference-pages';
 import InstitutionLogo from '../components/institution-logo';
@@ -209,7 +210,7 @@ export default function Page(){
   }
   setSelected(null);setBusy(false);setNotice('Registro atualizado.'+historyWarning);load();
  }
- if(!db)return <ProfessionalAuth eyebrow="INSTALAÇÃO" title="Configuração necessária" description="O CRM precisa de uma conexão segura com o Supabase."><p className="w1-auth-feedback" role="alert">Configure as variáveis públicas do Supabase no ambiente da Vercel. Dados de clientes não são exibidos sem autenticação.</p></ProfessionalAuth>;
+ if(!db)return <MvpDemo/>;
  if(recoveryMode&&session)return <ProfessionalAuth eyebrow="SEGURANÇA DA CONTA" title="Crie uma nova senha" description="Defina uma senha forte para continuar usando seu acesso."><form className="w1-auth-form" onSubmit={saveRecoveredPassword}>
   <label className="w1-auth-label" htmlFor="new-password">Nova senha</label>
   <input className="w1-auth-input" id="new-password" type="password" required minLength={8} autoComplete="new-password" placeholder="Pelo menos 8 caracteres" value={recoveryPassword} onChange={e=>setRecoveryPassword(e.target.value)}/>
