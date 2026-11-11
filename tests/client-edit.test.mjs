@@ -19,7 +19,7 @@ test('builds an editable patch for all operational columns and CRM fields', () =
 });
 
 test('allows blank optional fields without writing empty strings', () => {
-  const patch = buildClientPatch({name:'Cliente',phone:'',sale_amount:'',homologation_signed:''});
+  const patch = buildClientPatch({name:'Cliente',doc_digits:'12345678901',phone:'',sale_amount:'',homologation_signed:''});
   assert.equal(patch.phone,null);
   assert.equal(patch.sale_amount,null);
   assert.equal(patch.homologation_signed,null);
@@ -27,6 +27,6 @@ test('allows blank optional fields without writing empty strings', () => {
 
 test('rejects malformed CPF/CNPJ and non-numeric operational values', () => {
   assert.throws(()=>buildClientPatch({name:'Cliente',doc_digits:'123'}),/CPF\/CNPJ/);
-  assert.throws(()=>buildClientPatch({name:'Cliente',contract_age_days:'um'}),/numérico/);
-  assert.throws(()=>buildClientPatch({name:'Cliente',overdue_installments:'1.5'}),/inteiro/);
+  assert.throws(()=>buildClientPatch({name:'Cliente',doc_digits:'12345678901',contract_age_days:'um'}),/numérico/);
+  assert.throws(()=>buildClientPatch({name:'Cliente',doc_digits:'12345678901',overdue_installments:'1.5'}),/inteiro/);
 });
