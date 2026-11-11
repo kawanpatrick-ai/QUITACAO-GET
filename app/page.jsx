@@ -9,6 +9,7 @@ import ReferencePages from '../components/reference-pages';
 import InstitutionLogo from '../components/institution-logo';
 import {normalizeInstitutionName} from '../lib/institution-brands.mjs';
 import {validateImageFile} from '../lib/appearance-settings.mjs';
+import {buildClientPatch} from '../lib/client-edit.mjs';
 import {crmAreaHref,areaFromQuery} from '../lib/crm-navigation.mjs';
 import {getClient} from '../lib/supabase-client';
 import {useCrmAccess} from '../lib/use-crm-access';
@@ -21,7 +22,7 @@ const txt=x=>x??'—';
 export default function Page(){
  const [loginEmail,setLoginEmail]=useState(ADMIN_EMAIL);
  const uploadRef=useRef(null);const db=getClient(),[session,setSession]=useState(null),[password,setPassword]=useState(''),[recoveryPassword,setRecoveryPassword]=useState(''),[recoveryMode,setRecoveryMode]=useState(false),[showPassword,setShowPassword]=useState(false),[recoveryUntil,setRecoveryUntil]=useState(0),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false);
- const [createDialog,setCreateDialog]=useState(null),[newClient,setNewClient]=useState({name:'',document:'',institution:''}),[newParty,setNewParty]=useState({name:'',kind:'financeira',contact:''}),[editParty,setEditParty]=useState(null),[logoFile,setLogoFile]=useState(null),[logoPreview,setLogoPreview]=useState(''),[logoRemove,setLogoRemove]=useState(false),[partyLogos,setPartyLogos]=useState({});
+ const [createDialog,setCreateDialog]=useState(null),[newClient,setNewClient]=useState({name:'',document:'',institution:''}),[newParty,setNewParty]=useState({name:'',kind:'financeira',contact:''}),[editParty,setEditParty]=useState(null),[clientDraft,setClientDraft]=useState(null),[logoFile,setLogoFile]=useState(null),[logoPreview,setLogoPreview]=useState(''),[logoRemove,setLogoRemove]=useState(false),[partyLogos,setPartyLogos]=useState({});
  const [unmatched,setUnmatched]=useState([]),[statusFilter,setStatusFilter]=useState('todos'),[page,setPage]=useState('Visão geral'),[clients,setClients]=useState([]),[parties,setParties]=useState([]),[runs,setRuns]=useState([]),[query,setQuery]=useState(''),[filter,setFilter]=useState('todos'),[selected,setSelected]=useState(null),[stage,setStage]=useState(''),[evidence,setEvidence]=useState(''),[evidenceUrl,setEvidenceUrl]=useState(''),[note,setNote]=useState(''),[criticidade,setCriticidade]=useState('normal'),[activities,setActivities]=useState([]),[updated,setUpdated]=useState(null),[reopenTarget,setReopenTarget]=useState(null),[reopenReason,setReopenReason]=useState('');
  const access=useCrmAccess(db,session?.user);
  useEffect(()=>{
@@ -112,7 +113,7 @@ export default function Page(){
     const {error}=await db.storage.from('crm-institution-logos').upload(path,logoFile,{contentType:logoFile.type,cacheControl:'3600',upsert:false});
     if(error)throw Error('Falha ao armazenar imagem: '+error.message);
    }
-   const payload={contact:editParty.contact?.trim()||null,logo_path:logoRemove?null:path||previous,updated_at:new Date().toISOString()};
+   const payload={name:editParty.name.trim(),kind:editParty.kind,contact:editParty.contact?.trim()||null,logo_path:logoRemove?null:path||previous,updated_at:new Date().toISOString()};
    const {error,data}=await db.from('crm_parties').update(payload).eq('id',editParty.id).select('id');
    if(error||!data?.length)throw Error(error?.message||'Não foi possível atualizar esta instituição.');
    if(previous&&(logoRemove||path))await db.storage.from('crm-institution-logos').remove([previous]);
@@ -180,18 +181,22 @@ export default function Page(){
   setBusy(false);
  }
  
- async function openClient(c){setSelected(c);setStage(c.stage);setEvidence(c.evidence_status);setEvidenceUrl(c.evidence_url||'');setNote('');setCriticidade(c.priority_level||'normal');const r=await db.from('crm_activities').select('id,kind,body,created_at').eq('client_id',c.id).order('created_at',{ascending:false}).limit(40);setActivities(r.data||[])}
+ async function openClient(c){setSelected(c);setClientDraft({...c,doc_digits:c.doc_digits||'',homologation_signed:c.homologation_signed==null?'':String(c.homologation_signed)});setStage(c.stage);setEvidence(c.evidence_status);setEvidenceUrl(c.evidence_url||'');setNote('');setCriticidade(c.priority_level||'normal');const r=await db.from('crm_activities').select('id,kind,body,created_at').eq('client_id',c.id).order('created_at',{ascending:false}).limit(40);setActivities(r.data||[])}
+ function updateClientDraft(key,value){setClientDraft(current=>({...current,[key]:value}))}
  async function save(){
-  if(!selected||busy)return;
-  let priority,annotation='';
-  try{priority=validateCriticidade(criticidade);if(note.trim())annotation=validateNote(note)}
+  if(!selected||!clientDraft||busy)return;
+  let annotation='';
+  try{
+   if(note.trim())annotation=validateNote(note);
+  }catch(err){setNotice(err.message);return}
+  let data;
+  try{data=buildClientPatch({...clientDraft,stage,evidence_status:evidence,evidence_url:evidenceUrl,priority_level:criticidade})}
   catch(err){setNotice(err.message);return}
-  const prev=selected;
-  const data={stage,evidence_status:evidence,evidence_url:evidenceUrl.trim()||null,priority_level:priority};
-  if(evidence==='quitacao_verificada'){
+  if(data.evidence_status==='quitacao_verificada'){
    if(!data.evidence_url){setNotice('Para confirmar quitação, informe o link do comprovante individual.');return}
-   data.verified_at=new Date().toISOString();data.verified_by=session.user.id
+   data.verified_at=new Date().toISOString();data.verified_by=session.user.id;
   }else{data.verified_at=null;data.verified_by=null}
+  const prev=selected;
   setBusy(true);setNotice('');
   const result=await db.from('crm_clients').update(data).eq('id',selected.id).select('id');
   if(result.error||!result.data?.length){setNotice(result.error?.message||'Nenhuma alteração foi autorizada para o cliente.');setBusy(false);return}
@@ -200,14 +205,12 @@ export default function Page(){
    const {error}=await db.rpc('crm_add_client_note',{p_client_id:selected.id,p_body:annotation});
    if(error)historyWarning=' A ficha foi atualizada, mas a anotação não foi registrada: '+error.message;
   }
-  if(prev.stage!==stage||prev.evidence_status!==evidence||prev.priority_level!==priority){
-   const details={etapa_anterior:prev.stage,etapa_atual:stage,
-    criticidade_anterior:prev.priority_level||'normal',criticidade_atual:priority,
-    evidencia_anterior:prev.evidence_status,evidencia_atual:evidence};
-   const {error}=await db.from('crm_activities').insert({client_id:selected.id,kind:'alteracao',body:'Etapa: '+stage+' · Evidência: '+evidence+' · Criticidade: '+priority,details,actor_id:session.user.id});
+  const changed=Object.keys(data).some(key=>!['verified_at','verified_by'].includes(key)&&String(prev[key]??'')!==String(data[key]??''));
+  if(changed){
+   const {error}=await db.from('crm_activities').insert({client_id:selected.id,kind:'alteracao',body:'Ficha cadastral e operacional atualizada.',details:{campos_editados:Object.keys(data)},actor_id:session.user.id});
    if(error)historyWarning+=' O histórico da alteração não pôde ser registrado.';
   }
-  setSelected(null);setBusy(false);setNotice('Registro atualizado.'+historyWarning);load();
+  setSelected(null);setClientDraft(null);setBusy(false);setNotice('Cadastro completo atualizado.'+historyWarning);load();
  }
  if(!db)return <ProfessionalAuth eyebrow="CONEXÃO COM O BANCO" title="Banco de dados não configurado" description="O CRM precisa da conexão com o Supabase para autenticar usuários e salvar clientes. O modo demonstrativo foi removido; nenhum dado fictício será exibido."><p className="w1-auth-note">Configure as variáveis públicas NEXT_PUBLIC_SUPABASE_URL e NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY no ambiente de hospedagem e publique novamente. A chave de serviço deve permanecer somente no servidor.</p></ProfessionalAuth>;
  if(recoveryMode&&session)return <ProfessionalAuth eyebrow="SEGURANÇA DA CONTA" title="Crie uma nova senha" description="Defina uma senha forte para continuar usando seu acesso."><form className="w1-auth-form" onSubmit={saveRecoveredPassword}>
@@ -252,13 +255,54 @@ export default function Page(){
  {editParty&&<div className="dialog" role="presentation" onClick={e=>{if(e.target===e.currentTarget&&!busy)setEditParty(null)}}>
   <form className="dialog-inner institution-logo-editor" onSubmit={saveInstitution} aria-label="Editar identidade visual da instituição">
    <div className="top"><div><div className="eyebrow">INSTITUIÇÃO / IDENTIDADE VISUAL</div><h2>{editParty.name}</h2></div><button type="button" className="btn ghost" disabled={busy} onClick={()=>setEditParty(null)}>Fechar</button></div>
+   <label>Nome da instituição<input className="input" required maxLength={200} value={editParty.name||''} onChange={e=>setEditParty(x=>({...x,name:e.target.value}))}/></label>
+   <label>Categoria<select className="input" value={editParty.kind||'financeira'} onChange={e=>setEditParty(x=>({...x,kind:e.target.value}))}><option value="financeira">Financeira</option><option value="assessoria">Assessoria</option><option value="escritorio">Escritório</option><option value="base">Base de contatos</option></select></label>
    <div className="institution-edit-preview"><InstitutionLogo name={editParty.name} size="lg" customUrl={logoRemove?'':logoPreview||partyLogos[normalizeInstitutionName(editParty.name)]||''} showName/><p>Você pode usar a marca oficial reconhecida, enviar um arquivo próprio ou manter o monograma automático.</p></div>
    <label>Contato principal<input className="input" value={editParty.contact||''} maxLength={350} onChange={e=>setEditParty(x=>({...x,contact:e.target.value}))}/></label>
    <label className="reference-outline institution-image-picker">Escolher imagem JPG, PNG ou WebP (até 2 MB)<input type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={e=>{const file=e.target.files?.[0];if(!file)return;try{validateImageFile(file,'logo');setLogoFile(file);setLogoRemove(false);setNotice('')}catch(err){setNotice(err.message)}e.target.value=''}}/></label>
    <div className="institution-edit-actions"><button type="button" className="reference-outline" disabled={busy} onClick={()=>{setLogoRemove(true);setLogoFile(null)}}>Remover imagem personalizada</button><button type="submit" className="reference-primary" disabled={busy}>{busy?'Salvando...':'Salvar instituição'}</button></div>
   </form>
  </div>}
-  {selected&&<div className="dialog" role="dialog" aria-modal="true"><div className="dialog-inner"><div className="top"><div><div className="eyebrow">FICHA DE NEGOCIAÇÃO</div><h2>{selected.name}</h2></div><button className="btn ghost" onClick={()=>setSelected(null)}>Fechar</button></div><div className="details"><div><b>Instituição</b><span>{txt(selected.institution)}</span></div><div><b>Contato (coluna T)</b><span>{txt(selected.contacted_party)}</span></div><div><b>Telefone</b><span>{txt(selected.phone)}</span></div><div><b>Consultor</b><span>{txt(selected.consultant)}</span></div><div><b>Origem</b><span>{selected.source_tabs?.join(' · ')}</span></div><div><b>Status da planilha</b><span title={selected.operational_status_description||''}>{selected.operational_status_code||'—'}</span></div><div><b>Mês de origem</b><span>{selected.source_month||'—'}</span></div><div><b>HMLG assinada</b><span>{selected.homologation_signed===true?'Sim':selected.homologation_signed===false?'Não':'Não informado'}</span></div><div><b>Tempo em tratativa</b><span>{selected.contract_age_days==null?'—':selected.contract_age_days+' dias'}</span></div><div><b>Tempo de espera</b><span>{selected.waiting_business_days==null?'—':selected.waiting_business_days+' dias úteis'}</span></div><div><b>Último informativo</b><span>{date(selected.info_document_date)}</span></div><div><b>Última negociação</b><span>{date(selected.last_financial_negotiation)}</span></div><div><b>Parcelas em atraso</b><span>{selected.overdue_installments==null?'—':selected.overdue_installments}</span></div><div><b>Próximo retorno</b><span>{date(selected.next_return)}</span></div><div><b>Saldo devedor</b><span>{selected.debtor_balance==null?'—':BRL.format(Number(selected.debtor_balance))}</span></div><div><b>Valor estimado</b><span>{selected.estimated_amount==null?'—':BRL.format(Number(selected.estimated_amount))}</span></div><div><b>Valor atual</b><span>{selected.current_amount==null?'—':BRL.format(Number(selected.current_amount))}</span></div></div><div className="form-row"><label>Etapa da negociação<select className="input" value={stage} onChange={e=>setStage(e.target.value)}>{['a_analisar','contatado','em_negociacao','proposta_enviada','aguardando_resposta','concluido','arquivado'].map(x=><option value={x} key={x}>{x.replaceAll('_',' ')}</option>)}</select></label><label>Verificação documental<select className="input" value={evidence} onChange={e=>setEvidence(e.target.value)}><option value="sem_validacao">Sem validação</option><option value="comprovante_recebido">Comprovante recebido</option><option value="quitacao_verificada">Quitação verificada</option><option value="divergente">Divergente</option></select></label></div><div className="form-row"><label>Nível de criticidade<select className="input" value={criticidade} onChange={e=>setCriticidade(e.target.value)}><option value="normal">Normal</option><option value="alta">Alta</option><option value="urgente">Urgente</option></select></label></div><div className="form-row"><label>Link privado do comprovante<input className="input" value={evidenceUrl} onChange={e=>setEvidenceUrl(e.target.value)} placeholder="Link de acesso restrito"/></label></div><div className="form-row"><label>Nova anotação<textarea className="input" rows={3} value={note} onChange={e=>setNote(e.target.value)} placeholder="Anotação interna sobre a negociação (não conta como atendimento)"/></label></div><div className="actions" style={{marginTop:18}}><button className="btn" disabled={busy} onClick={save}>Salvar alterações</button></div><h2>Histórico</h2>{activities.length?activities.map(a=><p key={a.id}><span className="muted">{new Date(a.created_at).toLocaleString('pt-BR')} · {a.kind}</span><div>{a.body}</div></p>):<p>Sem atividades registradas.</p>}</div></div>}
+  {selected&&clientDraft&&<div className="dialog" role="dialog" aria-modal="true"><div className="dialog-inner">
+   <div className="top"><div><div className="eyebrow">FICHA EDITÁVEL · QUITAÇÃO</div><h2>{clientDraft.name||selected.name}</h2></div><button className="btn ghost" onClick={()=>{setSelected(null);setClientDraft(null)}}>Fechar</button></div>
+   <p className="muted">Edite os dados operacionais e cadastrais. O registro original importado permanece preservado no histórico de origem.</p>
+   <div className="client-edit-grid">
+    {[
+     {key:'operational_status_code',label:'STATUS (planilha)'},{key:'name',label:'NOME',required:true},
+     {key:'doc_digits',label:'CPF/CNPJ'},{key:'phone',label:'TELEFONE'},
+     {key:'consultant',label:'CONSULTOR'},{key:'sale_amount',label:'VLR VENDA',type:'number',step:'0.01'},
+     {key:'sale_date',label:'DT VENDA',type:'date'},{key:'sheet_reference_date',label:'HOJE',type:'date'},
+     {key:'contract_age_days',label:'TEMPO (dias)',type:'number',step:'1'},
+     {key:'homologation_signed',label:'HMLG',type:'select',options:[['','Não informado'],['true','Sim'],['false','Não']]},
+     {key:'last_contact',label:'ULTM. CONTATO',type:'date'},{key:'waiting_business_days',label:'TEMPO ESPERA (dias úteis)',type:'number',step:'1'},
+     {key:'next_return',label:'RETORNO',type:'date'},{key:'institution',label:'FINANCEIRA'},
+     {key:'debtor_balance',label:'SALDO DEVEDOR',type:'number',step:'0.01'},
+     {key:'estimated_amount',label:'ESTIMADO',type:'number',step:'0.01'},
+     {key:'current_amount',label:'VALOR ATUAL',type:'number',step:'0.01'},
+     {key:'info_document_date',label:'INFORMATIVO',type:'date'},
+     {key:'source_observations',label:'OBSERVAÇÕES',type:'textarea'},
+     {key:'contacted_party',label:'CONTATO'},
+     {key:'last_financial_negotiation',label:'ULTIMA NEGOCIAÇÃO',type:'date'},
+     {key:'overdue_installments',label:'ATRASO',type:'number',step:'1'},
+     {key:'source_month',label:'MÊS DE ORIGEM'},
+     {key:'operational_status_description',label:'DESCRIÇÃO DO STATUS',type:'textarea'},
+     {key:'source_status',label:'CATEGORIA DA CARTEIRA',type:'select',options:[['em_andamento','Em andamento'],['vencido','Vencido'],['quitado_na_planilha','Quitado na planilha'],['finalizado_na_planilha','Finalizado na planilha'],['historico','Histórico'],['revisar','Revisar']]},
+     {key:'stage',label:'ETAPA CRM',type:'select',options:[['a_analisar','A analisar'],['contatado','Contatado'],['em_negociacao','Em negociação'],['proposta_enviada','Proposta enviada'],['aguardando_resposta','Aguardando resposta'],['concluido','Concluído'],['arquivado','Arquivado']]},
+     {key:'evidence_status',label:'STATUS DOCUMENTAL',type:'select',options:[['sem_validacao','Sem validação'],['comprovante_recebido','Comprovante recebido'],['quitacao_verificada','Quitação verificada'],['divergente','Divergente']]},
+     {key:'priority_level',label:'CRITICIDADE',type:'select',options:[['normal','Normal'],['alta','Alta'],['urgente','Urgente']]},
+     {key:'evidence_url',label:'LINK DO COMPROVANTE'},
+     {key:'notes',label:'ANOTAÇÕES INTERNAS',type:'textarea'}
+    ].map(field=><label className="client-edit-field" key={field.key}>{field.label}{field.type==='select'
+      ?<select className="input" value={clientDraft[field.key]??''} onChange={e=>updateClientDraft(field.key,e.target.value)}>{field.options.map(([value,label])=><option key={value} value={value}>{label}</option>)}</select>
+      :field.type==='textarea'
+       ?<textarea className="input" rows={3} value={clientDraft[field.key]??''} onChange={e=>updateClientDraft(field.key,e.target.value)}/>
+       :<input className="input" type={field.type||'text'} step={field.step} required={field.required||false} value={clientDraft[field.key]??''} onChange={e=>updateClientDraft(field.key,e.target.value)}/>}</label>)}
+   </div>
+   <div className="form-row"><label>Link privado do comprovante<input className="input" value={evidenceUrl} onChange={e=>{setEvidenceUrl(e.target.value);updateClientDraft('evidence_url',e.target.value)}} placeholder="Link de acesso restrito"/></label></div>
+   <div className="form-row"><label>Nova anotação de histórico<textarea className="input" rows={3} value={note} onChange={e=>setNote(e.target.value)} placeholder="Nova anotação interna; o histórico anterior não será sobrescrito."/></label></div>
+   <div className="actions" style={{marginTop:18}}><button className="btn ghost" disabled={busy} onClick={()=>{setSelected(null);setClientDraft(null)}}>Cancelar</button><button className="btn" disabled={busy} onClick={save}>{busy?'Salvando...':'Salvar todos os dados'}</button></div>
+   <h2>Histórico de atividades</h2>{activities.length?activities.map(a=><p key={a.id}><span className="muted">{new Date(a.created_at).toLocaleString('pt-BR')} · {a.kind}</span><div>{a.body}</div></p>):<p>Sem atividades registradas.</p>}
+  </div></div>}
  {reopenTarget&&<div className="dialog" role="dialog" aria-modal="true" aria-label="Reabrir acompanhamento" onClick={e=>{if(e.target===e.currentTarget&&!busy)setReopenTarget(null)}}>
   <form className="dialog-inner crm-reopen-modal" onSubmit={reopenClient}>
    <div className="top"><div><div className="eyebrow">FINALIZADOS / REABERTURA</div><h2>Reabrir acompanhamento</h2></div><button type="button" className="btn ghost" onClick={()=>setReopenTarget(null)} disabled={busy}>Fechar</button></div>
