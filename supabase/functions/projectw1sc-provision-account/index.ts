@@ -27,7 +27,7 @@ Deno.serve(async request=>{
  if(request.method==='OPTIONS')return new Response(null,{status:204,headers:headersFor(origin)});
  if(request.method!=='POST')return reply({ok:false,error:'Método não permitido.'},405,origin);
 
- const jwt=(request.headers.get('authorization')||'').replace(/^Bearer\\s+/i,'');
+ const jwt=(request.headers.get('authorization')||'').replace(/^Bearer\s+/i,'');
  if(!jwt)return reply({ok:false,error:'Entre como administrador antes de cadastrar usuários.'},401,origin);
  const url=Deno.env.get('SUPABASE_URL');
  const key=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
@@ -47,7 +47,7 @@ Deno.serve(async request=>{
  const email=String(body?.email||'').trim().toLowerCase();
  const password=body?.password;
  const role=body?.role==='operator'?'operator':'admin';
- if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email))return reply({ok:false,error:'Informe um e-mail válido.'},400,origin);
+ if(!/^[^\s@]+@[^\s@]+\\.[^\s@]+$/.test(email))return reply({ok:false,error:'Informe um e-mail válido.'},400,origin);
  if(typeof password!=='string'||password.length<8||password.length>128)return reply({ok:false,error:'A senha precisa ter de 8 a 128 caracteres.'},400,origin);
 
  // A senha só é encaminhada ao Auth e jamais registrada em tabelas ou logs.
