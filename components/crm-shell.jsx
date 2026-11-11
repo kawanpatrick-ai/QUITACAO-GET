@@ -1,6 +1,6 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
-import {ClipboardList,LayoutDashboard,Users,CheckCircle2,Landmark,LogOut,KeyRound,NotebookPen,Bell,Mail,BarChart3,PanelLeftOpen,PanelLeftClose,Palette,Settings2,Gavel} from 'lucide-react';
+import {ClipboardList,LayoutDashboard,Users,CheckCircle2,Landmark,LogOut,KeyRound,NotebookPen,Bell,Mail,BarChart3,PanelLeftOpen,PanelLeftClose,Settings2,Gavel} from 'lucide-react';
 import {CRM_AREAS} from '../lib/crm-navigation.mjs';
 import {CRM_THEMES,resolveTheme} from '../lib/crm-themes.mjs';
 import {getClient} from '../lib/supabase-client';
@@ -10,7 +10,6 @@ import {APPEARANCE_BUCKET,applyAppearanceToDocument} from '../lib/appearance-set
 const icons={'Visão geral':LayoutDashboard,'Tarefas':ClipboardList,'Clientes':Users,'Finalizados':CheckCircle2,'Instituições':Landmark,'Minhas atividades':NotebookPen,'Relatórios':BarChart3,'Configurações':Settings2,'Processos':Gavel};
 export default function CrmShell({active='Visão geral',email='',onNavigate,onSignOut,onPassword,overdueCount=0,children}){
  const [sidebarExpanded,setSidebarExpanded]=useState(false);
- const [theme,setTheme]=useState('vinho');
  const [profile,setProfile]=useState({display_name:'',avatar_path:''});
  const [avatarUrl,setAvatarUrl]=useState('');
  const appearanceRef=useRef({colors:{},backgroundUrl:''});
@@ -51,7 +50,7 @@ export default function CrmShell({active='Visão geral',email='',onNavigate,onSi
    let stored='vinho';
    try{stored=window.localStorage.getItem('projectw1sc.crm-theme')||'vinho'}catch{}
    const id=resolveTheme(stored);
-   setTheme(id);document.documentElement.dataset.crmTheme=id;
+   document.documentElement.dataset.crmTheme=id;
    const t=CRM_THEMES.find(x=>x.id===id);try{applyAppearanceToDocument(document.documentElement,t,appearanceRef.current.colors,appearanceRef.current.backgroundUrl)}catch{applyAppearanceToDocument(document.documentElement,t,{},appearanceRef.current.backgroundUrl)}
   }
   applyStoredTheme();
@@ -60,12 +59,6 @@ export default function CrmShell({active='Visão geral',email='',onNavigate,onSi
   window.addEventListener('projectw1sc:theme-change',applyStoredTheme);
   return()=>{window.removeEventListener('storage',onStorage);window.removeEventListener('projectw1sc:theme-change',applyStoredTheme)};
  },[]);
- function selectTheme(next){
-  const id=resolveTheme(next);
-  setTheme(id);document.documentElement.dataset.crmTheme=id;
-   const t=CRM_THEMES.find(x=>x.id===id);try{applyAppearanceToDocument(document.documentElement,t,appearanceRef.current.colors,appearanceRef.current.backgroundUrl)}catch{applyAppearanceToDocument(document.documentElement,t,{},appearanceRef.current.backgroundUrl)}
-  try{window.localStorage.setItem('projectw1sc.crm-theme',id)}catch{}
- }
  useEffect(()=>{
   function onPointerDown(event){
    if(!sidebarRef.current?.contains(event.target))setSidebarExpanded(false);
@@ -124,7 +117,7 @@ export default function CrmShell({active='Visão geral',email='',onNavigate,onSi
    </footer>
   </aside>
   <div className="app-content"><div className="reference-top-tools">
-   <label className="crm-theme-picker" title="Escolher tema"><Palette size={15}/><span>Seletor de tema</span><select aria-label="Escolher tema" value={theme} onChange={e=>selectTheme(e.target.value)}>{CRM_THEMES.map(x=><option key={x.id} value={x.id}>{x.label}</option>)}</select></label>
+   
    <a href="/tarefas?fila=vencidos" aria-label="Ver retornos vencidos" title="Ver retornos vencidos" className="reference-top-alert"><Bell size={20}/>{overdueCount>0&&<span className="reference-notification-dot"/>}</a><span className="reference-top-divider"/><a className="reference-top-avatar" href="/configuracoes" title={profile.display_name||'Configurações do perfil'} aria-label="Abrir configurações do perfil">{avatarUrl?<img src={avatarUrl} alt="Foto do perfil"/>:(profile.display_name||email||'W').charAt(0).toLocaleUpperCase('pt-BR')}</a></div>{children}</div>
  </div>;
 }
