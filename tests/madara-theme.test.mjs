@@ -18,7 +18,7 @@ test('Madara is a selectable first-class theme with WCAG AA semantic contrast',(
  ]) assert.ok(contrastRatio(theme[foreground],theme[background])>=4.5,foreground+' / '+background);
 });
 
-test('Madara uses committed artwork and the exact Eternal Mangekyo vector, not the generated target mark',()=>{
+test('Madara uses committed artwork and the authentic Eternal Mangekyo pattern, not a generic three-tomoe Sharingan',()=>{
  for(const path of ['public/themes/madara-banner.webp','public/themes/madara-sidebar.webp','public/themes/madara-ems.svg']){
   assert.ok(existsSync(new URL(path,root)),path+' is missing');
  }
@@ -31,11 +31,12 @@ test('Madara uses committed artwork and the exact Eternal Mangekyo vector, not t
  assert.ok(banner.length>30000);
  assert.ok(sidebar.length>15000);
  const eye=read('public/themes/madara-ems.svg');
- assert.match(eye,/<circle[^>]+r="145"/);
- assert.match(eye,/rotate\(120 150 150\)/);
- assert.match(eye,/rotate\(-120 150 150\)/);
- assert.match(eye,/id="center"/);
- assert.match(eye,/tomoe-1/);
+ assert.match(eye,/id="ems-outer-iris"/);
+ assert.match(eye,/id="ems-straight-tomoe"/);
+ assert.match(eye,/id="ems-central-pupil"/);
+ assert.equal((eye.match(/class="ems-satellite"/g)||[]).length,3,'EMS must have three circular satellite nodes');
+ assert.equal((eye.match(/class="ems-radial-bar"/g)||[]).length,3,'EMS must include the three straight tomoe extensions');
+ assert.doesNotMatch(eye,/id="tomoe-1"|rotate\(120 150 150\)|rotate\(-120 150 150\)/,'Do not ship the generic three-tomoe Sharingan');
 });
 
 test('Madara visual layer is loaded after the shared accessibility layer and covers live CRM regions',()=>{
