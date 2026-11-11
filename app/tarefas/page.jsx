@@ -161,8 +161,13 @@ export default function TarefasPage(){
    p_priority_level:validateCriticidade(attendance.priority_level),p_note:attendance.note?.trim()||null
   });
   if(error){setNotice('Atendimento não registrado: '+error.message);setSaving(false);return;}
+  const {error:contactSyncError}=await db.from('crm_clients').update({last_contact:today,next_return:payload.next_due}).eq('id',selected.id);
   setModal(null);setSelected(null);
-  await load();setNotice('Atendimento registrado e próximo retorno atualizado.');setSaving(false);
+  await load();
+  setNotice(contactSyncError
+   ?'Atendimento registrado e retorno agendado, mas a data do último contato não foi sincronizada na ficha: '+contactSyncError.message
+   :'Atendimento registrado. Último contato e próximo retorno foram atualizados automaticamente.');
+  setSaving(false);
  }
  if(!db)return <div className="task-auth-wrap"><div className="task-auth"><h1>CRM em configuração</h1><p>Configure a conexão Supabase antes de acessar dados privados.</p></div></div>;
  if(authLoading)return <div className="task-auth-wrap"><div className="task-loading"><Loader2 className="task-spin" size={24}/> Carregando acesso seguro...</div></div>;
