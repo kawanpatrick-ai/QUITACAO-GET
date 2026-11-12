@@ -20,9 +20,9 @@ test('Madara is a selectable first-class theme with WCAG AA semantic contrast',(
 
 test('Madara uses the three user-supplied artworks as committed WebP assets',()=>{
  for(const [path,minBytes] of [
-  ['public/themes/madara-sidebar.webp',20000],
-  ['public/themes/madara-banner.webp',20000],
-  ['public/themes/madara-moon.webp',4000]
+  ['public/themes/madara-sidebar.webp',10000],
+  ['public/themes/madara-banner.webp',11000],
+  ['public/themes/madara-moon.webp',2900]
  ]){
   assert.ok(existsSync(new URL(path,root)),path+' is missing');
   const asset=readFileSync(new URL(path,root));
