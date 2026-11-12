@@ -40,8 +40,8 @@ test('Madara theme places supplied character art away from live header text and 
  assert.match(css,/madara-banner\.webp/);
  assert.match(css,/madara-sidebar\.webp/);
  assert.match(css,/madara-moon\.webp/);
- assert.match(css,/background-size:\\s*100% 100%, 100% 100%, cover/,'The red-moon reference must cover the full page');
- assert.match(css,/background-attachment:\\s*fixed/,'Keep the page background fixed while content scrolls');
+ assert.match(css,/background-size:\s*100% 100%, 100% 100%, cover/,'The red-moon reference must cover the full page');
+ assert.match(css,/background-attachment:\s*fixed/,'Keep the page background fixed while content scrolls');
  assert.match(css,/\.reference-header/);
  assert.match(css,/\.task-header/);
  assert.match(css,/\.app-sidebar/);
@@ -68,4 +68,29 @@ test('Madara visual layer retains accessible focus, reduced-motion and print beh
  assert.match(css,/\.app-sidebar :focus-visible/);
  assert.match(css,/@media\s*\(prefers-reduced-motion:\s*reduce\)/);
  assert.match(css,/@media\s+print/);
+});
+
+
+test('Madara applies a coherent premium visual system across the whole CRM without changing app behavior',()=>{
+ const css=read('app/madara-theme.css');
+ for(const selector of [
+  '.app-shell .app-content','.reference-dashboard','.task-shell','.task-main',
+  '.settings-dashboard','.report-dashboard','.processes-dashboard',
+  '.app-sidebar::before','.app-nav-link svg','.reference-kpi-icon',
+  '.reference-panel','.task-board','.settings-panel','.report-filters',
+  '.app-content button','.app-content :focus-visible'
+ ]) assert.ok(css.includes(selector),'Missing global Madara styling for '+selector);
+ assert.match(css,/font-family:\s*['"]?Manrope/);
+ assert.match(css,/font-family:\s*['"]?Cinzel/);
+ assert.match(css,/background-size:\s*contain/,'Sidebar artwork must remain centered and undistorted');
+ assert.match(css,/background-position:\s*center center/);
+ assert.match(css,/drop-shadow\([^)]*#ff[0-9a-f]{4,6}/i,'Icons should use a controlled bright red glow');
+ assert.match(css,/--madara-card-radius/);
+ assert.match(css,/--madara-space/);
+});
+
+test('Madara background remains visible behind transparent route wrappers and does not cover readable panels',()=>{
+ const css=read('app/madara-theme.css');
+ assert.match(css,/\.app-content :is\([\s\S]*\.reference-dashboard[\s\S]*background-color:\s*transparent/);
+ assert.match(css,/\.app-content :is\([\s\S]*\.reference-panel[\s\S]*background-color:\s*var\(--ui-surface\)/);
 });
