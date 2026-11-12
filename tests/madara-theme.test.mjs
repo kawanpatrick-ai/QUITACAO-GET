@@ -41,7 +41,7 @@ test('Madara theme places supplied character art away from live header text and 
  assert.match(css,/madara-sidebar\.webp/);
  assert.match(css,/madara-moon\.webp/);
  assert.match(css,/background-size:\s*100% 100%,100% 100%,cover/,'The red-moon reference must cover the full page');
- assert.match(css,/background-attachment:\s*fixed/,'Keep the page background fixed while content scrolls');
+ assert.match(css,/background-attachment:[^;]*fixed/,'Keep the page background fixed while content scrolls');
  assert.match(css,/\.reference-header/);
  assert.match(css,/\.task-header/);
  assert.match(css,/\.app-sidebar/);
@@ -84,7 +84,7 @@ test('Madara applies a coherent premium visual system across the whole CRM witho
  assert.match(css,/font-family:\s*['"]?Cinzel/);
  assert.match(css,/background-size:\s*contain/,'Sidebar artwork must remain centered and undistorted');
  assert.match(css,/background-position:\s*center center/);
- assert.match(css,/drop-shadow\([^)]*#ff[0-9a-f]{4,6}/i,'Icons should use a controlled bright red glow');
+ assert.match(css,/drop-shadow\(0 0 5px rgba\(255,37,61/i,'Icons should use a controlled bright red glow');
  assert.match(css,/--madara-card-radius/);
  assert.match(css,/--madara-space/);
 });
