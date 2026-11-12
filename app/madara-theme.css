@@ -38,13 +38,13 @@ html[data-crm-theme="madara"] .app-shell {
 html[data-crm-theme="madara"] .app-shell .app-content {
   background-color: var(--ui-page) !important;
   background-image:
-    linear-gradient(180deg, rgba(11, 8, 10, .58) 0%, rgba(11, 8, 10, .80) 52%, rgba(11, 8, 10, .94) 100%),
-    radial-gradient(ellipse 72% 38% at 76% 0%, rgba(155, 12, 31, .15), transparent 78%),
+    linear-gradient(180deg, rgba(11, 8, 10, .40) 0%, rgba(11, 8, 10, .60) 48%, rgba(11, 8, 10, .78) 100%),
+    radial-gradient(ellipse 72% 38% at 76% 0%, rgba(155, 12, 31, .12), transparent 78%),
     var(--madara-ambient-image) !important;
-  background-size: 100% 100%, 100% 100%, min(100%, 1400px) auto !important;
-  background-position: center, center, top center !important;
+  background-size: 100% 100%, 100% 100%, cover !important;
+  background-position: center, center, center center !important;
   background-repeat: no-repeat !important;
-  background-attachment: scroll !important;
+  background-attachment: fixed !important;
 }
 
 /* Original vertical artwork: placed behind the live navigation, never replacing it. */
