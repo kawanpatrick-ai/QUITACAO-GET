@@ -47,10 +47,10 @@ test('Madara theme places supplied character art away from live header text and 
  assert.match(css,/\.app-sidebar/);
  assert.match(css,/\.report-executive-hero/);
  assert.match(css,/\.settings-theme-madara/);
- assert.match(css,/padding:\s*25px 26px 25px 62%/);
- assert.match(css,/width:\s*59%/);
- assert.match(css,/background-size:\s*100% 100%, auto 100%/,'Keep source artwork proportional rather than cropping it to fill a wide banner');
- assert.match(css,/background-size:\s*auto 100% !important/);
+ assert.match(css,/padding:\s*25px 28px 25px 46%/);
+ assert.match(css,/width:\s*58%/);
+ assert.match(css,/background-size:\s*100% 100%,cover/,'Use proportional cover for the wide header artwork');
+ assert.match(css,/background-size:\s*cover!important/);
  assert.match(css,/@media\s*\(max-width:\s*750px\)/);
  assert.match(css,/padding:\s*148px 18px 18px/);
  assert.doesNotMatch(css,/madara-ems\.svg/,'Do not overlay an invented Sharingan mark on the source artwork');
@@ -78,7 +78,7 @@ test('Madara applies a coherent premium visual system across the whole CRM witho
   '.settings-dashboard','.report-dashboard','.processes-dashboard',
   '.app-sidebar::before','.app-nav-link svg','.reference-kpi-icon',
   '.reference-panel','.task-board','.settings-panel','.report-filters',
-  '.app-content button','.app-content :focus-visible'
+  '.app-content :is(button,a,[role="button"]) svg','.app-content :focus-visible'
  ]) assert.ok(css.includes(selector),'Missing global Madara styling for '+selector);
  assert.match(css,/font-family:\s*['"]?Manrope/);
  assert.match(css,/font-family:\s*['"]?Cinzel/);
@@ -92,5 +92,5 @@ test('Madara applies a coherent premium visual system across the whole CRM witho
 test('Madara background remains visible behind transparent route wrappers and does not cover readable panels',()=>{
  const css=read('app/madara-theme.css');
  assert.match(css,/\.app-content :is\([\s\S]*\.reference-dashboard[\s\S]*background-color:\s*transparent/);
- assert.match(css,/\.app-content :is\([\s\S]*\.reference-panel[\s\S]*background-color:\s*var\(--ui-surface\)/);
+ assert.match(css,/\.reference-panel[\s\S]*background-color:\s*rgba\(22,13,17,\.94\)/);
 });
