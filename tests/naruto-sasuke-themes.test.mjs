@@ -20,7 +20,7 @@ test('Naruto and Sasuke are first-class themes, with WCAG AA semantic colors',()
 
 test('Naruto and Sasuke apply globally without replacing live CRM pages',()=>{
  const css=file('app/anime-themes.css');
- const shell=file('components/crm-shell.jsx');
+ const settings=file('app/configuracoes/page.jsx');
  const layout=file('app/layout.jsx');
  for(const id of ['naruto','sasuke']){
   assert.match(css,new RegExp('data-crm-theme="'+id+'"'));
@@ -33,7 +33,7 @@ test('Naruto and Sasuke apply globally without replacing live CRM pages',()=>{
  assert.match(css,/\.report-dashboard/);
  assert.match(css,/\.reference-panel/);
  assert.match(css,/@media print/);
- assert.match(shell,/CRM_THEMES\.map/);
+ assert.match(settings,/CRM_THEMES\.map/);
  assert.match(layout,/anime-themes\.css/);
 });
 
