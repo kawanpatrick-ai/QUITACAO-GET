@@ -74,7 +74,11 @@ export default function CrmShell({active='Visão geral',email='',onNavigate,onSi
   };
  },[]);
  const shrinkIfUnfocused=()=>{
-  if(!sidebarRef.current?.contains(document.activeElement))setSidebarExpanded(false);
+  const active=document.activeElement;
+  const keyboardFocus=Boolean(
+   sidebarRef.current?.contains(active)&&active instanceof HTMLElement&&active.matches(':focus-visible')
+  );
+  if(!keyboardFocus)setSidebarExpanded(false);
  };
  return <div className={'app-shell '+(sidebarExpanded?'sidebar-expanded':'sidebar-collapsed')}>
   <aside ref={sidebarRef} className="app-sidebar"
