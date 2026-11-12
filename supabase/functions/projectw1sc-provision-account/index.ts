@@ -126,7 +126,7 @@ Deno.serve(async (request) => {
     try {
       input = normalizeNewMemberInput(body);
     } catch (error) {
-      return reply({ ok: false, error: error.message }, 400, origin);
+      return reply({ ok: false, error: error instanceof Error ? error.message : 'Dados inválidos.' }, 400, origin);
     }
 
     const { data: created, error: createError } = await admin.auth.admin.createUser({
