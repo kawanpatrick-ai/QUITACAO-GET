@@ -38,7 +38,7 @@ test('Madara theme places supplied character art away from live header text and 
  assert.ok(layout.indexOf("madara-theme.css")>layout.indexOf("theme-accessibility.css"));
  assert.match(css,/data-crm-theme="madara"/);
  assert.match(css,/madara-banner\.webp/);
- assert.match(css,/madara-sidebar\.webp/);
+ assert.doesNotMatch(css,/madara-sidebar\.webp/,'The vertical character image must not appear in the sidebar');
  assert.match(css,/madara-moon\.webp/);
  assert.match(css,/background-size:\s*100% 100%,100% 100%,cover/,'The red-moon reference must cover the full page');
  assert.match(css,/background-attachment:[^;]*fixed/,'Keep the page background fixed while content scrolls');
@@ -82,7 +82,8 @@ test('Madara applies a coherent premium visual system across the whole CRM witho
  ]) assert.ok(css.includes(selector),'Missing global Madara styling for '+selector);
  assert.match(css,/font-family:\s*['"]?Manrope/);
  assert.match(css,/font-family:\s*['"]?Cinzel/);
- assert.match(css,/background-size:\s*contain/,'Sidebar artwork must remain centered and undistorted');
+ assert.match(css,/radial-gradient/,'Sidebar uses the abstract red atmospheric background');
+ assert.doesNotMatch(css,/madara-sidebar\.webp/);
  assert.match(css,/background-position:\s*center center/);
  assert.match(css,/drop-shadow\(0 0 5px rgba\(255,37,61/i,'Icons should use a controlled bright red glow');
  assert.match(css,/--madara-card-radius/);
