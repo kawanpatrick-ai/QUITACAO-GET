@@ -94,3 +94,20 @@ test('Madara background remains visible behind transparent route wrappers and do
  assert.match(css,/\.app-content :is\([\s\S]*\.reference-dashboard[\s\S]*background-color:\s*transparent/);
  assert.match(css,/\.reference-panel[\s\S]*background-color:\s*rgba\(22,13,17,\.94\)/);
 });
+
+
+test('Madara removes the vertical portrait from the sidebar and uses a red atmospheric treatment',()=>{
+ const css=read('app/madara-theme.css');
+ assert.doesNotMatch(css,/madara-sidebar\.webp/,'The vertical source image must not render in the sidebar');
+ assert.match(css,/\.app-sidebar::before[\s\S]*radial-gradient/,'Use an atmospheric abstract backdrop instead of character art');
+ assert.match(css,/sidebar-collapsed \.app-sidebar[\s\S]*width:\s*70px/,'Collapsed rail must keep the original compact width');
+ assert.match(css,/sidebar-expanded \.app-sidebar[\s\S]*width:\s*218px/,'Expanded rail must use the original expanded width');
+ assert.match(css,/sidebar-collapsed \.app-sidebar \.app-nav-link span[\s\S]*visibility:\s*hidden/);
+});
+
+test('Madara sidebar collapses on mouse leave unless keyboard focus is active',()=>{
+ const shell=read('components/crm-shell.jsx');
+ assert.match(shell,/matches\(['"]:focus-visible['"]\)/);
+ assert.match(shell,/onMouseLeave=\{shrinkIfUnfocused\}/);
+ assert.match(shell,/sidebar-collapsed/);
+});
