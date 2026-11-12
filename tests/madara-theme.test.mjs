@@ -46,7 +46,9 @@ test('Madara theme places supplied character art away from live header text and 
  assert.match(css,/\.report-executive-hero/);
  assert.match(css,/\.settings-theme-madara/);
  assert.match(css,/padding:\s*25px 26px 25px 62%/);
- assert.match(css,/width:\s*59%/);\n assert.match(css,/background-size:\s*100% 100%, auto 100%/,'Keep source artwork proportional rather than cropping it to fill a wide banner');\n assert.match(css,/background-size:\s*auto 100% !important/);
+ assert.match(css,/width:\s*59%/);
+ assert.match(css,/background-size:\s*100% 100%, auto 100%/,'Keep source artwork proportional rather than cropping it to fill a wide banner');
+ assert.match(css,/background-size:\s*auto 100% !important/);
  assert.match(css,/@media\s*\(max-width:\s*750px\)/);
  assert.match(css,/padding:\s*148px 18px 18px/);
  assert.doesNotMatch(css,/madara-ems\.svg/,'Do not overlay an invented Sharingan mark on the source artwork');
