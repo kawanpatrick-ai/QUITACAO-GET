@@ -91,7 +91,7 @@ Deno.serve(async (request) => {
     try {
       change = normalizeMembershipChange(body, actor.id);
     } catch (error) {
-      return reply({ ok: false, error: error.message }, 400, origin);
+      return reply({ ok: false, error: error instanceof Error ? error.message : 'Dados inválidos.' }, 400, origin);
     }
 
     const { data: target, error: targetError } = await admin.auth.admin.getUserById(change.user_id);
