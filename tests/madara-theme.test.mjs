@@ -40,7 +40,7 @@ test('Madara theme places supplied character art away from live header text and 
  assert.match(css,/madara-banner\.webp/);
  assert.match(css,/madara-sidebar\.webp/);
  assert.match(css,/madara-moon\.webp/);
- assert.match(css,/background-size:\s*100% 100%, 100% 100%, cover/,'The red-moon reference must cover the full page');
+ assert.match(css,/background-size:\s*100% 100%,100% 100%,cover/,'The red-moon reference must cover the full page');
  assert.match(css,/background-attachment:\s*fixed/,'Keep the page background fixed while content scrolls');
  assert.match(css,/\.reference-header/);
  assert.match(css,/\.task-header/);
@@ -59,7 +59,7 @@ test('Madara theme places supplied character art away from live header text and 
 test('Madara theme picker does not overlay a generated or inaccurate eye mark',()=>{
  const css=read('app/madara-theme.css');
  assert.match(css,/\.settings-theme-preview::after\s*\{\s*content:\s*none/);
- assert.match(css,/settings-theme-preview[\s\S]*madara-banner\.webp/);
+ assert.match(css,/\.settings-theme-madara \.settings-theme-preview[\s\S]*var\(--madara-banner-image\)/);
 });
 
 test('Madara visual layer retains accessible focus, reduced-motion and print behavior',()=>{
