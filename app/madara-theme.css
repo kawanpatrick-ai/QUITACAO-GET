@@ -23,7 +23,6 @@ html[data-crm-theme="madara"] {
   --ui-neutral-bg:#302427;
   --ui-neutral-ink:#f0dddd;
   --madara-banner-image:url('/themes/madara-banner.webp');
-  --madara-sidebar-image:url('/themes/madara-sidebar.webp');
   --madara-ambient-image:url('/themes/madara-moon.webp');
   --madara-glow:rgba(255,31,57,.34);
   --madara-glow-soft:rgba(255,31,57,.16);
@@ -84,8 +83,8 @@ html[data-crm-theme="madara"] .app-shell .app-sidebar {
   top:0;
   isolation:isolate;
   overflow:hidden;
-  width:278px;
-  flex:0 0 278px;
+  width:218px;
+  flex:0 0 218px;
   min-height:100vh;
   height:100vh;
   padding:24px 18px 18px;
@@ -101,14 +100,15 @@ html[data-crm-theme="madara"] .app-shell .app-sidebar::before {
   position:absolute;
   z-index:0;
   pointer-events:none;
-  inset:92px 8px 108px;
+  inset:0;
   background-image:
-    linear-gradient(180deg,rgba(8,3,6,.05),rgba(8,3,6,.04) 58%,rgba(8,3,6,.74) 100%),
-    var(--madara-sidebar-image);
-  background-size:100% 100%,contain;
-  background-position:center center,center center;
+    radial-gradient(ellipse 116% 38% at 50% 18%,rgba(193,18,43,.30),transparent 74%),
+    radial-gradient(ellipse 90% 36% at 46% 78%,rgba(100,9,28,.22),transparent 78%),
+    linear-gradient(180deg,rgba(17,5,10,.10),rgba(8,3,6,.72));
+  background-size:100% 100%;
+  background-position:center;
   background-repeat:no-repeat;
-  opacity:.98;
+  opacity:.96;
 }
 html[data-crm-theme="madara"] .app-sidebar > * {
   position:relative;
@@ -497,11 +497,44 @@ html[data-crm-theme="madara"] .settings-theme-madara .settings-theme-preview {
 }
 html[data-crm-theme="madara"] .settings-theme-madara .settings-theme-preview::after {content:none!important}
 
-/* Sidebar collapsed: keep the same portrait centered and proportional. */
-html[data-crm-theme="madara"] .app-shell.sidebar-collapsed .app-sidebar::before {
-  inset:110px 2px 116px;
-  background-size:contain;
-  opacity:.50;
+/* Keep the compact rail / hover-to-expand interaction used by Naruto and Sasuke. */
+@media (min-width:781px) {
+  html[data-crm-theme="madara"] .app-shell.sidebar-collapsed .app-sidebar {
+    width:70px!important;
+    flex:0 0 70px!important;
+    padding:14px 8px 12px!important;
+  }
+  html[data-crm-theme="madara"] .app-shell.sidebar-expanded .app-sidebar {
+    width:218px!important;
+    flex:0 0 218px!important;
+    padding:16px 10px 15px!important;
+  }
+  html[data-crm-theme="madara"] .app-shell.sidebar-collapsed .app-sidebar .app-nav-link {
+    width:53px;
+    min-height:43px;
+    padding:9px 0;
+    gap:0;
+    display:flex;
+    justify-content:center;
+    border-radius:10px;
+  }
+  html[data-crm-theme="madara"] .app-shell.sidebar-collapsed .app-sidebar .app-nav-link span {
+    opacity:0;
+    visibility:hidden;
+    max-width:0;
+    width:0;
+    overflow:hidden;
+    position:absolute;
+  }
+  html[data-crm-theme="madara"] .app-shell.sidebar-collapsed .app-sidebar .app-nav-footer {
+    opacity:0;
+    pointer-events:none;
+    visibility:hidden;
+    overflow:hidden;
+  }
+  html[data-crm-theme="madara"] .app-shell.sidebar-collapsed .app-sidebar .app-sidebar-toggle {
+    margin:0 auto 10px;
+  }
 }
 html[data-crm-theme="madara"] .app-content :focus-visible,
 html[data-crm-theme="madara"] .app-sidebar :focus-visible {
