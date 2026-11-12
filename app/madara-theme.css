@@ -1,332 +1,567 @@
-/* Madara Uchiha — Lua Vermelha.
-   The supplied source artwork is used as-is. Styling is limited to placement,
-   crop, contrast and the CRM surfaces; the character artwork is never redrawn. */
+/* Madara Uchiha — Red Moon / premium CRM visual system.
+   Visual-only layer. Does not modify data, routes, authentication, Supabase, or business logic. */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
 html[data-crm-theme="madara"] {
-  --ui-page: #0b080a;
-  --ui-surface: #171012;
-  --ui-ink: #fff4f3;
-  --ui-muted: #d7b9bb;
-  --ui-accent: #b91c2b;
-  --ui-accent-ink: #ffffff;
-  --ui-nav: #100708;
-  --ui-nav-ink: #fff3f2;
-  --ui-border: #592126;
-  --ui-tint: #2a1318;
-  --ui-tint-ink: #fff0f0;
-  --ui-warning-bg: #402714;
-  --ui-warning-ink: #ffe2a8;
-  --ui-success-bg: #11351f;
-  --ui-success-ink: #c1ffcf;
-  --ui-danger-bg: #4a151b;
-  --ui-danger-ink: #ffc5cb;
-  --ui-neutral-bg: #302427;
-  --ui-neutral-ink: #f0dddd;
-
-  --madara-banner-image: url('/themes/madara-banner.webp');
-  --madara-sidebar-image: url('/themes/madara-sidebar.webp');
-  --madara-ambient-image: url('/themes/madara-moon.webp');
-  --madara-glow: rgba(221, 22, 43, .30);
-  color-scheme: dark;
+  --ui-page:#090609;
+  --ui-surface:#171014;
+  --ui-ink:#fff4f3;
+  --ui-muted:#d5bfc1;
+  --ui-accent:#e21e38;
+  --ui-accent-ink:#fffafa;
+  --ui-nav:#0d070a;
+  --ui-nav-ink:#fff1f2;
+  --ui-border:rgba(181,48,65,.38);
+  --ui-tint:#2a1018;
+  --ui-tint-ink:#fff0f0;
+  --ui-warning-bg:#402714;
+  --ui-warning-ink:#ffe2a8;
+  --ui-success-bg:#11351f;
+  --ui-success-ink:#c1ffcf;
+  --ui-danger-bg:#4a151b;
+  --ui-danger-ink:#ffc5cb;
+  --ui-neutral-bg:#302427;
+  --ui-neutral-ink:#f0dddd;
+  --madara-banner-image:url('/themes/madara-banner.webp');
+  --madara-sidebar-image:url('/themes/madara-sidebar.webp');
+  --madara-ambient-image:url('/themes/madara-moon.webp');
+  --madara-glow:rgba(255,31,57,.34);
+  --madara-glow-soft:rgba(255,31,57,.16);
+  --madara-card-radius:17px;
+  --madara-space:clamp(16px,2vw,26px);
+  --madara-card-shadow:0 14px 34px rgba(0,0,0,.32),0 0 0 1px rgba(227,35,58,.055),inset 0 1px 0 rgba(255,255,255,.035);
+  color-scheme:dark;
+  background:var(--ui-page);
+  font-family:'Manrope',Inter,system-ui,sans-serif;
 }
-
+html[data-crm-theme="madara"] body,
+html[data-crm-theme="madara"] button,
+html[data-crm-theme="madara"] input,
+html[data-crm-theme="madara"] select,
+html[data-crm-theme="madara"] textarea {
+  font-family:'Manrope',Inter,system-ui,sans-serif;
+}
 html[data-crm-theme="madara"] body,
 html[data-crm-theme="madara"] .app-shell {
-  background: var(--ui-page) !important;
-  color: var(--ui-ink) !important;
+  min-height:100vh;
+  background:var(--ui-page)!important;
+  color:var(--ui-ink)!important;
 }
 
+/* One continuous moon-lit canvas across every CRM route. */
 html[data-crm-theme="madara"] .app-shell .app-content {
-  background-color: var(--ui-page) !important;
+  position:relative;
+  isolation:isolate;
+  min-height:100vh;
+  background-color:var(--ui-page)!important;
   background-image:
-    linear-gradient(180deg, rgba(11, 8, 10, .40) 0%, rgba(11, 8, 10, .60) 48%, rgba(11, 8, 10, .78) 100%),
-    radial-gradient(ellipse 72% 38% at 76% 0%, rgba(155, 12, 31, .12), transparent 78%),
-    var(--madara-ambient-image) !important;
-  background-size: 100% 100%, 100% 100%, cover !important;
-  background-position: center, center, center center !important;
-  background-repeat: no-repeat !important;
-  background-attachment: fixed !important;
+    linear-gradient(180deg,rgba(9,4,8,.34) 0%,rgba(9,4,8,.50) 46%,rgba(9,4,8,.72) 100%),
+    radial-gradient(ellipse 76% 46% at 78% 0%,rgba(201,19,43,.13),transparent 78%),
+    var(--madara-ambient-image)!important;
+  background-size:100% 100%,100% 100%,cover!important;
+  background-position:center,center,center center!important;
+  background-repeat:no-repeat!important;
+  background-attachment:scroll,scroll,fixed!important;
+}
+html[data-crm-theme="madara"] .app-content :is(
+  .reference-dashboard,.task-shell,.task-main,.settings-dashboard,.report-dashboard,
+  .processes-dashboard,.sales-workspace,.reference-activities,.reference-activity-page,
+  .dashboard-page,.crm-page
+) {
+  background-color:transparent!important;
+  background-image:none!important;
+  color:var(--ui-ink)!important;
+}
+html[data-crm-theme="madara"] .app-content > main,
+html[data-crm-theme="madara"] .app-content > section {
+  background-color:transparent;
 }
 
-/* Original vertical artwork: placed behind the live navigation, never replacing it. */
+/* Sidebar: full-height portrait, centered in the available visual lane.
+   The source ratio is preserved with contain; navigation stays in front. */
 html[data-crm-theme="madara"] .app-shell .app-sidebar {
-  position: sticky;
-  isolation: isolate;
-  overflow: hidden;
-  background: var(--ui-nav) !important;
-  color: var(--ui-nav-ink) !important;
-  border-right: 1px solid var(--ui-border) !important;
+  position:sticky;
+  top:0;
+  isolation:isolate;
+  overflow:hidden;
+  width:278px;
+  flex:0 0 278px;
+  min-height:100vh;
+  height:100vh;
+  padding:24px 18px 18px;
+  background:
+    linear-gradient(180deg,rgba(8,3,6,.94) 0%,rgba(8,3,6,.55) 34%,rgba(8,3,6,.46) 62%,rgba(8,3,6,.96) 100%),
+    var(--ui-nav)!important;
+  color:var(--ui-nav-ink)!important;
+  border-right:1px solid rgba(239,54,75,.36)!important;
+  box-shadow:8px 0 32px rgba(0,0,0,.24),inset -1px 0 rgba(255,255,255,.025);
 }
 html[data-crm-theme="madara"] .app-shell .app-sidebar::before {
-  content: "";
-  position: absolute;
-  z-index: 0;
-  pointer-events: none;
-  inset: 82px 0 auto;
-  height: min(510px, 58%);
+  content:"";
+  position:absolute;
+  z-index:0;
+  pointer-events:none;
+  inset:92px 8px 108px;
   background-image:
-    linear-gradient(180deg, rgba(8, 3, 6, .02) 0%, rgba(8, 3, 6, .06) 54%, rgba(8, 3, 6, .76) 100%),
+    linear-gradient(180deg,rgba(8,3,6,.05),rgba(8,3,6,.04) 58%,rgba(8,3,6,.74) 100%),
     var(--madara-sidebar-image);
-  background-size: 100% 100%, auto 100%;
-  background-position: center, center 38%;
-  background-repeat: no-repeat;
-  opacity: .98;
+  background-size:100% 100%,contain;
+  background-position:center center,center center;
+  background-repeat:no-repeat;
+  opacity:.98;
 }
-html[data-crm-theme="madara"] .app-shell .app-sidebar > * {
-  position: relative;
-  z-index: 1;
+html[data-crm-theme="madara"] .app-sidebar > * {
+  position:relative;
+  z-index:1;
 }
-html[data-crm-theme="madara"] .app-sidebar .app-brand-link {
-  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, .72));
+html[data-crm-theme="madara"] .app-sidebar .app-identity {
+  border-color:rgba(235,73,91,.25)!important;
+  padding-bottom:22px!important;
+  margin-bottom:22px!important;
+}
+html[data-crm-theme="madara"] .app-sidebar .app-brand-link,
+html[data-crm-theme="madara"] .app-sidebar .app-brand-full,
+html[data-crm-theme="madara"] .app-sidebar .app-brand-compact {
+  filter:drop-shadow(0 2px 12px rgba(0,0,0,.8));
+}
+html[data-crm-theme="madara"] .app-sidebar .app-nav {
+  display:grid;
+  gap:7px;
 }
 html[data-crm-theme="madara"] .app-sidebar .app-nav-link {
-  color: var(--ui-nav-ink) !important;
-  text-shadow: 0 1px 8px rgba(0, 0, 0, .85);
-  border: 1px solid transparent;
+  min-height:46px;
+  padding:11px 13px;
+  gap:12px;
+  border:1px solid transparent;
+  border-radius:11px;
+  color:#f8e9eb!important;
+  font-size:12px;
+  font-weight:650;
+  letter-spacing:.01em;
+  text-shadow:0 1px 8px rgba(0,0,0,.9);
+  transition:background .2s ease,border-color .2s ease,transform .2s ease,box-shadow .2s ease;
+}
+html[data-crm-theme="madara"] .app-sidebar .app-nav-link svg {
+  color:#ff5366!important;
+  filter:drop-shadow(0 0 5px rgba(255,37,61,.62));
+  stroke-width:1.9;
 }
 html[data-crm-theme="madara"] .app-sidebar .app-nav-link:hover {
-  background: rgba(144, 17, 34, .40) !important;
-  border-color: rgba(235, 59, 73, .28);
+  transform:translateX(2px);
+  background:rgba(135,13,31,.42)!important;
+  border-color:rgba(255,83,102,.26);
 }
 html[data-crm-theme="madara"] .app-sidebar .app-nav-link.active,
 html[data-crm-theme="madara"] .app-sidebar .app-nav-link[aria-current="page"] {
-  background: linear-gradient(105deg, #c51e31 0%, #921525 72%, #56101b 100%) !important;
-  color: #fff !important;
-  border-color: #ed5b67 !important;
-  box-shadow: 0 0 18px var(--madara-glow), inset 0 0 0 1px rgba(255,255,255,.12) !important;
-  text-shadow: none;
+  color:#fff!important;
+  background:linear-gradient(105deg,rgba(207,25,49,.96),rgba(112,10,29,.94))!important;
+  border-color:rgba(255,120,133,.72)!important;
+  box-shadow:0 0 20px var(--madara-glow),inset 0 1px rgba(255,255,255,.18),inset 0 -1px rgba(0,0,0,.25)!important;
+  text-shadow:0 1px 5px rgba(0,0,0,.45);
 }
 html[data-crm-theme="madara"] .app-sidebar .app-nav-link.active svg,
 html[data-crm-theme="madara"] .app-sidebar .app-nav-link[aria-current="page"] svg {
-  color: #fff !important;
+  color:#fff!important;
+  filter:drop-shadow(0 0 7px rgba(255,255,255,.42));
 }
 html[data-crm-theme="madara"] .app-sidebar .app-nav-footer {
-  border: 1px solid var(--ui-border) !important;
-  border-radius: 13px;
-  background: rgba(12, 5, 8, .88) !important;
-  box-shadow: 0 8px 22px rgba(0,0,0,.28);
-  backdrop-filter: blur(8px);
+  margin-top:auto;
+  padding:15px 10px 5px!important;
+  gap:12px;
+  border-top:1px solid rgba(235,73,91,.28)!important;
+  background:rgba(10,4,7,.78)!important;
+  border-radius:12px;
+  backdrop-filter:blur(9px);
 }
 html[data-crm-theme="madara"] .app-sidebar :is(
-  .app-private, .app-account-email, .app-account-email span, .app-account-actions,
-  .app-account-actions a, .app-account-actions button, .app-copyright
-) { color: var(--ui-nav-ink) !important; }
+  .app-private,.app-account-email,.app-account-email span,.app-account-actions,
+  .app-account-actions a,.app-account-actions button,.app-copyright
+) {color:#f5e4e6!important}
 html[data-crm-theme="madara"] .app-sidebar :is(
-  .app-sidebar-toggle, .app-account-actions a, .app-account-actions button
+  .app-sidebar-toggle,.app-account-actions a,.app-account-actions button
 ) {
-  background: rgba(255,255,255,.07) !important;
-  border-color: rgba(255,255,255,.15) !important;
+  color:#ff6374!important;
+  background:rgba(255,42,67,.09)!important;
+  border:1px solid rgba(255,91,110,.27)!important;
+  border-radius:9px;
 }
+html[data-crm-theme="madara"] .app-sidebar .app-section-name {color:#ff7381!important;letter-spacing:.17em}
 
-/* Original close-up is a dedicated visual panel on the left.
-   Header text stays in a separate dark lane on the right, clear of Madara's face. */
+/* Cinematic page title: source close-up remains on the left, content on the right. */
 html[data-crm-theme="madara"] .app-content :is(
-  .reference-dashboard .reference-header, .task-header,
-  .report-dashboard .report-executive-hero
+  .reference-dashboard .reference-header,.task-header,.report-dashboard .report-executive-hero
 ) {
-  position: relative !important;
-  isolation: isolate;
-  overflow: hidden !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  align-items: flex-start !important;
-  min-height: 224px !important;
-  padding: 25px 26px 25px 62% !important;
-  border: 1px solid rgba(211, 40, 57, .48) !important;
-  border-radius: 16px !important;
-  background-color: rgba(11, 8, 10, .92) !important;
+  position:relative!important;
+  isolation:isolate;
+  display:flex!important;
+  flex-direction:row!important;
+  justify-content:space-between!important;
+  align-items:center!important;
+  gap:22px!important;
+  overflow:hidden!important;
+  min-height:232px!important;
+  padding:25px 28px 25px 46%!important;
+  margin:0 0 23px!important;
+  border:1px solid rgba(238,59,79,.42)!important;
+  border-radius:19px!important;
+  background-color:rgba(13,7,10,.94)!important;
   background-image:
-    linear-gradient(90deg, rgba(11, 8, 10, 0) 70%, rgba(11, 8, 10, .16) 100%) !important;
-  box-shadow: 0 12px 30px rgba(0,0,0,.24), 0 0 24px rgba(164, 10, 31, .11) !important;
-  margin-bottom: 18px !important;
+    linear-gradient(90deg,rgba(13,7,10,0) 0%,rgba(13,7,10,.06) 45%,rgba(13,7,10,.95) 100%)!important;
+  box-shadow:0 14px 36px rgba(0,0,0,.34),0 0 26px rgba(181,15,39,.10)!important;
 }
 html[data-crm-theme="madara"] .app-content :is(
-  .reference-dashboard .reference-header, .task-header,
-  .report-dashboard .report-executive-hero
+  .reference-dashboard .reference-header,.task-header,.report-dashboard .report-executive-hero
 )::before {
-  content: "";
-  position: absolute;
-  z-index: 0;
-  pointer-events: none;
-  inset: 0 auto 0 0;
-  width: 59%;
+  content:"";
+  position:absolute;
+  z-index:0;
+  pointer-events:none;
+  inset:0 auto 0 0;
+  width:58%;
   background-image:
-    linear-gradient(90deg, rgba(8, 3, 6, .02) 0%, rgba(8, 3, 6, .02) 68%, rgba(11, 8, 10, .72) 100%),
+    linear-gradient(90deg,rgba(8,3,6,.02) 0%,rgba(8,3,6,.02) 58%,rgba(13,7,10,.9) 100%),
     var(--madara-banner-image);
-  background-size: 100% 100%, auto 100%;
-  background-position: center, left center;
-  background-repeat: no-repeat;
+  background-size:100% 100%,cover;
+  background-position:center,center 42%;
+  background-repeat:no-repeat;
 }
 html[data-crm-theme="madara"] .app-content :is(
-  .reference-header, .task-header, .report-executive-hero
+  .reference-header,.task-header,.report-executive-hero
 ) > * {
-  position: relative;
-  z-index: 1;
-  max-width: 100%;
+  position:relative;
+  z-index:1;
+  max-width:100%;
 }
 html[data-crm-theme="madara"] .app-content :is(
-  .reference-header h1, .task-header h1, .report-executive-hero h2
+  .reference-header > div:first-child,.task-header > div:first-child
+) {max-width:100%;min-width:0}
+html[data-crm-theme="madara"] .app-content :is(
+  .reference-header h1,.task-header h1,.report-executive-hero h2
 ) {
-  color: #fff5f5 !important;
-  text-shadow: 0 2px 12px rgba(0,0,0,.70);
+  margin:5px 0 8px!important;
+  color:#fff5f5!important;
+  font-family:'Cinzel',Georgia,serif!important;
+  font-size:clamp(26px,2.4vw,39px)!important;
+  font-weight:700!important;
+  line-height:1.16!important;
+  letter-spacing:.015em!important;
+  text-shadow:0 3px 18px rgba(0,0,0,.9);
 }
 html[data-crm-theme="madara"] .app-content :is(
-  .reference-header p, .task-header p, .report-executive-hero p
+  .reference-header p,.task-header p,.report-executive-hero p
 ) {
-  color: #f0d9dc !important;
-  text-shadow: 0 1px 8px rgba(0,0,0,.8);
+  max-width:560px;
+  color:#e5cdd0!important;
+  font-size:13px!important;
+  line-height:1.7!important;
+  text-shadow:0 2px 10px rgba(0,0,0,.9);
 }
-html[data-crm-theme="madara"] .app-content :is(.reference-overline, .task-kicker) {
-  color: #ff7b86 !important;
-  letter-spacing: .13em;
+html[data-crm-theme="madara"] .app-content :is(.reference-overline,.task-kicker) {
+  color:#ff697a!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  letter-spacing:.19em!important;
+}
+html[data-crm-theme="madara"] .app-content .reference-actions {
+  gap:9px!important;
+  align-items:center;
+  justify-content:flex-end;
+}
+html[data-crm-theme="madara"] .app-content .reference-actions :is(button,a) {
+  min-height:40px;
+  padding:9px 13px;
+  font-size:11px;
 }
 
-/* Dark glass surfaces with controlled red accents; status colors stay semantic. */
+/* Premium surfaces: layered black cherry glass, fine ruby borders, disciplined spacing. */
 html[data-crm-theme="madara"] .app-content :is(
-  .reference-panel, .reference-kpi, .reference-client-detail,
-  .reference-activity-card, .reference-related, .reference-creation-modal,
-  .reference-detail-grid, .reference-detail-note, .reference-timesheet,
-  .task-board, .task-metric, .task-item, .task-modal, .settings-panel,
-  .settings-member-row, .settings-theme-option, .settings-appearance-preview,
-  .settings-preview-card, .processes-panel, .processes-source, .processes-entry,
-  .sales-workspace-panel, .sales-card, .sales-metric, .sales-focus-card,
-  .efferd-kpi, .dashboard-chart-card, .dashboard-chart-date, .report-filters,
-  .report-mini-stats > div, .report-donut > div, .mvp-workspace-panel,
-  .mvp-new-client, .mvp-detail-panel, .mvp-metric-card, .mvp-list-panel,
-  .mvp-panel, .panel, .metric, .dialog-inner
+  .reference-panel,.reference-kpi,.reference-client-detail,.reference-activity-card,
+  .reference-related,.reference-creation-modal,.reference-detail-grid,.reference-detail-note,
+  .reference-timesheet,.reference-check,.reference-timer,.task-board,.task-metric,.task-item,
+  .task-modal,.task-modal-content,.settings-panel,.settings-member-row,.settings-theme-option,
+  .settings-appearance-preview,.settings-preview-card,.processes-panel,.processes-source,
+  .processes-entry,.sales-workspace-panel,.sales-card,.sales-metric,.sales-focus-card,
+  .efferd-kpi,.dashboard-chart-card,.dashboard-chart-date,.report-filters,
+  .report-mini-stats>div,.report-donut>div,.mvp-workspace-panel,.mvp-new-client,
+  .mvp-detail-panel,.mvp-metric-card,.mvp-list-panel,.mvp-panel,.panel,.metric,.dialog-inner
 ) {
-  background-color: var(--ui-surface) !important;
+  position:relative;
+  background-color:rgba(22,13,17,.94)!important;
   background-image:
-    radial-gradient(ellipse 72% 85% at 100% 0%, rgba(151, 16, 34, .10), transparent 74%),
-    linear-gradient(145deg, rgba(255,255,255,.018), transparent 58%) !important;
-  border-color: var(--ui-border) !important;
-  color: var(--ui-ink) !important;
-  box-shadow: 0 9px 26px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.025) !important;
+    radial-gradient(ellipse 80% 110% at 100% 0%,rgba(155,13,34,.12),transparent 72%),
+    linear-gradient(145deg,rgba(255,255,255,.035),transparent 54%)!important;
+  border:1px solid rgba(160,55,68,.34)!important;
+  border-radius:var(--madara-card-radius)!important;
+  color:var(--ui-ink)!important;
+  box-shadow:var(--madara-card-shadow)!important;
+  backdrop-filter:blur(10px);
 }
 html[data-crm-theme="madara"] .app-content :is(
-  .reference-panel, .task-board, .settings-panel, .processes-panel,
-  .sales-workspace-panel, .report-filters
+  .reference-panel,.task-board,.settings-panel,.processes-panel,
+  .sales-workspace-panel,.report-filters,.dashboard-chart-card
+) {padding:var(--madara-space)!important}
+html[data-crm-theme="madara"] .app-content :is(
+  .reference-panel-title,.settings-section-heading,.task-board-head,
+  .report-section-head,.processes-panel-head,.dashboard-chart-section-head
+) {border-color:rgba(177,53,68,.30)!important}
+html[data-crm-theme="madara"] .app-content :is(
+  .reference-kpi,.task-metric,.efferd-kpi,.dashboard-chart-card,.sales-metric
 ) {
-  border-radius: 15px !important;
+  min-height:116px;
+  transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease;
 }
 html[data-crm-theme="madara"] .app-content :is(
-  .reference-panel-title, .settings-section-heading, .task-board-head,
-  .report-section-head, .processes-panel-head
-) { border-color: var(--ui-border) !important; }
-html[data-crm-theme="madara"] .app-content :is(
-  .reference-kpi, .task-metric, .efferd-kpi, .dashboard-chart-card
+  .reference-kpi,.task-metric,.efferd-kpi,.dashboard-chart-card,.sales-metric
 ):hover {
-  border-color: #bd2938 !important;
-  box-shadow: 0 0 0 1px rgba(189,41,56,.25), 0 12px 26px rgba(0,0,0,.24) !important;
+  transform:translateY(-3px);
+  border-color:rgba(255,68,91,.65)!important;
+  box-shadow:0 17px 34px rgba(0,0,0,.34),0 0 20px var(--madara-glow-soft)!important;
 }
 html[data-crm-theme="madara"] .app-content :is(
-  .reference-primary, .task-button-primary, .mvp-primary-button
+  .reference-kpi-icon,.task-metric-icon,.reference-panel-title-icon,
+  .reference-avatar,.reference-company-mark,.mvp-icon-button
 ) {
-  background: linear-gradient(110deg, #bd1c30, #861324) !important;
-  border-color: #dc3c4c !important;
-  color: #fff !important;
-  box-shadow: 0 5px 15px rgba(176, 20, 43, .27) !important;
+  color:#ff5369!important;
+  background:linear-gradient(145deg,rgba(145,14,35,.32),rgba(46,10,18,.76))!important;
+  border:1px solid rgba(255,75,98,.26)!important;
+  box-shadow:0 0 16px rgba(231,24,51,.13),inset 0 1px rgba(255,255,255,.06);
 }
 html[data-crm-theme="madara"] .app-content :is(
-  .reference-outline, .task-button-outline, .task-button-subtle,
-  .reference-more, .reference-pager button, .reference-text-button,
-  .reference-activity-actions button
+  .reference-kpi-icon svg,.task-metric-icon svg,.reference-panel-title-icon svg
+) {filter:drop-shadow(0 0 6px rgba(255,35,61,.75));stroke-width:1.9}
+html[data-crm-theme="madara"] .app-content :is(
+  .reference-panel h2,.reference-panel h3,.settings-section-heading h2,
+  .task-board h2,.processes-panel h2,.report-section-head h2,.dashboard-chart-section-head h2,
+  .mvp-panel-header h2
 ) {
-  border-color: var(--ui-border) !important;
-  background: rgba(27, 13, 17, .86) !important;
-  color: #ffb9c0 !important;
+  color:#fff1f2!important;
+  font-family:'Cinzel',Georgia,serif!important;
+  letter-spacing:.012em;
 }
-html[data-crm-theme="madara"] .app-content :is(input, textarea, select) {
-  background-color: #1b1114 !important;
-  color: #fff4f3 !important;
-  border-color: #65303a !important;
+html[data-crm-theme="madara"] .app-content :is(
+  .reference-panel-title p,.reference-panel p,.reference-kpi small,
+  .task-metric small,.settings-hint,.report-subtitle,.muted
+) {color:#cdb7ba!important}
+
+/* Buttons and active controls use lacquered ruby, not flat default red. */
+html[data-crm-theme="madara"] .app-content :is(
+  .reference-primary,.task-button-primary,.mvp-primary-button,.btn:not(.ghost),
+  .crm-reopen-button
+) {
+  background:linear-gradient(112deg,#f02d48 0%,#b71330 48%,#761021 100%)!important;
+  border:1px solid rgba(255,122,137,.66)!important;
+  border-radius:11px!important;
+  color:#fff!important;
+  font-weight:800!important;
+  box-shadow:0 7px 18px rgba(173,13,37,.26),inset 0 1px rgba(255,255,255,.2)!important;
 }
-html[data-crm-theme="madara"] .app-content :is(input, textarea)::placeholder {
-  color: #c9a6ab !important;
-  opacity: 1 !important;
+html[data-crm-theme="madara"] .app-content :is(
+  .reference-outline,.task-button-outline,.task-button-subtle,.btn.ghost,
+  .reference-more,.reference-pager button,.reference-text-button,.reference-activity-actions button
+) {
+  background:rgba(39,16,22,.92)!important;
+  border:1px solid rgba(181,62,78,.40)!important;
+  border-radius:10px!important;
+  color:#ffb7c0!important;
+}
+html[data-crm-theme="madara"] .app-content :is(button,a,[role="button"]) svg {
+  color:currentColor;
+}
+html[data-crm-theme="madara"] .app-content :is(
+  .reference-primary,.reference-outline,.task-button,.btn,.task-queue-tabs button,
+  .processes-tabs button,.reference-tabs button,[role="tab"]
+) {transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,background .18s ease}
+html[data-crm-theme="madara"] .app-content :is(
+  .reference-primary,.reference-outline,.task-button,.btn
+):hover:not(:disabled) {
+  transform:translateY(-1px);
+  box-shadow:0 9px 22px rgba(211,24,49,.22)!important;
+}
+
+/* Inputs and filters: calm dark fields, clear focus and readable placeholder. */
+html[data-crm-theme="madara"] .app-content :is(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+  textarea,select,.reference-search,.task-search,.task-select-wrap,
+  .task-select-institution,.processes-search,.mvp-search
+) {
+  min-height:40px;
+  background:rgba(17,9,13,.96)!important;
+  color:#fff2f3!important;
+  border:1px solid rgba(164,61,76,.42)!important;
+  border-radius:10px!important;
+  box-shadow:inset 0 1px 4px rgba(0,0,0,.22);
+}
+html[data-crm-theme="madara"] .app-content :is(input,textarea)::placeholder {
+  color:#a98b91!important;
+  opacity:1!important;
+}
+html[data-crm-theme="madara"] .app-content :is(input,textarea,select):focus {
+  outline:none!important;
+  border-color:#ff536a!important;
+  box-shadow:0 0 0 3px rgba(242,35,62,.18),0 0 17px rgba(225,24,49,.12)!important;
 }
 html[data-crm-theme="madara"] .app-content select option {
-  background: #1b1114 !important;
-  color: #fff4f3 !important;
+  background:#170d11!important;
+  color:#fff1f2!important;
 }
+
+/* Tables, dividers, tabs and data density. */
 html[data-crm-theme="madara"] .app-content :is(
-  .reference-table thead th, .reference-clients-table thead th, table thead th
+  .reference-table thead th,.reference-clients-table thead th,table thead th
 ) {
-  background: #2a1318 !important;
-  color: #fff0f0 !important;
-  border-color: #592126 !important;
+  background:linear-gradient(180deg,#35131d,#241016)!important;
+  color:#ffccd1!important;
+  border-color:rgba(192,55,72,.34)!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  letter-spacing:.12em!important;
 }
 html[data-crm-theme="madara"] .app-content :is(
-  .reference-table tbody td, .reference-clients-table tbody td, table tbody td
-) { border-color: rgba(123, 52, 62, .48) !important; }
+  .reference-table tbody td,.reference-clients-table tbody td,table tbody td
+) {
+  color:#f0dfe1!important;
+  border-color:rgba(133,52,64,.25)!important;
+}
 html[data-crm-theme="madara"] .app-content :is(
-  .reference-table tbody tr:hover td, .reference-clients-table tr.selected td,
+  .reference-table tbody tr:hover td,.reference-clients-table tr.selected td,
   table tbody tr:hover td
-) { background: rgba(158, 24, 44, .15) !important; }
-
-/* The theme picker uses the supplied close-up; no inaccurate eye icon is overlaid. */
-.settings-theme-madara .settings-theme-preview {
-  position: relative;
-  overflow: hidden;
-  background-image:
-    linear-gradient(90deg, rgba(7,3,5,.46), rgba(7,3,5,.08)),
-    url('/themes/madara-banner.webp') !important;
-  background-size: auto 100% !important;
-  background-position: left center !important;
-  border-color: #8f1e2d !important;
+) {background:rgba(154,19,39,.20)!important}
+html[data-crm-theme="madara"] .app-content :is(
+  .task-queue-tabs button,.processes-tabs button,.reference-tabs button,[role="tab"]
+) {
+  background:rgba(31,13,18,.92)!important;
+  color:#e8d5d8!important;
+  border:1px solid rgba(161,58,73,.34)!important;
+  border-radius:10px!important;
 }
-.settings-theme-madara .settings-theme-preview::after { content: none !important; }
-.settings-theme-madara .settings-theme-preview-content,
-.settings-theme-madara .settings-theme-nav { opacity: .88; }
+html[data-crm-theme="madara"] .app-content :is(
+  .task-queue-tabs button.active,.task-queue-tabs button[aria-selected="true"],
+  .processes-tabs button.active,.reference-tabs button.active,[role="tab"][aria-selected="true"]
+) {
+  background:linear-gradient(110deg,#c91c37,#791126)!important;
+  color:#fff!important;
+  border-color:#f35a6e!important;
+  box-shadow:0 0 15px rgba(233,28,55,.2)!important;
+}
+html[data-crm-theme="madara"] .app-content :is(
+  .reference-status.good,.task-badge-em_dia,.pill.ok,.task-status-ok,.status-success
+) {background:var(--ui-success-bg)!important;color:var(--ui-success-ink)!important}
+html[data-crm-theme="madara"] .app-content :is(
+  .reference-status.danger,.task-badge-vencido,.task-priority-urgente,.pill.danger,.error,.status-danger
+) {background:var(--ui-danger-bg)!important;color:var(--ui-danger-ink)!important}
+html[data-crm-theme="madara"] .app-content :is(
+  .reference-status.pending,.reference-status.neutral,.task-badge-hoje,
+  .task-badge-sem_data,.task-source-warning,.task-priority-alta,.pill.warn,
+  .reference-notice,.notice,.task-notice,.status-warning
+) {
+  background:var(--ui-warning-bg)!important;
+  color:var(--ui-warning-ink)!important;
+  border-color:rgba(206,151,75,.34)!important;
+}
 
-/* A restrained accent remains visible when the sidebar is collapsed. */
+/* Top bar, account controls, notification and modal polish. */
+html[data-crm-theme="madara"] .reference-top-tools {
+  min-height:62px;
+  padding:10px clamp(20px,3.2vw,52px);
+}
+html[data-crm-theme="madara"] .reference-top-alert {
+  color:#ff5b70!important;
+  filter:drop-shadow(0 0 7px rgba(255,36,61,.52));
+}
+html[data-crm-theme="madara"] .reference-top-alert:hover {
+  background:rgba(187,20,43,.20)!important;
+}
+html[data-crm-theme="madara"] .reference-top-divider {background:rgba(206,75,90,.34)!important}
+html[data-crm-theme="madara"] .reference-top-avatar {
+  background:linear-gradient(145deg,#ed304b,#741126)!important;
+  border:1px solid rgba(255,139,150,.5);
+  box-shadow:0 0 17px rgba(231,26,53,.24);
+  color:#fff!important;
+}
+html[data-crm-theme="madara"] .app-content :is(.dialog,.task-modal-overlay) {
+  background:rgba(5,2,4,.78)!important;
+  backdrop-filter:blur(7px);
+}
+html[data-crm-theme="madara"] .app-content :is(.dialog-inner,.task-modal,.task-modal-content) {
+  border:1px solid rgba(232,67,86,.45)!important;
+}
+
+/* Keep the theme preview faithful; do not invent or superimpose an eye symbol. */
+html[data-crm-theme="madara"] .settings-theme-madara .settings-theme-preview {
+  position:relative;
+  overflow:hidden;
+  background-image:linear-gradient(90deg,rgba(7,3,5,.35),rgba(7,3,5,.04)),var(--madara-banner-image)!important;
+  background-size:cover!important;
+  background-position:center 42%!important;
+  border-color:#b82a40!important;
+}
+html[data-crm-theme="madara"] .settings-theme-madara .settings-theme-preview::after {content:none!important}
+
+/* Sidebar collapsed: keep the same portrait centered and proportional. */
 html[data-crm-theme="madara"].sidebar-collapsed .app-sidebar::before {
-  opacity: .42;
-  background-position: center, 54% 38%;
+  inset:110px 2px 116px;
+  background-size:contain;
+  opacity:.50;
 }
 html[data-crm-theme="madara"] .app-content :focus-visible,
 html[data-crm-theme="madara"] .app-sidebar :focus-visible {
-  outline: 3px solid #ff6775 !important;
-  outline-offset: 2px !important;
+  outline:2px solid #ff697b!important;
+  outline-offset:3px!important;
+  box-shadow:0 0 0 5px rgba(255,43,67,.14)!important;
 }
 
-@media (max-width: 750px) {
-  html[data-crm-theme="madara"] .app-shell .app-sidebar::before { display: none !important; }
+@media(max-width:1100px) {
+  html[data-crm-theme="madara"] .app-content :is(
+    .reference-dashboard .reference-header,.task-header,.report-dashboard .report-executive-hero
+  ) {min-height:210px!important;padding-left:42%!important}
+  html[data-crm-theme="madara"] .app-content .reference-actions {flex-wrap:wrap}
+}
+@media(max-width:750px) {
+  html[data-crm-theme="madara"] .app-shell .app-sidebar::before {display:none!important}
   html[data-crm-theme="madara"] .app-shell .app-sidebar {
-    background-image: linear-gradient(100deg, rgba(30,6,12,.95), rgba(10,4,7,.95)) !important;
+    width:100%;
+    flex:0 0 auto;
+    height:auto;
+    min-height:0;
+    background-image:linear-gradient(100deg,rgba(30,6,12,.96),rgba(10,4,7,.96))!important;
   }
   html[data-crm-theme="madara"] .app-content :is(
-    .reference-dashboard .reference-header, .task-header,
-    .report-dashboard .report-executive-hero
+    .reference-dashboard .reference-header,.task-header,.report-dashboard .report-executive-hero
   ) {
-    min-height: 250px !important;
-    padding: 148px 18px 18px !important;
-    background-image: linear-gradient(180deg, rgba(11,8,10,0) 0%, rgba(11,8,10,.94) 100%) !important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    justify-content:flex-end!important;
+    min-height:260px!important;
+    padding:145px 18px 18px!important;
+    gap:14px!important;
   }
   html[data-crm-theme="madara"] .app-content :is(
-    .reference-dashboard .reference-header, .task-header,
-    .report-dashboard .report-executive-hero
+    .reference-dashboard .reference-header,.task-header,.report-dashboard .report-executive-hero
   )::before {
-    inset: 0 0 auto !important;
-    width: 100% !important;
-    height: 132px !important;
-    background-position: center, left center !important;
+    inset:0 0 auto!important;
+    width:100%!important;
+    height:150px!important;
+    background-position:center 40%!important;
+  }
+  html[data-crm-theme="madara"] .app-content .reference-actions {justify-content:flex-start}
+  html[data-crm-theme="madara"] .app-content :is(.reference-panel,.task-board,.settings-panel,.processes-panel) {
+    padding:16px!important;
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  html[data-crm-theme="madara"] *,
-  html[data-crm-theme="madara"] *::before,
-  html[data-crm-theme="madara"] *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+@media(prefers-reduced-motion:reduce) {
+  html[data-crm-theme="madara"] *,html[data-crm-theme="madara"] *::before,html[data-crm-theme="madara"] *::after {
+    transition-duration:.01ms!important;
+    animation-duration:.01ms!important;
+    scroll-behavior:auto!important;
+  }
 }
 @media print {
-  html[data-crm-theme="madara"] .app-content,
-  html[data-crm-theme="madara"] .app-sidebar { background: #fff !important; color: #111 !important; }
-  html[data-crm-theme="madara"] .app-content :is(
-    .reference-header, .task-header, .report-executive-hero
-  ) {
-    background: #fff !important;
-    border-color: transparent !important;
-    box-shadow: none !important;
+  html[data-crm-theme="madara"] .app-content,html[data-crm-theme="madara"] .app-sidebar {
+    background:#fff!important;color:#111!important;
   }
-  html[data-crm-theme="madara"] .app-shell .app-sidebar::before { display: none !important; }
+  html[data-crm-theme="madara"] .app-shell .app-sidebar::before {display:none!important}
+  html[data-crm-theme="madara"] .app-content :is(.reference-header,.task-header,.report-executive-hero) {
+    background:#fff!important;border-color:transparent!important;box-shadow:none!important;
+  }
 }
