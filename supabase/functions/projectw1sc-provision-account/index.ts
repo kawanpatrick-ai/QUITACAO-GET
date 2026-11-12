@@ -4,38 +4,14 @@ import {
   normalizeNewMemberInput,
   normalizeMembershipChange,
 } from './_shared/user-provisioning.mjs';
+import { corsHeadersFor, isAllowedAppOrigin } from './_shared/cors.mjs';
 
-const PRODUCTION_ORIGIN = 'https://quitacao-get.vercel.app';
-const exactOrigins = new Set([
-  PRODUCTION_ORIGIN,
-  'https://quitacao-get-kawpk.vercel.app',
-  'https://quitacao-get-git-main-kawpk.vercel.app',
-  'https://quitacao-get-git-projectw1sc-crm-kawpk.vercel.app',
-  'https://quitacao-h0561mu1s-kawpk.vercel.app',
-]);
-
-function allowedOrigin(origin: string | null) {
-  if (!origin) return true;
-  try {
-    const parsed = new URL(origin);
-    if (parsed.protocol !== 'https:') return false;
-    if (exactOrigins.has(parsed.origin)) return true;
-    return /^quitacao-get-[a-z0-9-]+-kawpk\.vercel\.app$/i.test(parsed.hostname);
-  } catch {
-    return false;
-  }
+function additionalAllowedOrigins() {
+  return Deno.env.get('CORS_ALLOWED_ORIGINS') || '';
 }
 
 function headersFor(origin: string | null) {
-  return {
-    'Access-Control-Allow-Origin': origin && allowedOrigin(origin) ? origin : PRODUCTION_ORIGIN,
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Max-Age': '86400',
-    'Content-Type': 'application/json;charset=utf-8',
-    'Cache-Control': 'no-store',
-    'Vary': 'Origin',
-  };
+  return corsHeadersFor(origin, additionalAllowedOrigins());
 }
 
 function reply(body: Record<string, unknown>, status = 200, origin: string | null = null) {
@@ -44,7 +20,7 @@ function reply(body: Record<string, unknown>, status = 200, origin: string | nul
 
 Deno.serve(async (request) => {
   const origin = request.headers.get('origin');
-  if (!allowedOrigin(origin)) return reply({ ok: false, error: 'Origem não autorizada.' }, 403, origin);
+  if (!isAllowedAppOrigin(origin, additionalAllowedOrigins())) return reply({ ok: false, error: 'Origem não autorizada.' }, 403, origin);
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: headersFor(origin) });
   if (request.method !== 'POST') return reply({ ok: false, error: 'Método não permitido.' }, 405, origin);
 
