@@ -498,7 +498,7 @@ html[data-crm-theme="madara"] .settings-theme-madara .settings-theme-preview {
 html[data-crm-theme="madara"] .settings-theme-madara .settings-theme-preview::after {content:none!important}
 
 /* Sidebar collapsed: keep the same portrait centered and proportional. */
-html[data-crm-theme="madara"].sidebar-collapsed .app-sidebar::before {
+html[data-crm-theme="madara"] .app-shell.sidebar-collapsed .app-sidebar::before {
   inset:110px 2px 116px;
   background-size:contain;
   opacity:.50;
