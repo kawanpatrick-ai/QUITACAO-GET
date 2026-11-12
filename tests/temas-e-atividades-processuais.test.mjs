@@ -42,11 +42,12 @@ test('todos os temas possuem contraste WCAG AA para texto, legenda, botoes, menu
 
 test('tema aparece no shell e nos estilos globais com opcao de movimento reduzido',()=>{
  const shell=file('components/crm-shell.jsx');
+ const settings=file('app/configuracoes/page.jsx');
  const css=file('app/crm-themes.css');
  const layout=file('app/layout.jsx');
- assert.match(shell,/Seletor de tema|Escolher tema/);
+ assert.match(settings,/Aparência do CRM|Escolha um tema/);
  assert.match(shell,/localStorage/);
- assert.match(shell,/crmTheme/);
+ assert.match(shell,/projectw1sc\.crm-theme/);
  assert.match(layout,/crm-themes\.css/);
  assert.match(css,/\.task-board/);
  assert.match(css,/\.reference-activity-form/);
