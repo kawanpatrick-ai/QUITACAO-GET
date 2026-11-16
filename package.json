@@ -8,10 +8,13 @@
     "build": "next build",
     "start": "next start",
     "test": "node --test tests/*.test.mjs",
-    "typecheck": "tsc --noEmit && deno check supabase/functions/projectw1sc-provision-account/index.ts"
+    "typecheck": "tsc --noEmit && deno check supabase/functions/projectw1sc-provision-account/index.ts",
+    "cf:build": "opennextjs-cloudflare build",
+    "cf:preview": "opennextjs-cloudflare preview",
+    "cf:deploy": "opennextjs-cloudflare deploy"
   },
   "engines": {
-    "node": ">=20"
+    "node": "22.x"
   },
   "dependencies": {
     "next": "15.5.29",
@@ -25,6 +28,11 @@
   "devDependencies": {
     "@types/node": "^22.19.0",
     "@types/react": "^19.2.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "@opennextjs/cloudflare": "1.20.17",
+    "@tailwindcss/postcss": "4.3.5",
+    "postcss": "8.5.33",
+    "tailwindcss": "4.3.5",
+    "wrangler": "4.162.0"
   }
 }
