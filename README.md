@@ -36,7 +36,7 @@ O CRM também permite importar planilhas e consultar informações processuais p
 | **Instituições** | Cadastro de financeiras, bancos, assessorias, contatos e imagens institucionais. |
 | **Minhas atividades** | Registro, consulta e edição de atividades, com vínculo opcional a clientes e processos. |
 | **Relatórios** | Resumos operacionais, indicadores por período, exportação e versão preparada para PDF. |
-| **Configurações** | Preferências da conta, senha, foto, temas, cores e imagem de fundo. |
+| **Configurações** | Perfil, senha, permissões e administração de usuários. |
 
 Além das áreas principais, a aplicação oferece importação de Excel e acompanhamento da origem dos registros. A identidade visual corporativa é padronizada para manter consistência entre os módulos.
 
@@ -55,8 +55,8 @@ Além das áreas principais, a aplicação oferece importação de Excel e acomp
 Para trabalhar no projeto, é necessário ter o **Node.js 20 ou superior**, o Git e acesso a um projeto Supabase devidamente configurado.
 
 ```bash
-git clone https://github.com/GET CRM/Automation.git
-cd Automation
+git clone https://github.com/kawanpatrick-ai/QUITACAO-GET.git
+cd QUITACAO-GET
 npm install
 ```
 
