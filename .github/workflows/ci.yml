@@ -18,7 +18,7 @@ jobs:
         with:
           deno-version: v2.x
           cache: true
-      - run: npm install --no-audit --no-fund
+      - run: npm ci --no-audit --no-fund
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
