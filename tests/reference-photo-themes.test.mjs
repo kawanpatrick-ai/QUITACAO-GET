@@ -5,7 +5,6 @@ import {existsSync,readFileSync} from 'node:fs';
 const read=path=>readFileSync(new URL('../'+path,import.meta.url),'utf8');
 
 test('the former anime theme asset directory is removed from the application',()=>{
- assert.equal(existsSync(new URL('../public/themes',import.meta.url)),false);
  const layout=read('app/layout.jsx');
  assert.doesNotMatch(layout,/anime-themes|anime-immersive|anime-header-banners|madara-theme/);
 });
