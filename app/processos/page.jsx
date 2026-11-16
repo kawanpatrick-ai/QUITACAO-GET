@@ -5,6 +5,7 @@ import CrmShell from '../../components/crm-shell';
 import ProfessionalAuth from '../../components/professional-auth';
 import EfferdKpi from '../../components/efferd-kpi';
 import {getClient} from '../../lib/supabase-client';
+import {fetchAllRows} from '../../lib/supabase-pagination.mjs';
 import {useCrmAccess} from '../../lib/use-crm-access';
 import {ADMIN_EMAIL,signInWithPassword} from '../../lib/login.mjs';
 import {formatProcessNumber,mergeEvents,normalizeDjen,buildDjenUrl} from '../../lib/processos-oficiais.mjs';
@@ -61,9 +62,9 @@ export default function ProcessosPage(){
   if(!db||!access.allowed)return;
   setPageLoading(true);setNotice('');
   const [a,b,c]=await Promise.all([
-   db.from('crm_processes').select('id,process_number,process_type,client_id,created_at').order('created_at',{ascending:false}).limit(1000),
-   db.from('crm_completed_activities').select('id,process_number,process_type,client_id,performed_on').is('deleted_at',null).not('process_number','is',null).order('performed_on',{ascending:false}).limit(1000),
-   db.from('crm_clients').select('id,name,institution').order('name').limit(1000)
+   fetchAllRows(() => db.from('crm_processes').select('id,process_number,process_type,client_id,created_at').order('created_at',{ascending:false}).order('id',{ascending:false}),1000),
+   fetchAllRows(() => db.from('crm_completed_activities').select('id,process_number,process_type,client_id,performed_on').is('deleted_at',null).not('process_number','is',null).order('performed_on',{ascending:false}).order('id',{ascending:false}),1000),
+   fetchAllRows(() => db.from('crm_clients').select('id,name,institution').order('name').order('id'),1000)
   ]);
   const errors=[a,b,c].filter(x=>x.error).map(x=>x.error.message);
   if(errors.length)setNotice('Não foi possível carregar todos os registros: '+errors.join(' · '));

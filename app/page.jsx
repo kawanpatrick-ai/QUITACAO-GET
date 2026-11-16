@@ -13,6 +13,7 @@ import {buildClientPatch} from '../lib/client-edit.mjs';
 import {calculateNextReturn} from '../lib/return-date.mjs';
 import {crmAreaHref,areaFromQuery} from '../lib/crm-navigation.mjs';
 import {getClient} from '../lib/supabase-client';
+import {fetchAllRows} from '../lib/supabase-pagination.mjs';
 import {useCrmAccess} from '../lib/use-crm-access';
 import {ADMIN_EMAIL,signInWithPassword as passwordLogin,sendRecovery,changePassword,isRecoveryRateLimit,canRequestRecovery,RECOVERY_COOLDOWN_MS} from '../lib/login.mjs';
 const RECOVERY_LOCK_KEY='projectw1sc:recovery-until';
@@ -52,7 +53,7 @@ export default function Page(){
   }
   return()=>{alive=false;subscription.unsubscribe()};
  },[db]);
- async function load(){if(!db)return;setBusy(true);const [a,b,c,d]=await Promise.all([db.from('crm_clients').select('*').order('name').limit(1000),db.from('crm_parties').select('*').order('name'),db.from('crm_import_runs').select('id,status,started_at,finished_at,rows_read,clients_merged,error').order('started_at',{ascending:false}).limit(10),db.from('crm_unmatched_sources').select('source_ref,client_name,source_tab,reason').order('created_at',{ascending:false}).limit(700)]);if(a.error)setNotice('Erro ao consultar dados: '+a.error.message);else{setClients((a.data||[]).map(client=>{try{const nextReturn=calculateNextReturn(client.last_contact,client.waiting_business_days);return nextReturn?{...client,next_return:nextReturn}:client}catch{return client}}));setUpdated(new Date())}if(!b.error){
+ async function load(){if(!db)return;setBusy(true);const [a,b,c,d]=await Promise.all([fetchAllRows(() => db.from('crm_clients').select('*').order('name').order('id'),1000),fetchAllRows(() => db.from('crm_parties').select('*').order('name').order('id'),1000),db.from('crm_import_runs').select('id,status,started_at,finished_at,rows_read,clients_merged,error').order('started_at',{ascending:false}).limit(10),db.from('crm_unmatched_sources').select('source_ref,client_name,source_tab,reason').order('created_at',{ascending:false}).limit(700)]);if(a.error)setNotice('Erro ao consultar dados: '+a.error.message);else{setClients((a.data||[]).map(client=>{try{const nextReturn=calculateNextReturn(client.last_contact,client.waiting_business_days);return nextReturn?{...client,next_return:nextReturn}:client}catch{return client}}));setUpdated(new Date())}if(!b.error){
   const entries=b.data||[];setParties(entries);
   const uploaded=entries.filter(x=>x.logo_path);
   if(uploaded.length){
