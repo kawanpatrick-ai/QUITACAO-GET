@@ -8,7 +8,7 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -23,3 +23,76 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run cf:build
+      - name: Prepare deployment payload for direct Cloudflare upload
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          python - <<'PY'
+          import base64
+          import hashlib
+          import json
+          import mimetypes
+          from pathlib import Path
+
+          source = Path(".open-next")
+          if not (source / "worker.js").is_file():
+              raise SystemExit("OpenNext output .open-next/worker.js is missing")
+          output = Path("/tmp/get-crm-cloudflare-bundle")
+          payload_dir = output / "payloads"
+          payload_dir.mkdir(parents=True, exist_ok=True)
+          (output / ".open-next").mkdir(parents=True, exist_ok=True)
+          import shutil
+          shutil.copytree(source, output / ".open-next", dirs_exist_ok=True)
+          shutil.copy2("wrangler.jsonc", output / "wrangler.jsonc")
+
+          module_files = []
+          asset_files = []
+          assets_dir = source / "assets"
+
+          def encode_file(path, kind, relative_name):
+              data = path.read_bytes()
+              digest = hashlib.sha256(data).digest()[:16].hex()
+              encoded = base64.b64encode(data).decode("ascii")
+              chunk_paths = []
+              chunk_size = 60_000
+              for offset in range(0, len(encoded), chunk_size):
+                  part_index = offset // chunk_size
+                  chunk_name = f"{kind}-{digest}-{part_index:04d}.b64"
+                  (payload_dir / chunk_name).write_text(encoded[offset:offset + chunk_size])
+                  chunk_paths.append(f"payloads/{chunk_name}")
+              content_type = mimetypes.guess_type(path.name)[0] or "application/octet-stream"
+              if kind == "module" and path.suffix in {".js", ".mjs"}:
+                  content_type = "application/javascript+module"
+              return {
+                  "name": relative_name,
+                  "hash": digest,
+                  "size": len(data),
+                  "content_type": content_type,
+                  "chunks": chunk_paths
+              }
+
+          for path in sorted(source.rglob("*")):
+              if not path.is_file():
+                  continue
+              relative = path.relative_to(source).as_posix()
+              if assets_dir in path.parents:
+                  asset_files.append(encode_file(path, "asset", "/" + path.relative_to(assets_dir).as_posix()))
+              else:
+                  module_files.append(encode_file(path, "module", relative))
+
+          (output / "module-manifest.json").write_text(json.dumps({"modules": module_files}, separators=(",", ":")))
+          (output / "asset-manifest.json").write_text(json.dumps({"assets": asset_files}, separators=(",", ":")))
+          print(f"Prepared {len(module_files)} modules and {len(asset_files)} static assets")
+          print(f"Encoded payload size: {sum(p.stat().st_size for p in payload_dir.iterdir()):,} bytes")
+          PY
+      - name: Publish deployment payload on cloudflare-artifacts branch
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan cloudflare-artifacts
+          git rm -rf . >/dev/null 2>&1 || true
+          mkdir -p bundle
+          cp -a /tmp/get-crm-cloudflare-bundle/. bundle/
+          git add -f bundle
+          git commit -m "chore: publish GET CRM Cloudflare deployment bundle"
+          git push origin HEAD:cloudflare-artifacts --force
