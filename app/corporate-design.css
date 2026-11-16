@@ -1,0 +1,105 @@
+/* GET CRM — corporate visual system. One stable palette, no character themes. */
+:root,
+html[data-crm-theme="corporate"]{
+  color-scheme:light;
+  --ui-page:#f4f7fa;
+  --ui-surface:#ffffff;
+  --ui-ink:#172b3f;
+  --ui-muted:#536579;
+  --ui-tertiary:#687b8e;
+  --ui-accent:#176b66;
+  --ui-accent-ink:#ffffff;
+  --ui-nav:#14283f;
+  --ui-nav-ink:#f7fafc;
+  --ui-border:#dce4ec;
+  --ui-tint:#e8f2f1;
+  --ui-tint-ink:#155a56;
+  --ui-warning-bg:#fff4df;
+  --ui-warning-ink:#754b0b;
+  --ui-success-bg:#e6f4eb;
+  --ui-success-ink:#1e633e;
+  --ui-danger-bg:#ffebed;
+  --ui-danger-ink:#9b2637;
+  --ui-neutral-bg:#edf1f5;
+  --ui-neutral-ink:#405267;
+  --crm-accent:#176b66;
+  --crm-accent-deep:#14283f;
+  --crm-accent-quiet:#729c9a;
+  --crm-canvas:#f4f7fa;
+  --crm-surface:#ffffff;
+  --crm-border:#dce4ec;
+  --crm-shadow:0 2px 8px rgba(20,40,63,.045),0 12px 30px rgba(20,40,63,.035);
+  --crm-shadow-hover:0 8px 22px rgba(20,40,63,.09),0 18px 42px rgba(20,40,63,.06);
+}
+html,body{background:var(--ui-page)!important;color:var(--ui-ink)!important}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.app-shell{background:var(--ui-page)!important;color:var(--ui-ink)!important}
+.app-sidebar{
+  width:256px!important;flex-basis:256px!important;
+  background:var(--ui-nav)!important;color:var(--ui-nav-ink)!important;
+  border-right:1px solid #203c58!important;box-shadow:4px 0 20px rgba(15,35,56,.08)!important;
+  padding:22px 15px 18px!important;
+}
+.app-sidebar::before,.app-sidebar::after{content:none!important;display:none!important}
+.app-identity{display:flex!important;align-items:center!important;gap:10px!important;padding:4px 5px 22px!important;margin:0 0 22px!important;border-bottom:1px solid #2d435b!important;text-align:left!important}
+.app-sidebar-toggle{display:grid;place-items:center;width:34px;height:34px;flex:none;border:1px solid #3b526a;border-radius:9px;background:#203750;color:#e9f1f8}
+.app-sidebar-toggle:hover{background:#2c4965}
+.app-brand-link{display:flex;align-items:center;min-width:0}
+.app-brand-compact{width:38px!important;height:38px!important;object-fit:contain}
+.app-brand-full{width:158px!important;height:42px!important;object-fit:contain}
+.sidebar-collapsed .app-sidebar{width:78px!important;flex-basis:78px!important;padding-inline:12px!important}
+.sidebar-collapsed .app-identity{justify-content:center;padding-inline:0!important}
+.sidebar-collapsed .app-brand-full{display:none!important}
+.sidebar-collapsed .app-brand-compact{width:40px!important}
+.sidebar-collapsed .app-nav-link{justify-content:center;padding-inline:8px!important}
+.sidebar-collapsed .app-nav-link span,.sidebar-collapsed .app-section-name,.sidebar-collapsed .app-nav-footer{display:none!important}
+.sidebar-expanded .app-sidebar{width:256px!important;flex-basis:256px!important}
+.app-section-name{display:block!important;padding:0 10px 10px!important;color:#9eb1c4!important;font-size:10px!important;font-weight:750!important;letter-spacing:1.25px!important}
+.app-nav{display:grid!important;gap:5px!important}
+.app-nav-link{min-height:43px!important;padding:10px 12px!important;border-radius:9px!important;color:#d8e2ec!important;font-size:13px!important;font-weight:600!important;gap:11px!important;box-shadow:none!important;transform:none!important}
+.app-nav-link svg{color:#9eb4c8!important}
+.app-nav-link:hover{background:#203b56!important;color:#fff!important;transform:none!important}
+.app-nav-link[aria-current="page"],.app-nav-link.active{background:#176b66!important;color:#fff!important;box-shadow:inset 3px 0 #8dd0c9!important}
+.app-nav-link[aria-current="page"] svg,.app-nav-link.active svg{color:#fff!important}
+.app-nav-footer{border-top:1px solid #2d435b!important;color:#d4e0eb!important;padding:17px 8px 2px!important}
+.app-private,.app-account-email{color:#b9c9d8!important}
+.app-account-actions a,.app-account-actions button{background:#203b56!important;border:1px solid #38516a!important;color:#eef4f9!important;border-radius:8px!important}
+.app-account-actions a:hover,.app-account-actions button:hover{background:#2b4b69!important}
+.app-copyright{color:#9eb1c4!important}
+.app-content{min-width:0;background:var(--ui-page)!important}
+.app-content .main,.app-content .task-main{max-width:1680px;margin-inline:auto}
+.reference-top-tools{background:rgba(255,255,255,.94)!important;border-bottom:1px solid var(--ui-border)!important}
+.reference-dashboard{color:var(--ui-ink)!important}
+.reference-header h1,.app-content h1,.app-content h2,.app-content h3{color:var(--ui-ink)!important;font-family:Inter,ui-sans-serif,system-ui,sans-serif!important}
+.reference-overline,.app-content .eyebrow,.app-content .task-kicker{color:var(--ui-accent)!important;letter-spacing:.09em!important}
+.reference-panel,.app-content .panel,.app-content .metric,.task-board,.settings-panel,.dashboard-chart-card,.processes-panel{
+  background:var(--ui-surface)!important;border-color:var(--ui-border)!important;
+  border-radius:12px!important;box-shadow:var(--crm-shadow)!important;
+}
+.reference-primary,.btn:not(.ghost),.task-button-primary{background:var(--ui-accent)!important;border-color:var(--ui-accent)!important;color:#fff!important}
+.reference-outline,.btn.ghost{background:#fff!important;border-color:var(--ui-border)!important;color:var(--ui-ink)!important}
+.reference-table th,.reference-table td{border-color:var(--ui-border)!important}
+.reference-table thead th{color:var(--ui-muted)!important}
+.reference-table tbody td{color:var(--ui-ink)!important}
+input,select,textarea,.input{border-color:var(--ui-border)!important;color:var(--ui-ink)!important;background:#fff!important}
+input:focus,select:focus,textarea:focus,.input:focus{outline:3px solid rgba(23,107,102,.16)!important;border-color:var(--ui-accent)!important}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:3px solid #55a9a2!important;outline-offset:2px!important}
+@media(max-width:700px){
+ .app-sidebar{width:100%!important;flex-basis:auto!important;padding:10px 12px 8px!important}
+ .sidebar-collapsed .app-sidebar,.sidebar-expanded .app-sidebar{width:100%!important;flex-basis:auto!important}
+ .app-identity{justify-content:flex-start!important;padding:0 94px 9px 2px!important;margin:0!important;border:0!important}
+ .app-brand-full{width:140px!important;height:36px!important}
+ .app-brand-compact{display:none!important}
+ .app-sidebar-toggle{display:none!important}
+ .app-section-name,.app-nav-footer{display:none!important}
+ .app-nav{display:flex!important;overflow-x:auto!important;gap:4px!important}
+ .app-nav-link{display:flex!important;justify-content:flex-start!important;flex:none!important;min-height:35px!important;padding:8px 10px!important}
+ .app-nav-link span{display:inline!important;visibility:visible!important}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+@media print{
+ html,body,.app-shell,.app-content{background:#fff!important;color:#172b3f!important}
+ .app-sidebar,.reference-top-tools{display:none!important}
+}
