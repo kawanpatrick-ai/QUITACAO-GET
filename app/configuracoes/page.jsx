@@ -1,6 +1,6 @@
 'use client';
 import {useEffect,useMemo,useState} from 'react';
-import {Camera,ChevronLeft,Eye,EyeOff,KeyRound,LockKeyhole,Save,UserRound,Users,Trash2} from 'lucide-react';
+import {Camera,ChevronLeft,Eye,EyeOff,KeyRound,LockKeyhole,Save,ShieldCheck,UserRound,Users,Trash2} from 'lucide-react';
 import CrmShell from '../../components/crm-shell';
 import ProfessionalAuth from '../../components/professional-auth';
 import {getClient} from '../../lib/supabase-client';
