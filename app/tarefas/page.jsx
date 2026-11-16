@@ -85,7 +85,7 @@ export default function TarefasPage(){
  const load=useCallback(async()=>{
   if(!db)return;
   setLoading(true);
-  const {data,error}=await fetchAllRows(() => db.from('crm_clients').select('*').order('name',{ascending:true}),1000);
+  const {data,error}=await fetchAllRows(() => db.from('crm_clients').select('*').order('name',{ascending:true}).order('id'),1000);
   if(error)setNotice('Não foi possível carregar a fila: '+error.message);
   else{setClients((data||[]).map(client=>{try{const nextReturn=calculateNextReturn(client.last_contact,client.waiting_business_days);return nextReturn?{...client,next_return:nextReturn}:client}catch{return client}}));setNotice('')}
   setLoading(false);
