@@ -2,6 +2,7 @@
 import {useCallback,useEffect,useMemo,useState} from 'react';
 import {AlertCircle,AlertTriangle,ArrowLeft,ArrowUpRight,BadgeCheck,CalendarDays,CheckCircle2,ChevronRight,ClipboardCheck,Clock3,FileClock,Filter,Flag,History,Inbox,ListChecks,Loader2,Pencil,NotebookPen,Phone,Plus,RefreshCcw,Search,Send,ShieldCheck,UserRound,Users,X} from 'lucide-react';
 import {getClient} from '../../lib/supabase-client';
+import {fetchAllRows} from '../../lib/supabase-pagination.mjs';
 import CrmShell from '../../components/crm-shell';
 import ProfessionalAuth from '../../components/professional-auth';
 import EfferdKpi from '../../components/efferd-kpi';
@@ -84,7 +85,7 @@ export default function TarefasPage(){
  const load=useCallback(async()=>{
   if(!db)return;
   setLoading(true);
-  const {data,error}=await db.from('crm_clients').select('*').order('name',{ascending:true}).limit(1000);
+  const {data,error}=await fetchAllRows(() => db.from('crm_clients').select('*').order('name',{ascending:true}),1000);
   if(error)setNotice('Não foi possível carregar a fila: '+error.message);
   else{setClients((data||[]).map(client=>{try{const nextReturn=calculateNextReturn(client.last_contact,client.waiting_business_days);return nextReturn?{...client,next_return:nextReturn}:client}catch{return client}}));setNotice('')}
   setLoading(false);
