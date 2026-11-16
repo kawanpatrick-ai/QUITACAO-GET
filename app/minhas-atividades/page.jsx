@@ -63,8 +63,8 @@ export default function MinhasAtividades(){
   if(!db||!session?.user?.id)return;
   setBusy(true);
   const [a,b]=await Promise.all([
-   fetchAllRows(() => db.from('crm_completed_activities').select('*').eq('actor_id',session.user.id).is('deleted_at',null).order('performed_on',{ascending:false}).order('created_at',{ascending:false}),1000),
-   fetchAllRows(() => db.from('crm_clients').select('id,name,institution,contacted_party,workflow_status').order('name'),1000)
+   fetchAllRows(() => db.from('crm_completed_activities').select('*').eq('actor_id',session.user.id).is('deleted_at',null).order('performed_on',{ascending:false}).order('created_at',{ascending:false}).order('id',{ascending:false}),1000),
+   fetchAllRows(() => db.from('crm_clients').select('id,name,institution,contacted_party,workflow_status').order('name').order('id'),1000)
   ]);
   if(a.error)setNotice('Erro ao carregar atividades: '+a.error.message);else{setRecords(a.data||[]);setNotice('')}
   if(b.error)setNotice('Erro ao carregar vínculos de clientes: '+b.error.message);else setClients(b.data||[]);
