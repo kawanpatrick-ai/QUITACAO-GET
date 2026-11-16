@@ -40,18 +40,16 @@ test('todos os temas possuem contraste WCAG AA para texto, legenda, botoes, menu
  }
 });
 
-test('tema aparece no shell e nos estilos globais com opcao de movimento reduzido',()=>{
+test('identidade corporativa aparece no shell e nos estilos globais com movimento reduzido',()=>{
  const shell=file('components/crm-shell.jsx');
  const settings=file('app/configuracoes/page.jsx');
- const css=file('app/crm-themes.css');
+ const css=file('app/corporate-design.css');
  const layout=file('app/layout.jsx');
- assert.match(settings,/Aparência do CRM|Escolha um tema/);
- assert.match(shell,/localStorage/);
- assert.match(shell,/projectw1sc\.crm-theme/);
- assert.match(layout,/crm-themes\.css/);
- assert.match(css,/\.task-board/);
- assert.match(css,/\.reference-activity-form/);
+ assert.match(shell,/get-crm-wordmark\\.svg/);
+ assert.doesNotMatch(settings,/Aparência do CRM|Escolha um tema|Madara/);
+ assert.match(layout,/corporate-design\\.css/);
  assert.match(css,/prefers-reduced-motion/);
+ assert.match(css,/:focus-visible/);
 });
 
 test('atividades com numero e tipo, edicao e exclusao na mesma pagina e verificadas por dono',()=>{
