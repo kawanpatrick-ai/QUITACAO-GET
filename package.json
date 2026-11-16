@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "test": "node --test tests/*.test.mjs",
-    "typecheck": "deno check supabase/functions/projectw1sc-provision-account/index.ts"
+    "typecheck": "tsc --noEmit && deno check supabase/functions/projectw1sc-provision-account/index.ts"
   },
   "engines": {
     "node": ">=20"
@@ -21,5 +21,10 @@
     "google-auth-library": "9.15.1",
     "lucide-react": "0.468.0",
     "read-excel-file": "9.3.10"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.0",
+    "@types/react": "^19.2.2",
+    "typescript": "^5.9.3"
   }
 }
