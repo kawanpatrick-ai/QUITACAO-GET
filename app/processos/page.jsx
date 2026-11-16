@@ -62,9 +62,9 @@ export default function ProcessosPage(){
   if(!db||!access.allowed)return;
   setPageLoading(true);setNotice('');
   const [a,b,c]=await Promise.all([
-   fetchAllRows(() => db.from('crm_processes').select('id,process_number,process_type,client_id,created_at').order('created_at',{ascending:false}),1000),
-   fetchAllRows(() => db.from('crm_completed_activities').select('id,process_number,process_type,client_id,performed_on').is('deleted_at',null).not('process_number','is',null).order('performed_on',{ascending:false}),1000),
-   fetchAllRows(() => db.from('crm_clients').select('id,name,institution').order('name'),1000)
+   fetchAllRows(() => db.from('crm_processes').select('id,process_number,process_type,client_id,created_at').order('created_at',{ascending:false}).order('id',{ascending:false}),1000),
+   fetchAllRows(() => db.from('crm_completed_activities').select('id,process_number,process_type,client_id,performed_on').is('deleted_at',null).not('process_number','is',null).order('performed_on',{ascending:false}).order('id',{ascending:false}),1000),
+   fetchAllRows(() => db.from('crm_clients').select('id,name,institution').order('name').order('id'),1000)
   ]);
   const errors=[a,b,c].filter(x=>x.error).map(x=>x.error.message);
   if(errors.length)setNotice('Não foi possível carregar todos os registros: '+errors.join(' · '));
