@@ -47,7 +47,7 @@ test('identidade corporativa aparece no shell e nos estilos globais com moviment
  const layout=file('app/layout.jsx');
  assert.ok(shell.includes('get-crm-wordmark.svg'));
  assert.doesNotMatch(settings,/Aparência do CRM|Escolha um tema|Madara/);
- assert.match(layout,/corporate-design\\.css/);
+ assert.ok(layout.includes('corporate-design.css'));
  assert.match(css,/prefers-reduced-motion/);
  assert.match(css,/:focus-visible/);
 });
