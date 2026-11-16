@@ -1,114 +1,32 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync,existsSync} from 'node:fs';
-import {CRM_THEMES,resolveTheme,contrastRatio} from '../lib/crm-themes.mjs';
+import {readFile} from 'node:fs/promises';
 
 const root=new URL('../',import.meta.url);
-const read=path=>readFileSync(new URL(path,root),'utf8');
+const read=path=>readFile(new URL(path,root),'utf8');
 
-test('Madara is a selectable first-class theme with WCAG AA semantic contrast',()=>{
- const theme=CRM_THEMES.find(item=>item.id==='madara');
- assert.ok(theme,'Madara theme must be available in the theme picker');
- assert.equal(theme.label,'Madara · Lua Vermelha');
- assert.equal(resolveTheme('madara'),'madara');
- for(const [foreground,background] of [
-  ['ink','surface'],['muted','surface'],['accentInk','accent'],['navInk','nav'],
-  ['tintInk','tint'],['warningInk','warningBg'],['successInk','successBg'],
-  ['dangerInk','dangerBg'],['neutralInk','neutralBg']
- ]) assert.ok(contrastRatio(theme[foreground],theme[background])>=4.5,foreground+' / '+background);
+test('Madara and character theme styles are not loaded by the application',async()=>{
+ const layout=await read('app/layout.jsx');
+ assert.doesNotMatch(layout,/madara-theme|anime-themes|anime-immersive|anime-header-banners/);
+ assert.match(layout,/corporate-design\.css/);
 });
 
-test('Madara uses the three user-supplied artworks as committed WebP assets',()=>{
- for(const [path,minBytes] of [
-  ['public/themes/madara-sidebar.webp',10000],
-  ['public/themes/madara-banner.webp',11000],
-  ['public/themes/madara-moon.webp',2900]
- ]){
-  assert.ok(existsSync(new URL(path,root)),path+' is missing');
-  const asset=readFileSync(new URL(path,root));
-  assert.equal(asset.toString('ascii',0,4),'RIFF',path+' must be a WebP RIFF asset');
-  assert.equal(asset.toString('ascii',8,12),'WEBP',path+' must have the WebP signature');
-  assert.ok(asset.length>=minBytes,path+' appears truncated or unexpectedly degraded');
- }
+test('the CRM shell uses GET branding and has no anime theme runtime',async()=>{
+ const shell=await read('components/crm-shell.jsx');
+ assert.match(shell,/get-crm-symbol\.svg/);
+ assert.match(shell,/get-crm-wordmark\.svg/);
+ assert.doesNotMatch(shell,/Madara|madara|CRM_THEMES|resolveTheme|crm-theme/);
 });
 
-test('Madara theme places supplied character art away from live header text and uses the red-moon image as ambient art',()=>{
- const layout=read('app/layout.jsx');
- const css=read('app/madara-theme.css');
- assert.ok(layout.indexOf("madara-theme.css")>layout.indexOf("theme-accessibility.css"));
- assert.match(css,/data-crm-theme="madara"/);
- assert.match(css,/madara-banner\.webp/);
- assert.doesNotMatch(css,/madara-sidebar\.webp/,'The vertical character image must not appear in the sidebar');
- assert.match(css,/madara-moon\.webp/);
- assert.match(css,/background-size:\s*100% 100%,100% 100%,cover/,'The red-moon reference must cover the full page');
- assert.match(css,/background-attachment:[^;]*fixed/,'Keep the page background fixed while content scrolls');
- assert.match(css,/\.reference-header/);
- assert.match(css,/\.task-header/);
- assert.match(css,/\.app-sidebar/);
- assert.match(css,/\.report-executive-hero/);
- assert.match(css,/\.settings-theme-madara/);
- assert.match(css,/padding:\s*25px 28px 25px 46%/);
- assert.match(css,/width:\s*58%/);
- assert.match(css,/background-size:\s*100% 100%,cover/,'Use proportional cover for the wide header artwork');
- assert.match(css,/background-size:\s*cover!important/);
- assert.match(css,/@media\s*\(max-width:\s*750px\)/);
- assert.match(css,/padding:\s*145px 18px 18px/);
- assert.doesNotMatch(css,/madara-ems\.svg/,'Do not overlay an invented Sharingan mark on the source artwork');
+test('settings no longer offers Madara, anime themes or custom wallpaper controls',async()=>{
+ const settings=await read('app/configuracoes/page.jsx');
+ assert.doesNotMatch(settings,/Madara|CRM_THEMES|resolveTheme|Aparência do CRM|Personalização avançada|Imagem de fundo/);
+ assert.match(settings,/Meu perfil/);
 });
 
-test('Madara theme picker does not overlay a generated or inaccurate eye mark',()=>{
- const css=read('app/madara-theme.css');
- assert.match(css,/\.settings-theme-preview::after\s*\{\s*content:\s*none/);
- assert.match(css,/\.settings-theme-madara \.settings-theme-preview[\s\S]*var\(--madara-banner-image\)/);
-});
-
-test('Madara visual layer retains accessible focus, reduced-motion and print behavior',()=>{
- const css=read('app/madara-theme.css');
- assert.match(css,/\.app-content :focus-visible/);
- assert.match(css,/\.app-sidebar :focus-visible/);
- assert.match(css,/@media\s*\(prefers-reduced-motion:\s*reduce\)/);
- assert.match(css,/@media\s+print/);
-});
-
-
-test('Madara applies a coherent premium visual system across the whole CRM without changing app behavior',()=>{
- const css=read('app/madara-theme.css');
- for(const selector of [
-  '.app-shell .app-content','.reference-dashboard','.task-shell','.task-main',
-  '.settings-dashboard','.report-dashboard','.processes-dashboard',
-  '.app-sidebar::before','.app-nav-link svg','.reference-kpi-icon',
-  '.reference-panel','.task-board','.settings-panel','.report-filters',
-  '.app-content :is(button,a,[role="button"]) svg','.app-content :focus-visible'
- ]) assert.ok(css.includes(selector),'Missing global Madara styling for '+selector);
- assert.match(css,/font-family:\s*['"]?Manrope/);
- assert.match(css,/font-family:\s*['"]?Cinzel/);
- assert.match(css,/radial-gradient/,'Sidebar uses the abstract red atmospheric background');
- assert.doesNotMatch(css,/madara-sidebar\.webp/);
- assert.match(css,/background-position:\s*center(?: center)?/,'Center the abstract sidebar backdrop');
- assert.match(css,/drop-shadow\(0 0 5px rgba\(255,37,61/i,'Icons should use a controlled bright red glow');
- assert.match(css,/--madara-card-radius/);
- assert.match(css,/--madara-space/);
-});
-
-test('Madara background remains visible behind transparent route wrappers and does not cover readable panels',()=>{
- const css=read('app/madara-theme.css');
- assert.match(css,/\.app-content :is\([\s\S]*\.reference-dashboard[\s\S]*background-color:\s*transparent/);
- assert.match(css,/\.reference-panel[\s\S]*background-color:\s*rgba\(22,13,17,\.94\)/);
-});
-
-
-test('Madara removes the vertical portrait from the sidebar and uses a red atmospheric treatment',()=>{
- const css=read('app/madara-theme.css');
- assert.doesNotMatch(css,/madara-sidebar\.webp/,'The vertical source image must not render in the sidebar');
- assert.match(css,/\.app-sidebar::before[\s\S]*radial-gradient/,'Use an atmospheric abstract backdrop instead of character art');
- assert.match(css,/sidebar-collapsed \.app-sidebar[\s\S]*width:\s*70px/,'Collapsed rail must keep the original compact width');
- assert.match(css,/sidebar-expanded \.app-sidebar[\s\S]*width:\s*218px/,'Expanded rail must use the original expanded width');
- assert.match(css,/sidebar-collapsed \.app-sidebar \.app-nav-link span[\s\S]*visibility:\s*hidden/);
-});
-
-test('Madara sidebar collapses on mouse leave unless keyboard focus is active',()=>{
- const shell=read('components/crm-shell.jsx');
- assert.match(shell,/matches\(['"]:focus-visible['"]\)/);
- assert.match(shell,/onMouseLeave=\{shrinkIfUnfocused\}/);
- assert.match(shell,/sidebar-collapsed/);
+test('the corporate palette uses accessible semantic tokens',async()=>{
+ const css=await read('app/corporate-design.css');
+ for(const token of ['--ui-page','--ui-surface','--ui-ink','--ui-muted','--ui-accent','--ui-accent-ink','--ui-nav','--ui-nav-ink','--ui-border']) assert.ok(css.includes(token));
+ assert.match(css,/prefers-reduced-motion/);
+ assert.match(css,/:focus-visible/);
 });
