@@ -2,6 +2,7 @@ import {NextResponse} from 'next/server';
 import {createClient} from '@supabase/supabase-js';
 import {GoogleAuth,OAuth2Client} from 'google-auth-library';
 import {parseTab,parseParties,mergeClients} from '../../../lib/normalize.mjs';
+import {buildSyncPayload} from '../../../lib/sync-payload.mjs';
 export const runtime='nodejs';export const maxDuration=60;
 const ALLOWED=['ANDAMENTO','VENCIDOS','QUITADOS','FINALIZADOS','FINANCEIRAS'];
 function fail(msg,status=500){return NextResponse.json({error:msg},{status})}
@@ -21,9 +22,9 @@ async function run(request){let db;try{db=serverDB()}catch(e){return fail(e.mess
  if(!all.length)return fail('Nenhuma fonte de clientes acessível. '+errors.map(e=>e.tab+': '+e.error).join('; '),503);
  const grouped=mergeClients(all),now=new Date().toISOString();
  // Não substitui etapa operacional nem documento de quitação validado durante reimportações.
- const fields=['name','doc_digits','phone','consultant','institution','contacted_party','source_status','source_tab','source_spreadsheet','source_conflict','source_tabs','source_row_count','sale_amount','sale_date','last_contact','next_return','debtor_balance','estimated_amount','current_amount','last_negotiation','notes'];
  const {data:existing,error:e1}=await db.from('crm_clients').select('id,source_key').in('source_key',grouped.map(x=>x.source_key));if(e1)return fail('Erro de conciliação: '+e1.message);
- const index=new Map((existing||[]).map(x=>[x.source_key,x.id]));const payload=grouped.map(c=>{let o={source_key:c.source_key,source_seen_at:now,updated_at:now};for(let key of fields)o[key]=c[key]??null;return o});
+ const index=new Map((existing||[]).map(x=>[x.source_key,x.id]));
+ const payload=buildSyncPayload(grouped,existing||[],now);
  // Não sobrescrever registros antigos quando uma fonte falha parcialmente.
  for(let i=0;i<payload.length;i+=200){const {error}=await db.from('crm_clients').upsert(payload.slice(i,i+200),{onConflict:'source_key'});if(error)return fail('Erro de gravação: '+error.message)}
  const {data:written,error:e2}=await db.from('crm_clients').select('id,source_key').in('source_key',grouped.map(x=>x.source_key));if(e2)return fail(e2.message);for(const x of written)index.set(x.source_key,x.id);
