@@ -108,6 +108,35 @@ Regras:
 - Indicadores reconciliáveis com os registros de origem.
 - Preview validado antes de qualquer promoção para produção.
 
+
+## Baseline técnico do ambiente Supabase (16/11/2026)
+
+O repositório aponta para o projeto Supabase **projectw1sc-crm**. O levantamento foi somente de leitura.
+
+### Estrutura e volume observado
+
+- 9 tabelas públicas do CRM; RLS habilitado nas 9.
+- 25 migrações registradas como aplicadas no histórico do projeto.
+- Contagens observadas: 74 clientes, 17 instituições/parceiros, 73 linhas de origem, 3 atividades, 1 vínculo de membro e 1 origem sem correspondência.
+- No momento da consulta: 0 processos, 0 atividades concluídas e 0 execuções de importação registradas.
+- As políticas consultadas usam associação ativa em `crm_memberships`; operações administrativas verificam papel `admin`. Processos e atividades concluídas têm políticas adicionais por autor e administrador.
+
+### Divergência entre histórico de migrações e repositório
+
+A comparação identificou:
+- Arquivo `20261111153000_membership_based_rpcs.sql` presente no repositório, mas ausente do histórico de migrações aplicadas.
+- Arquivo `20261111180000_google_sheets_operational_fields.sql` presente no repositório, mas ausente do histórico de migrações aplicadas.
+- Migração `20261111134129` (`crm_active_membership_authorization`) registrada no Supabase, mas sem arquivo correspondente no repositório.
+
+Os campos operacionais descritos pela segunda migração já aparecem na estrutura ativa de `crm_clients`, apesar de essa migração não constar no histórico. As RPCs tratadas pelo primeiro arquivo também existem no banco. A origem dessas diferenças precisa ser reconciliada com definições reais e histórico antes de editar ou aplicar qualquer DDL.
+
+**Regra de segurança:** não executar as duas migrações pendentes, não recriar a migração ausente e não alterar políticas/RPCs até comparar as definições atuais do banco, o histórico e os arquivos SQL. Não usar `db push` ou comandos equivalentes como atalho.
+
+### Alertas identificados
+
+- O Supabase Advisor sinalizou que a proteção contra senhas comprometidas (HaveIBeenPwned) está desativada. A habilitação deve ser avaliada na configuração de Auth.
+- O Advisor listou 17 índices ainda não utilizados no período observado. Isso não justifica removê-los: a utilidade deve ser reavaliada com carga real, consultas e plano de execução.
+
 ## Situação atual
 
 - Inventário inicial do repositório realizado.
