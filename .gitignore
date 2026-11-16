@@ -10,3 +10,4 @@ node_modules
 *.xls
 *clientes*
 *.pdf
+.open-next
