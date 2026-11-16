@@ -100,9 +100,9 @@ export default function ReportPage(){
   // Previous UTC day avoids omitting events around the Sao Paulo midnight boundary.
   const prev=new Date(Date.parse(bounds.start+'T12:00:00Z')-86400000).toISOString().slice(0,10);
   const [c,a,m]=await Promise.all([
-   fetchAllRows(() => db.from('crm_clients').select('id,name,assigned_to,consultant,workflow_status,next_return,due_override,finished_at,source_conflict,source_status,evidence_status,priority_level,notes,institution').order('created_at'),1000),
-   fetchAllRows(() => db.from('crm_activities').select('id,client_id,actor_id,kind,created_at').gte('created_at',prev+'T00:00:00Z').order('created_at',{ascending:false}),1000),
-   fetchAllRows(() => db.from('crm_completed_activities').select('id,actor_id,client_id,category,performed_on,contact_confirmed,duration_seconds,origin').is('deleted_at',null).gte('performed_on',bounds.start).lt('performed_on',bounds.endExclusive).order('performed_on',{ascending:false}),1000)
+   fetchAllRows(() => db.from('crm_clients').select('id,name,assigned_to,consultant,workflow_status,next_return,due_override,finished_at,source_conflict,source_status,evidence_status,priority_level,notes,institution').order('created_at').order('id'),1000),
+   fetchAllRows(() => db.from('crm_activities').select('id,client_id,actor_id,kind,created_at').gte('created_at',prev+'T00:00:00Z').order('created_at',{ascending:false}).order('id',{ascending:false}),1000),
+   fetchAllRows(() => db.from('crm_completed_activities').select('id,actor_id,client_id,category,performed_on,contact_confirmed,duration_seconds,origin').is('deleted_at',null).gte('performed_on',bounds.start).lt('performed_on',bounds.endExclusive).order('performed_on',{ascending:false}).order('id',{ascending:false}),1000)
   ]);
   const errors=[c,a,m].map((x,i)=>x.error?[['Clientes','Atendimentos','Atividades'][i],x.error.message]:null).filter(Boolean);
   const rows=c.error?[]:c.data||[];
@@ -111,8 +111,8 @@ export default function ReportPage(){
   let noteResult=null,workResult=null;
   if(priorityIds.length){
    [noteResult,workResult]=await Promise.all([
-    fetchAllRows(() => db.from('crm_activities').select('id,client_id,actor_id,kind,body,created_at').in('client_id',priorityIds).order('created_at',{ascending:false}),1000),
-    fetchAllRows(() => db.from('crm_completed_activities').select('id,client_id,actor_id,title,description,performed_on,created_at,deleted_at').in('client_id',priorityIds).is('deleted_at',null).order('created_at',{ascending:false}),1000)
+    fetchAllRows(() => db.from('crm_activities').select('id,client_id,actor_id,kind,body,created_at').in('client_id',priorityIds).order('created_at',{ascending:false}).order('id',{ascending:false}),1000),
+    fetchAllRows(() => db.from('crm_completed_activities').select('id,client_id,actor_id,title,description,performed_on,created_at,deleted_at').in('client_id',priorityIds).is('deleted_at',null).order('created_at',{ascending:false}).order('id',{ascending:false}),1000)
    ]);
   }
   setPriorityAudit(noteResult?.error?[]:noteResult?.data||[]);
