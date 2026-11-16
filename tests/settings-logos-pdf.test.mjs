@@ -16,7 +16,7 @@ test('the menu has one authenticated settings screen',()=>{
  assert.match(page,/updateUser/);
  assert.match(page,/PROFILE_BUCKET/);
  assert.match(file('lib/profile-settings.mjs'),/crm-profile-photos/);
- assert.match(page,/CRM_THEMES/);
+ assert.doesNotMatch(page,/CRM_THEMES|Madara|Aparência do CRM|Imagem de fundo/);
 });
 
 test('bank brands are known, normalized and do not guess unrelated institutions',()=>{

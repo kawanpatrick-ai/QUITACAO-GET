@@ -58,6 +58,7 @@ export type Database = {
           closure_source: string | null
           consultant: string | null
           contacted_party: string | null
+          contract_age_days: number | null
           created_at: string
           current_amount: number | null
           debtor_balance: number | null
@@ -68,31 +69,44 @@ export type Database = {
           evidence_url: string | null
           finish_reason: string | null
           finished_at: string | null
+          homologation_signed: boolean | null
           id: string
+          info_document_date: string | null
           institution: string | null
           last_attendance_at: string | null
           last_attended_by: string | null
           last_contact: string | null
+          last_financial_negotiation: string | null
           last_negotiation: string | null
           name: string
           next_return: string | null
           notes: string | null
+          operational_status_code: string | null
+          operational_status_description: string | null
+          overdue_installments: number | null
           phone: string | null
           priority_level: string
           sale_amount: number | null
           sale_date: string | null
+          sheet_reference_date: string | null
           source_conflict: boolean
+          source_contact: string | null
           source_key: string
+          source_month: string | null
+          source_observations: string | null
           source_row_count: number
+          source_row_number: number | null
           source_seen_at: string | null
           source_spreadsheet: string | null
           source_status: string
           source_tab: string | null
           source_tabs: string[]
+          source_workbook_id: string | null
           stage: string
           updated_at: string
           verified_at: string | null
           verified_by: string | null
+          waiting_business_days: number | null
           workflow_override: string | null
           workflow_status: string
         }
@@ -101,6 +115,7 @@ export type Database = {
           closure_source?: string | null
           consultant?: string | null
           contacted_party?: string | null
+          contract_age_days?: number | null
           created_at?: string
           current_amount?: number | null
           debtor_balance?: number | null
@@ -111,31 +126,44 @@ export type Database = {
           evidence_url?: string | null
           finish_reason?: string | null
           finished_at?: string | null
+          homologation_signed?: boolean | null
           id?: string
+          info_document_date?: string | null
           institution?: string | null
           last_attendance_at?: string | null
           last_attended_by?: string | null
           last_contact?: string | null
+          last_financial_negotiation?: string | null
           last_negotiation?: string | null
           name: string
           next_return?: string | null
           notes?: string | null
+          operational_status_code?: string | null
+          operational_status_description?: string | null
+          overdue_installments?: number | null
           phone?: string | null
           priority_level?: string
           sale_amount?: number | null
           sale_date?: string | null
+          sheet_reference_date?: string | null
           source_conflict?: boolean
+          source_contact?: string | null
           source_key: string
+          source_month?: string | null
+          source_observations?: string | null
           source_row_count?: number
+          source_row_number?: number | null
           source_seen_at?: string | null
           source_spreadsheet?: string | null
           source_status?: string
           source_tab?: string | null
           source_tabs?: string[]
+          source_workbook_id?: string | null
           stage?: string
           updated_at?: string
           verified_at?: string | null
           verified_by?: string | null
+          waiting_business_days?: number | null
           workflow_override?: string | null
           workflow_status?: string
         }
@@ -144,6 +172,7 @@ export type Database = {
           closure_source?: string | null
           consultant?: string | null
           contacted_party?: string | null
+          contract_age_days?: number | null
           created_at?: string
           current_amount?: number | null
           debtor_balance?: number | null
@@ -154,31 +183,44 @@ export type Database = {
           evidence_url?: string | null
           finish_reason?: string | null
           finished_at?: string | null
+          homologation_signed?: boolean | null
           id?: string
+          info_document_date?: string | null
           institution?: string | null
           last_attendance_at?: string | null
           last_attended_by?: string | null
           last_contact?: string | null
+          last_financial_negotiation?: string | null
           last_negotiation?: string | null
           name?: string
           next_return?: string | null
           notes?: string | null
+          operational_status_code?: string | null
+          operational_status_description?: string | null
+          overdue_installments?: number | null
           phone?: string | null
           priority_level?: string
           sale_amount?: number | null
           sale_date?: string | null
+          sheet_reference_date?: string | null
           source_conflict?: boolean
+          source_contact?: string | null
           source_key?: string
+          source_month?: string | null
+          source_observations?: string | null
           source_row_count?: number
+          source_row_number?: number | null
           source_seen_at?: string | null
           source_spreadsheet?: string | null
           source_status?: string
           source_tab?: string | null
           source_tabs?: string[]
+          source_workbook_id?: string | null
           stage?: string
           updated_at?: string
           verified_at?: string | null
           verified_by?: string | null
+          waiting_business_days?: number | null
           workflow_override?: string | null
           workflow_status?: string
         }

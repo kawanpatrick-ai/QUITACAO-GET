@@ -8,7 +8,6 @@ html[data-crm-theme] {
 }
 html[data-crm-theme="grafite"],
 html[data-crm-theme="noturno"],
-html[data-crm-theme="sasuke"] { color-scheme: dark; }
 
 html[data-crm-theme] body,
 html[data-crm-theme] .app-shell,

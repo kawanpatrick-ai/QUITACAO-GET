@@ -1,14 +1,14 @@
 <div align="center">
 
-<img src="./public/branding/projectw1sc-wordmark.svg" alt="Logotipo ProjectW1SC" width="96" />
+<img src="./public/branding/get-crm-wordmark.svg" alt="Logotipo GET CRM" width="96" />
 
-# ProjectW1SC
+# GET CRM
 
-**CRM de negociações, relacionamento e acompanhamento operacional**
+**Plataforma de gestão operacional, financeira e de relacionamento da GET Assessoria Financeira**
 
 Uma plataforma para organizar a carteira de clientes, acompanhar pendências, registrar atendimentos e transformar informações dispersas em uma rotina de trabalho clara e rastreável.
 
-[**Acessar o CRM**](https://projectw1sc-crm.vercel.app)
+[**Acessar o CRM**](https://quitacao-get.vercel.app)
 
 [![Licença: MIT](https://img.shields.io/badge/licen%C3%A7a-MIT-682a47)](./LICENSE)
 
@@ -18,7 +18,7 @@ Uma plataforma para organizar a carteira de clientes, acompanhar pendências, re
 
 ## Sobre o projeto
 
-O ProjectW1SC nasceu da necessidade de reunir, em um só ambiente, as informações que fazem parte do dia a dia de uma operação de negociações: contatos, instituições, retornos, tarefas, registros de atendimento e relatórios.
+O GET CRM nasceu da necessidade de reunir, em um só ambiente, as informações que fazem parte do dia a dia de uma operação de negociações: contatos, instituições, retornos, tarefas, registros de atendimento e relatórios.
 
 A proposta é simples: permitir que cada pessoa saiba **o que precisa fazer, por que aquilo é prioridade e o que já aconteceu em cada acompanhamento**. Para isso, o sistema combina uma carteira centralizada, histórico de atividades, filtros operacionais e indicadores calculados a partir dos registros disponíveis.
 
@@ -36,15 +36,16 @@ O CRM também permite importar planilhas e consultar informações processuais p
 | **Instituições** | Cadastro de financeiras, bancos, assessorias, contatos e imagens institucionais. |
 | **Minhas atividades** | Registro, consulta e edição de atividades, com vínculo opcional a clientes e processos. |
 | **Relatórios** | Resumos operacionais, indicadores por período, exportação e versão preparada para PDF. |
-| **Configurações** | Preferências da conta, senha, foto, temas, cores e imagem de fundo. |
+| **Configurações** | Perfil, senha, permissões e administração de usuários. |
 
-Além das áreas principais, a aplicação oferece importação de Excel, acompanhamento da origem dos registros e personalização visual. A aparência pode ser alterada sem modificar os dados da carteira.
+Além das áreas principais, a aplicação oferece importação de Excel e acompanhamento da origem dos registros. A identidade visual corporativa é padronizada para manter consistência entre os módulos.
 
 ## Tecnologias utilizadas
 
 - **Next.js e React:** páginas, componentes e interações do sistema.
 - **Supabase:** banco de dados PostgreSQL, autenticação, políticas de acesso (RLS) e armazenamento privado de arquivos.
-- **JavaScript e CSS:** regras operacionais, gráficos e identidade visual.
+- **TypeScript:** tipagem gradual da aplicação, contratos de dados e validações.
+- **JavaScript e CSS:** módulos legados em migração e identidade visual corporativa.
 - **Vercel:** hospedagem e publicação da aplicação.
 - **Excel e Google Sheets:** fontes de importação e integração, conforme as permissões e credenciais configuradas.
 - **DataJud e DJEN:** consultas a informações processuais públicas, sujeitas à disponibilidade e às regras das fontes oficiais.
@@ -54,8 +55,8 @@ Além das áreas principais, a aplicação oferece importação de Excel, acompa
 Para trabalhar no projeto, é necessário ter o **Node.js 20 ou superior**, o Git e acesso a um projeto Supabase devidamente configurado.
 
 ```bash
-git clone https://github.com/ProjectW1SC/Automation.git
-cd Automation
+git clone https://github.com/kawanpatrick-ai/QUITACAO-GET.git
+cd QUITACAO-GET
 npm install
 ```
 
@@ -116,8 +117,10 @@ app/
   configuracoes/           Preferências e conta
   api/                     Rotas executadas no servidor
 components/                Elementos compartilhados das telas
+features/                  Contratos e módulos organizados por domínio
 lib/                       Regras, cálculos, integrações e validações
-public/themes/             Identidade visual e imagens dos temas
+types/                     Tipos gerados do Supabase e contratos
+public/branding/           Identidade visual própria da GET
 supabase/migrations/       Estrutura e regras do banco de dados
 tests/                     Testes automatizados
 ```
@@ -143,7 +146,7 @@ A sincronização com planilhas depende de credenciais válidas e de autorizaç�
 
 ## Critérios de operação
 
-O ProjectW1SC foi desenvolvido para manter uma distinção importante entre **informação registrada** e **informação comprovada**.
+O GET CRM foi desenvolvido para manter uma distinção importante entre **informação registrada** e **informação comprovada**.
 
 - Um acompanhamento marcado como finalizado representa o encerramento da rotina operacional; não comprova quitação financeira.
 - Um status importado de planilha não substitui a análise de um comprovante.
@@ -157,12 +160,12 @@ Os dados dos clientes pertencem ao ambiente privado de operação. Não inclua i
 
 As melhorias são desenvolvidas de maneira incremental, procurando preservar os dados existentes e manter a operação estável. Correções, novas funcionalidades e ajustes visuais devem passar por revisão, testes e verificação da implantação.
 
-O objetivo do ProjectW1SC é continuar evoluindo como uma ferramenta de trabalho **prática, organizada e confiável**, com atenção à segurança, à rastreabilidade e à experiência de quem utiliza o CRM todos os dias.
+O objetivo do GET CRM é continuar evoluindo como uma ferramenta de trabalho **prática, organizada e confiável**, com atenção à segurança, à rastreabilidade e à experiência de quem utiliza o CRM todos os dias.
 
 ---
 
 ## Licença e direitos autorais
 
-**© 2026 W1 Capital.** O código-fonte original do ProjectW1SC é distribuído sob a [Licença MIT (MIT License)](./LICENSE). É permitido estudar, modificar, compartilhar e utilizar o software nos termos dessa licença, preservando os avisos de copyright.
+**© 2026 GET Assessoria Financeira.** O código-fonte original do GET CRM é distribuído sob a [Licença MIT (MIT License)](./LICENSE). É permitido estudar, modificar, compartilhar e utilizar o software nos termos dessa licença, preservando os avisos de copyright.
 
-A marca ProjectW1SC/W1 Capital, seus logotipos, obras visuais de personagens e marcas de terceiros não recebem automaticamente uma licença de reutilização comercial pela licença MIT do código. Respeite os direitos de seus titulares.
+A marca GET CRM/GET Assessoria Financeira, seus logotipos e marcas de terceiros não recebem automaticamente uma licença de reutilização comercial pela licença MIT do código. Respeite os direitos de seus titulares.

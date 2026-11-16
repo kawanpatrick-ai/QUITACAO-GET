@@ -2,17 +2,14 @@
 import {useEffect,useRef,useState} from 'react';
 import {ClipboardList,LayoutDashboard,Users,CheckCircle2,Landmark,LogOut,KeyRound,NotebookPen,Bell,Mail,BarChart3,PanelLeftOpen,PanelLeftClose,Settings2,Gavel} from 'lucide-react';
 import {CRM_AREAS} from '../lib/crm-navigation.mjs';
-import {CRM_THEMES,resolveTheme} from '../lib/crm-themes.mjs';
 import {getClient} from '../lib/supabase-client';
 import {PROFILE_BUCKET,ownerAvatarPath} from '../lib/profile-settings.mjs';
-import {APPEARANCE_BUCKET,applyAppearanceToDocument} from '../lib/appearance-settings.mjs';
 
 const icons={'Visão geral':LayoutDashboard,'Tarefas':ClipboardList,'Clientes':Users,'Finalizados':CheckCircle2,'Instituições':Landmark,'Minhas atividades':NotebookPen,'Relatórios':BarChart3,'Configurações':Settings2,'Processos':Gavel};
 export default function CrmShell({active='Visão geral',email='',onNavigate,onSignOut,onPassword,overdueCount=0,children}){
  const [sidebarExpanded,setSidebarExpanded]=useState(false);
  const [profile,setProfile]=useState({display_name:'',avatar_path:''});
  const [avatarUrl,setAvatarUrl]=useState('');
- const appearanceRef=useRef({colors:{},backgroundUrl:''});
  useEffect(()=>{
   const db=getClient();if(!db)return;
   let alive=true;
@@ -23,42 +20,19 @@ export default function CrmShell({active='Visão geral',email='',onNavigate,onSi
    if(!alive||current!==request||error||!data?.user)return;
    const user=data.user,metadata=user.user_metadata||{};
    setProfile({display_name:String(metadata.display_name||metadata.full_name||''),avatar_path:String(metadata.avatar_path||'')});
-   const backgroundPath=String(metadata.crm_background_path||'');
-   const safePath=backgroundPath.startsWith(user.id+'/background-')&&/\.(png|jpg|webp)$/.test(backgroundPath)?backgroundPath:'';
-   const [photo,background]=await Promise.all([
-    ownerAvatarPath(user.id,metadata.avatar_path)?db.storage.from(PROFILE_BUCKET).createSignedUrl(metadata.avatar_path,3600):Promise.resolve({data:null}),
-    safePath?db.storage.from(APPEARANCE_BUCKET).createSignedUrl(safePath,3600):Promise.resolve({data:null})
-   ]);
+   const photo=ownerAvatarPath(user.id,metadata.avatar_path)
+    ?await db.storage.from(PROFILE_BUCKET).createSignedUrl(metadata.avatar_path,3600)
+    :{data:null,error:null};
    if(!alive||current!==request)return;
    setAvatarUrl(photo.error?'':photo.data?.signedUrl||'');
-   const colors=metadata.crm_colors&&typeof metadata.crm_colors==='object'?metadata.crm_colors:{};
-   appearanceRef.current={colors,backgroundUrl:background?.data?.signedUrl||''};
-   const currentTheme=resolveTheme(window.localStorage.getItem('projectw1sc.crm-theme')||'madara');
-   try{applyAppearanceToDocument(document.documentElement,CRM_THEMES.find(t=>t.id===currentTheme),colors,appearanceRef.current.backgroundUrl)}
-   catch{applyAppearanceToDocument(document.documentElement,CRM_THEMES.find(t=>t.id===currentTheme),{},appearanceRef.current.backgroundUrl)}
   }
   function scheduleRefresh(){window.setTimeout(refreshProfile,0)}
   const {data:{subscription}}=db.auth.onAuthStateChange(()=>{scheduleRefresh()});
   window.addEventListener('projectw1sc:profile-change',scheduleRefresh);
-  window.addEventListener('projectw1sc:appearance-change',scheduleRefresh);
   refreshProfile();
-  return()=>{alive=false;subscription.unsubscribe();window.removeEventListener('projectw1sc:profile-change',scheduleRefresh);window.removeEventListener('projectw1sc:appearance-change',scheduleRefresh)};
+  return()=>{alive=false;subscription.unsubscribe();window.removeEventListener('projectw1sc:profile-change',scheduleRefresh);};
  },[]);
   const sidebarRef=useRef(null);
- useEffect(()=>{
-  function applyStoredTheme(){
-   let stored='madara';
-   try{stored=window.localStorage.getItem('projectw1sc.crm-theme')||'madara'}catch{}
-   const id=resolveTheme(stored);
-   document.documentElement.dataset.crmTheme=id;
-   const t=CRM_THEMES.find(x=>x.id===id);try{applyAppearanceToDocument(document.documentElement,t,appearanceRef.current.colors,appearanceRef.current.backgroundUrl)}catch{applyAppearanceToDocument(document.documentElement,t,{},appearanceRef.current.backgroundUrl)}
-  }
-  applyStoredTheme();
-  const onStorage=e=>{if(e.key==='projectw1sc.crm-theme')applyStoredTheme()};
-  window.addEventListener('storage',onStorage);
-  window.addEventListener('projectw1sc:theme-change',applyStoredTheme);
-  return()=>{window.removeEventListener('storage',onStorage);window.removeEventListener('projectw1sc:theme-change',applyStoredTheme)};
- },[]);
  useEffect(()=>{
   function onPointerDown(event){
    if(!sidebarRef.current?.contains(event.target))setSidebarExpanded(false);
@@ -90,9 +64,9 @@ export default function CrmShell({active='Visão geral',email='',onNavigate,onSi
     }}>
    <div className="app-identity">
     <button type="button" className="app-sidebar-toggle" aria-label={sidebarExpanded?'Recolher menu lateral':'Expandir menu lateral'} aria-expanded={sidebarExpanded} onClick={()=>setSidebarExpanded(x=>!x)}>{sidebarExpanded?<PanelLeftClose size={19}/>:<PanelLeftOpen size={19}/>}</button>
-    <a className="app-brand-link" href="/" aria-label="ProjectW1SC — Ir à visão geral" title="Ir à visão geral">
-     <img className="app-brand-compact" src="/branding/projectw1sc-symbol.svg" alt="" width="54" height="58"/>
-     <img className="app-brand-full" src="/branding/projectw1sc-wordmark.svg" alt="" width="202" height="65"/>
+    <a className="app-brand-link" href="/" aria-label="GET CRM — Ir à visão geral" title="Ir à visão geral">
+     <img className="app-brand-compact" src="/branding/get-crm-symbol.svg" alt="" width="54" height="58"/>
+     <img className="app-brand-full" src="/branding/get-crm-wordmark.svg" alt="" width="202" height="65"/>
     </a>
    </div>
    <div className="app-mobile-account">
@@ -117,7 +91,7 @@ export default function CrmShell({active='Visão geral',email='',onNavigate,onSi
      {onPassword?<button onClick={onPassword} type="button"><KeyRound size={14}/> Alterar senha</button>:<a href="/?senha=1"><KeyRound size={14}/> Alterar senha</a>}
      <button onClick={onSignOut} type="button"><LogOut size={14}/> Sair</button>
     </div>
-    <small className="app-copyright" aria-label="Direitos autorais da W1 Capital">© 2026 W1 Capital · Todos os direitos reservados</small>
+    <small className="app-copyright" aria-label="Direitos autorais da W1 Capital">© 2026 GET Assessoria Financeira</small>
    </footer>
   </aside>
   <div className="app-content"><div className="reference-top-tools">
