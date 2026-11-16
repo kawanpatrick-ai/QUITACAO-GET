@@ -65,9 +65,9 @@ test('report hero and PDF enforce explicit high contrast regardless of theme ove
  assert.match(css,/pdf-page:not\(\.pdf-cover\)/);
  assert.match(css,/print-color-adjust/);
 });
-test('custom appearance stored in user settings and applied across all sections',()=>{
- const settings=file('app/configuracoes/page.jsx'),shell=file('components/crm-shell.jsx');
- assert.match(settings,/Cor primária do texto/);assert.match(settings,/Cor secundária do texto/);
- assert.match(settings,/Cor terciária do texto/);assert.match(settings,/Imagem de fundo/);
- assert.match(shell,/applyAppearanceToDocument/);assert.match(shell,/crm_background_path/);
+test('one fixed corporate appearance is applied across the CRM',()=>{
+  const settings=file('app/configuracoes/page.jsx'),layout=file('app/layout.jsx'),css=file('app/corporate-design.css');
+  assert.match(layout,/data-crm-theme="corporate"/);
+  assert.doesNotMatch(settings,/CRM_THEMES|Imagem de fundo|Cor primária do texto/);
+  assert.match(css,/--ui-accent:#176b66/);
 });
