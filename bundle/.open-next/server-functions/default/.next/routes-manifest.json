@@ -1,0 +1,101 @@
+{
+  "version": 3,
+  "pages404": true,
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/configuracoes",
+      "regex": "^/configuracoes(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/configuracoes(?:/)?$"
+    },
+    {
+      "page": "/finalizados",
+      "regex": "^/finalizados(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/finalizados(?:/)?$"
+    },
+    {
+      "page": "/icon.svg",
+      "regex": "^/icon\\.svg(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/icon\\.svg(?:/)?$"
+    },
+    {
+      "page": "/minhas-atividades",
+      "regex": "^/minhas\\-atividades(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/minhas\\-atividades(?:/)?$"
+    },
+    {
+      "page": "/processos",
+      "regex": "^/processos(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/processos(?:/)?$"
+    },
+    {
+      "page": "/report",
+      "regex": "^/report(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/report(?:/)?$"
+    },
+    {
+      "page": "/revisar",
+      "regex": "^/revisar(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/revisar(?:/)?$"
+    },
+    {
+      "page": "/tarefas",
+      "regex": "^/tarefas(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tarefas(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSuffix": ".prefetch.rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments"
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

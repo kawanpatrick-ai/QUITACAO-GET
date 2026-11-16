@@ -1,0 +1,38 @@
+{
+  "name": "get-crm",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "node --test tests/*.test.mjs",
+    "typecheck": "tsc --noEmit && deno check supabase/functions/projectw1sc-provision-account/index.ts",
+    "cf:build": "opennextjs-cloudflare build",
+    "cf:preview": "opennextjs-cloudflare preview",
+    "cf:deploy": "opennextjs-cloudflare deploy"
+  },
+  "engines": {
+    "node": "22.x"
+  },
+  "dependencies": {
+    "next": "15.5.29",
+    "react": "19.1.2",
+    "react-dom": "19.1.2",
+    "@supabase/supabase-js": "2.58.0",
+    "google-auth-library": "9.15.1",
+    "lucide-react": "0.468.0",
+    "read-excel-file": "9.3.10"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.0",
+    "@types/react": "^19.2.2",
+    "typescript": "^5.9.3",
+    "@opennextjs/cloudflare": "1.20.17",
+    "@tailwindcss/postcss": "4.3.5",
+    "postcss": "8.5.33",
+    "tailwindcss": "4.3.5",
+    "wrangler": "4.162.0"
+  }
+}

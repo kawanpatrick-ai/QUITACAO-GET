@@ -1,0 +1,14 @@
+{
+  "/_not-found/page": "/_not-found",
+  "/icon.svg/route": "/icon.svg",
+  "/api/processos/consulta/route": "/api/processos/consulta",
+  "/api/sync/route": "/api/sync",
+  "/configuracoes/page": "/configuracoes",
+  "/minhas-atividades/page": "/minhas-atividades",
+  "/finalizados/page": "/finalizados",
+  "/processos/page": "/processos",
+  "/page": "/",
+  "/report/page": "/report",
+  "/revisar/page": "/revisar",
+  "/tarefas/page": "/tarefas"
+}

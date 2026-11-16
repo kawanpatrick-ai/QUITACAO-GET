@@ -1,0 +1,14 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/icon.svg/route": "app/icon.svg/route.js",
+  "/api/processos/consulta/route": "app/api/processos/consulta/route.js",
+  "/api/sync/route": "app/api/sync/route.js",
+  "/configuracoes/page": "app/configuracoes/page.js",
+  "/minhas-atividades/page": "app/minhas-atividades/page.js",
+  "/finalizados/page": "app/finalizados/page.js",
+  "/processos/page": "app/processos/page.js",
+  "/page": "app/page.js",
+  "/report/page": "app/report/page.js",
+  "/revisar/page": "app/revisar/page.js",
+  "/tarefas/page": "app/tarefas/page.js"
+}
