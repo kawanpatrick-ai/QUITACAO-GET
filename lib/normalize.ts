@@ -153,7 +153,7 @@ export function parseTab(
     if (name.length < 3) continue;
 
     result.push({
-      source_ref: \`\${spreadsheetId}:\${importTab}:\${index + 1}\`,
+      source_ref: `${spreadsheetId}:${importTab}:${index + 1}`,
       source_spreadsheet: spreadsheetId,
       source_tab: importTab,
       source_row: index + 1,
@@ -208,7 +208,7 @@ export function parseParties(rows: readonly (readonly unknown[])[]): ImportedPar
 export function mergeClients(entries: readonly ImportedSourceRow[]): GroupedClient[] {
   const groups = new Map<string, ImportedSourceRow[]>();
   for (const row of entries) {
-    const key = \`doc:\${row.doc_digits}\`;
+    const key = `doc:${row.doc_digits}`;
     const group = groups.get(key);
     if (group) group.push(row);
     else groups.set(key, [row]);
