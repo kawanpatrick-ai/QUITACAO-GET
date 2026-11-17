@@ -67,9 +67,9 @@ async function sheet(
   spreadsheetId: string,
   tab: SheetTab,
 ): Promise<unknown[][]> {
-  const range = encodeURIComponent(\`'\${tab}'!A1:AE2000\`);
+  const range = encodeURIComponent(`'${tab}'!A1:AE2000`);
   const url =
-    \`https://sheets.googleapis.com/v4/spreadsheets/\${encodeURIComponent(spreadsheetId)}/values/\${range}?valueRenderOption=FORMATTED_VALUE\`;
+    `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(spreadsheetId)}/values/${range}?valueRenderOption=FORMATTED_VALUE`;
   const response = await client.request<{ values?: unknown[][] }>({ url });
   return response.data.values ?? [];
 }
@@ -81,7 +81,7 @@ async function authorized(
   const authorization = request.headers.get("authorization") ?? "";
   const cronAuthorized =
     Boolean(process.env.CRON_SECRET) &&
-    authorization === \`Bearer \${process.env.CRON_SECRET}\`;
+    authorization === `Bearer ${process.env.CRON_SECRET}`;
   if (cronAuthorized) return true;
 
   const token = authorization.startsWith("Bearer ") ? authorization.slice(7) : "";
