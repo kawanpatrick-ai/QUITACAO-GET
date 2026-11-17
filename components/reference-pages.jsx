@@ -36,7 +36,7 @@ function Overview({clients,kpis,last,updated,onGo,onSelectClient,onRefresh,onImp
  const today=todayBrazil();const preview=clients.filter(c=>c.workflow_status!=='finalizado').slice(0,3);
  return <main className="reference-dashboard" data-crm-area="overview">
   <Header page="Visão geral" subtitle="Negociações, contatos e comprovação de quitações em um só lugar." actions={<><Action primary icon={Activity} onClick={()=>onGo('Tarefas')}>Abrir fila de tarefas</Action><Action icon={RefreshCw} onClick={onRefresh} disabled={busy}>Atualizar</Action><Action icon={Download} onClick={onImport} disabled={busy}>Importar Excel</Action></>}/>
-  <div className="reference-notice"><AlertTriangle size={19}/><span><b>Sincronização: {last?.status==='concluido'?'concluída':'parcial ou pendente'}.</b> {last?.status==='concluido'?'Consulte a data da última importação.':'Confira as fontes e credenciais antes de utilizar registros não verificados.'}</span></div>
+  <div className={"reference-notice "+(last?.status==='concluido'?'success':'warning')}>{last?.status==='concluido'?<CheckCircle2 size={19}/>:<AlertTriangle size={19}/>}<span><b>Sincronização: {last?.status==='concluido'?'concluída':'parcial ou pendente'}.</b> {last?.status==='concluido'?'Consulte a data da última importação.':'Confira as fontes e credenciais antes de utilizar registros não verificados.'}</span></div>
   <div className="reference-metrics">
    <Kpi icon={Users} title="Clientes importados" value={kpis.all} sub="Identificados por documento"/>
    <Kpi icon={CalendarDays} title="Retornos vencidos" value={kpis.vencidos} sub="Somente acompanhamentos ativos" kind="danger"/>
@@ -80,7 +80,7 @@ function Clients({clients,kpis,onGo,onSelectClient,onRefresh,onCreate,busy,party
   <div className="reference-client-grid">
    <section className="reference-panel reference-clients-panel">
     <div className="reference-inline-filters">
-     <label className="reference-search"><Search size={18}/><input value={q} onChange={e=>filterSet(setQ,e.target.value)} placeholder="Buscar cliente por nome, CPF ou contato..."/></label>
+     <label className="reference-search"><Search size={18}/><input value={q} onChange={e=>filterSet(setQ,e.target.value)} placeholder="Buscar cliente por nome, CPF ou contato…"/></label>
      <label className="reference-filter-label">Situação<select value={state} onChange={e=>filterSet(setState,e.target.value)}><option value="todos">Todas</option><option value="vencido">Vencido</option><option value="hoje">Hoje</option><option value="em_dia">Em dia</option><option value="sem_data">Sem data</option><option value="finalizado">Finalizado</option></select></label>
      <label className="reference-filter-label">Etapa<select value={step} onChange={e=>filterSet(setStep,e.target.value)}><option value="todos">Todas</option>{[...new Set(clients.map(c=>c.stage).filter(Boolean))].map(x=><option key={x} value={x}>{x.replaceAll('_',' ')}</option>)}</select></label>
      <label className="reference-filter-label">Financeira<select value={institution} onChange={e=>filterSet(setInstitution,e.target.value)}><option value="todos">Todas</option>{institutions.map(x=><option key={x} value={x}>{x}</option>)}</select></label>
