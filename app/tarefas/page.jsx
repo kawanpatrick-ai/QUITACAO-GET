@@ -70,6 +70,8 @@ export default function TarefasPage(){
  const [history,setHistory]=useState([]),[historyLoading,setHistoryLoading]=useState(false),[saving,setSaving]=useState(false);
  const modalRef=useRef(null);
  const returnFocusRef=useRef(null);
+ const savingRef=useRef(saving);
+ savingRef.current=saving;
  const today=todayBrazil();
  useEffect(()=>{
   if(!db){setAuthLoading(false);return;}
@@ -102,7 +104,7 @@ export default function TarefasPage(){
   function handleModalKeyDown(event){
    if(event.key==='Escape'){
     event.preventDefault();
-    closeModal();
+    if(!savingRef.current)closeModal();
     return;
    }
    if(event.key!=='Tab')return;
@@ -117,7 +119,7 @@ export default function TarefasPage(){
    document.removeEventListener('keydown',handleModalKeyDown);
    if(returnFocusRef.current instanceof HTMLElement&&returnFocusRef.current.isConnected)returnFocusRef.current.focus();
   };
- },[modal,saving]);
+ },[modal]);
  const counts=useMemo(()=>queueCounts(clients,today),[clients,today]);
  const institutionOptions=useMemo(()=>[...new Set(clients.map(c=>normalText(c.institution)).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR')),[clients]);
  const queue=useMemo(()=>filterTaskQueue(clients,{view,today,query:search,priority:priorityFilter,institution:institutionFilter}),[clients,view,today,search,priorityFilter,institutionFilter]);
