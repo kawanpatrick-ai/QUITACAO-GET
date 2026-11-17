@@ -48,7 +48,7 @@ test('official lookup endpoint requires user token and saved CNJ',()=>{
  assert.match(route,/crm_processes/);
  assert.match(route,/api-publica\.datajud\.cnj\.jus\.br/);
  assert.match(read('lib/processos-oficiais.ts'),/comunicaapi\.pje\.jus\.br/);
- assert.match(route,/cache:\s*'no-store'/);
+ assert.match(route,/cache:\s*["']no-store["']/);
  assert.doesNotMatch(route,/service_role|SUPABASE_SERVICE_ROLE_KEY/);
 });
 test('known real logos mapped without guessing ambiguous law firms',()=>{
