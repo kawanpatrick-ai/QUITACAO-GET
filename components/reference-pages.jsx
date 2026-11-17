@@ -43,7 +43,6 @@ function Overview({clients,kpis,last,updated,onGo,onSelectClient,onRefresh,onImp
    <Kpi icon={ShieldCheck} title="Quitações verificadas" value={kpis.verify} sub="Comprovante validado" kind="good"/>
    <Kpi icon={FileWarning} title="Conflitos de origem" value={kpis.conflicts} sub="Divergências entre abas"/>
    <Kpi icon={FileSpreadsheet} title="Quitados na planilha" value={kpis.quitados} sub="Não implica comprovação"/>
-   <Kpi icon={RotateCcw} title="Retornos atrasados" value={kpis.overdue} sub="Acompanhamentos em aberto"/>
    <Kpi icon={Download} title="Última importação" value={last?brTimestamp(last.started_at):'—'} sub={last?.status||'Não realizada'}/>
    <Kpi icon={Clock3} title="Atualizado na tela" value={updated?updated.toLocaleTimeString('pt-BR'):'—'} sub="Atualização desta sessão"/>
   </div>
