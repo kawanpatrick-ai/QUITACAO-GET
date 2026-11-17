@@ -55,6 +55,7 @@ export default function CrmShell({active='Visão geral',email='',onNavigate,onSi
   if(!keyboardFocus)setSidebarExpanded(false);
  };
  return <div className={'app-shell '+(sidebarExpanded?'sidebar-expanded':'sidebar-collapsed')}>
+  <a className="app-skip-link" href="#conteudo">Pular para o conteúdo</a>
   <aside ref={sidebarRef} className="app-sidebar"
     onMouseEnter={()=>setSidebarExpanded(true)}
     onMouseLeave={shrinkIfUnfocused}
