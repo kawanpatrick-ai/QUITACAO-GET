@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {signInWithPassword,sendRecovery,ADMIN_EMAIL} from '../lib/login.mjs';
-import {checkCrmAccess} from '../lib/crm-access.mjs';
+import {checkCrmAccess} from '../lib/crm-access.ts';
 
 test('login usa como padrão o administrador inicial cadastrado no Supabase',async()=>{
  const calls=[];

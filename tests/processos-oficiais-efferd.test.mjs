@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';import{readFileSync}from'node:fs';
 import {CRM_AREAS} from '../lib/crm-navigation.mjs';
-import {formatProcessNumber,resolveCourtAlias,normalizeDataJud,normalizeDjen,mergeEvents,onlyExactProcess} from '../lib/processos-oficiais.mjs';
+import {formatProcessNumber,resolveCourtAlias,normalizeDataJud,normalizeDjen,mergeEvents,onlyExactProcess} from '../lib/processos-oficiais.ts';
 import {getInstitutionBrand} from '../lib/institution-brands.mjs';
 const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
 const number='1001218-36.2026.5.02.0040';
@@ -42,12 +42,12 @@ test('timeline joins both sources without treating failed requests as empty',()=
  assert.match(page,/sourceStatus/);
 });
 test('official lookup endpoint requires user token and saved CNJ',()=>{
- const route=read('app/api/processos/consulta/route.js');
+ const route=read('app/api/processos/consulta/route.ts');
  assert.match(route,/auth\.getUser/);
  assert.match(route,/crm_completed_activities/);
  assert.match(route,/crm_processes/);
  assert.match(route,/api-publica\.datajud\.cnj\.jus\.br/);
- assert.match(read('lib/processos-oficiais.mjs'),/comunicaapi\.pje\.jus\.br/);
+ assert.match(read('lib/processos-oficiais.ts'),/comunicaapi\.pje\.jus\.br/);
  assert.match(route,/cache:\s*'no-store'/);
  assert.doesNotMatch(route,/service_role|SUPABASE_SERVICE_ROLE_KEY/);
 });

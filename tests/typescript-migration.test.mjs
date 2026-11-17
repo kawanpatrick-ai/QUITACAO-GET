@@ -19,6 +19,7 @@ test('typecheck validates the app and preserves Deno Edge Function validation', 
   const pkg = JSON.parse(await readFile(new URL('package.json', root), 'utf8'));
 
   assert.match(pkg.scripts.typecheck, /tsc --noEmit/);
+  assert.match(pkg.scripts.test, /--experimental-strip-types/);
   assert.match(pkg.scripts.typecheck, /deno check supabase\/functions\/projectw1sc-provision-account\/index\.ts/);
   assert.ok(pkg.devDependencies.typescript);
   assert.ok(pkg.devDependencies['@types/react']);
