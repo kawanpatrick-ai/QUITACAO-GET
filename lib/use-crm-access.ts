@@ -18,39 +18,41 @@ export function useCrmAccess(
     id: null,
     status: "checking",
   });
+  const userId = user?.id;
+  const userEmail = user?.email;
 
   useEffect(() => {
-    if (!user?.id) {
+    if (!userId || !userEmail) {
       setState({ id: null, status: "guest" });
       return;
     }
 
     let alive = true;
-    setState({ id: user.id, status: "checking" });
+    setState({ id: userId, status: "checking" });
 
-    checkCrmAccess(db, user)
+    checkCrmAccess(db, { id: userId, email: userEmail })
       .then((allowed) => {
         if (alive) {
           setState({
-            id: user.id,
+            id: userId,
             status: allowed ? "allowed" : "denied",
           });
         }
       })
       .catch(() => {
-        if (alive) setState({ id: user.id, status: "denied" });
+        if (alive) setState({ id: userId, status: "denied" });
       });
 
     return () => {
       alive = false;
     };
-  }, [db, user?.id, user?.email]);
+  }, [db, userId, userEmail]);
 
   return {
     loading:
-      Boolean(user?.id) &&
-      (state.id !== user.id || state.status === "checking"),
+      Boolean(userId) &&
+      (state.id !== userId || state.status === "checking"),
     allowed:
-      Boolean(user?.id) && state.id === user.id && state.status === "allowed",
+      Boolean(userId) && state.id === userId && state.status === "allowed",
   };
 }
