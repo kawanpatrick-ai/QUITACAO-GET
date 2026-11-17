@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildSyncPayload } from '../lib/sync-payload.mjs';
+import { buildSyncPayload } from '../lib/sync-payload.ts';
 
 test('a sync preserves CRM-edited fields for an existing client', () => {
   const grouped = [{

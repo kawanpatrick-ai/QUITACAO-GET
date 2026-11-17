@@ -8,7 +8,7 @@ import {getClient} from '../../lib/supabase-client';
 import {fetchAllRows} from '../../lib/supabase-pagination.mjs';
 import {useCrmAccess} from '../../lib/use-crm-access';
 import {ADMIN_EMAIL,signInWithPassword} from '../../lib/login.mjs';
-import {formatProcessNumber,mergeEvents,normalizeDjen,buildDjenUrl} from '../../lib/processos-oficiais.mjs';
+import {formatProcessNumber,mergeEvents,normalizeDjen,buildDjenUrl} from '../../lib/processos-oficiais.ts';
 import {todayBrazil} from '../../lib/tarefas.mjs';
 const formatDate=x=>x&&!Number.isNaN(Date.parse(x))?new Date(x).toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo',dateStyle:'short',timeStyle:'short'}):'Data não informada';
 const sourceLabels={datajud:'DataJud',djen:'DJEN'};

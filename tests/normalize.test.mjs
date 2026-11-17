@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {dateBR,moneyBR,parseTab,mergeClients,parseParties} from '../lib/normalize.mjs';
+import {dateBR,moneyBR,parseTab,mergeClients,parseParties} from '../lib/normalize.ts';
 const id='sheet-1';
 test('datas americanas e brasileiras são aceitas, 1899 é descartado',()=>{
  assert.equal(dateBR('6/29/2026'),'2026-06-29');assert.equal(dateBR('29/06/2026'),'2026-06-29');
