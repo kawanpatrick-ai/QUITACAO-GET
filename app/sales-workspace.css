@@ -59,6 +59,6 @@ html[data-crm-theme] .sales-contact-focus .sales-criticality{color:var(--ui-neut
 html[data-crm-theme] .sales-contact-focus .sales-criticality.alta{color:var(--ui-warning-ink)!important}
 html[data-crm-theme] .sales-contact-focus .sales-criticality.urgente{color:var(--ui-danger-ink)!important}
 @media(max-width:1140px){.sales-workspace{grid-template-columns:minmax(230px,.9fr) minmax(310px,1.1fr)}.sales-contact-focus{padding:16px}}
-@media(max-width:850px){.sales-workspace{grid-template-columns:1fr}.sales-queue{max-height:330px}.sales-contact-focus{position:relative;top:auto}}
+@media(max-width:850px){.sales-workspace{grid-template-columns:1fr}.sales-queue{max-height:none;overflow:visible}.sales-contact-focus{position:relative;top:auto}}
 @media(max-width:540px){.sales-workspace{padding:9px;gap:9px}.sales-contact-focus{padding:13px}.sales-focus-info{gap:12px}.sales-focus-person h3{font-size:19px}.sales-focus-secondary .task-button{font-size:10px;gap:4px}}
 @media(prefers-reduced-motion:reduce){.sales-contact-card{transition:none!important}}
