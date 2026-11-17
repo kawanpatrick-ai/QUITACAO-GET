@@ -161,3 +161,13 @@
 @media(max-width:1180px){.task-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}.task-sidebar{width:207px;min-width:207px;padding-left:12px;padding-right:12px}.task-main{padding:30px 22px}}
 @media(max-width:870px){.task-sidebar{min-height:0;width:100%;min-width:0;position:relative;padding:18px;display:block}.task-shell{display:block}.task-brand{padding:0 0 15px}.task-side-group,.task-side-foot{display:none}.task-side-item{display:inline-flex;width:auto;min-width:auto;margin-right:7px;padding:9px;font-size:11px}.task-side-count{margin-left:3px}.task-main{max-width:100%;padding:25px 17px}.task-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:660px){.task-header{align-items:flex-start}.task-header h1{font-size:28px}.task-header .task-button{padding:9px 10px;font-size:11px}.task-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.task-metric{padding:12px 10px;gap:9px;border-radius:11px}.task-metric-icon{width:29px;height:29px}.task-metric strong{font-size:25px}.task-metric small{font-size:11px}.task-metric em{font-size:9px}.task-board-head{padding:19px 16px 15px;flex-wrap:wrap}.task-board-head h2{font-size:20px}.task-toolbar{padding:0 16px 13px}.task-search{width:100%;min-width:0}.task-queue-tabs{padding:0 8px}.task-queue-tabs button{padding:10px 12px}.task-item{padding:16px;gap:10px;flex-wrap:wrap}.task-item-main{flex-basis:calc(100% - 42px)}.task-item-actions{width:100%;flex-direction:row;flex-wrap:wrap;padding-left:38px;align-items:center}.task-item-actions .task-button{flex:1;min-width:124px}.task-icon-button{position:relative;top:auto;right:auto}.task-link-mini{padding:7px 3px}.task-modal-overlay{padding:9px}.task-modal-header{padding:17px}.task-modal-body{padding:17px}.task-modal-header h2{font-size:21px}.task-form-grid{grid-template-columns:1fr}.task-context{grid-template-columns:1fr 1fr}.task-list-footer{padding:14px 17px}}
+
+/* Auditoria de acessibilidade: manter o diálogo contido e permitir rolagem independente. */
+.task-modal{overscroll-behavior:contain;outline:none}
+.task-modal-body{overscroll-behavior:contain}
+@media(max-width:600px){
+ .task-toolbar{display:grid;grid-template-columns:minmax(0,1fr);gap:9px}
+ .task-search{width:100%;min-width:0;min-height:44px}
+ .task-select-wrap,.task-select-institution{width:100%;max-width:none;min-width:0;min-height:44px}
+ .task-select-wrap select{width:100%;min-width:0}
+}

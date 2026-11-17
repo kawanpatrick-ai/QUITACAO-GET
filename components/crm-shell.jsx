@@ -55,6 +55,7 @@ export default function CrmShell({active='Visão geral',email='',onNavigate,onSi
   if(!keyboardFocus)setSidebarExpanded(false);
  };
  return <div className={'app-shell '+(sidebarExpanded?'sidebar-expanded':'sidebar-collapsed')}>
+  <a className="app-skip-link" href="#conteudo">Pular para o conteúdo</a>
   <aside ref={sidebarRef} className="app-sidebar"
     onMouseEnter={()=>setSidebarExpanded(true)}
     onMouseLeave={shrinkIfUnfocused}
@@ -96,6 +97,6 @@ export default function CrmShell({active='Visão geral',email='',onNavigate,onSi
   </aside>
   <div className="app-content"><div className="reference-top-tools">
    
-   <a href="/tarefas?fila=vencidos" aria-label="Ver retornos vencidos" title="Ver retornos vencidos" className="reference-top-alert"><Bell size={20}/>{overdueCount>0&&<span className="reference-notification-dot"/>}</a><span className="reference-top-divider"/><a className="reference-top-avatar" href="/configuracoes" title={profile.display_name||'Configurações do perfil'} aria-label="Abrir configurações do perfil">{avatarUrl?<img src={avatarUrl} alt="Foto do perfil"/>:(profile.display_name||email||'W').charAt(0).toLocaleUpperCase('pt-BR')}</a></div>{children}</div>
+   <a href="/tarefas?fila=vencidos" aria-label="Ver retornos vencidos" title="Ver retornos vencidos" className="reference-top-alert"><Bell size={20}/>{overdueCount>0&&<span className="reference-notification-dot"/>}</a><span className="reference-top-divider"/><a className="reference-top-avatar" href="/configuracoes" title={profile.display_name||'Configurações do perfil'} aria-label="Abrir configurações do perfil">{avatarUrl?<img src={avatarUrl} alt="Foto do perfil"/>:(profile.display_name||email||'W').charAt(0).toLocaleUpperCase('pt-BR')}</a></div><div id="conteudo" tabIndex="-1">{children}</div></div>
  </div>;
 }

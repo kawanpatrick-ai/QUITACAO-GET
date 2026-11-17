@@ -103,3 +103,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
  html,body,.app-shell,.app-content{background:#fff!important;color:#172b3f!important}
  .app-sidebar,.reference-top-tools{display:none!important}
 }
+
+/* Auditoria de layout: feedback de sucesso não deve usar semântica de alerta. */
+.reference-notice.success{background:var(--ui-success-bg,#e9f4eb)!important;color:var(--ui-success-ink,#235b34)!important;border-color:var(--ui-border,#dcc4cf)!important}
+.reference-notice.success svg{color:var(--ui-success-ink,#235b34)!important}
+/* Legibilidade: piso tipográfico para ações, rótulos e texto corrido da operação. */
+.reference-dashboard .reference-primary,.reference-dashboard .reference-outline,.task-main .task-button{font-size:14px;min-height:40px}
+.reference-dashboard .reference-filter-label,.reference-dashboard .reference-activity-form label,.task-main .task-modal-body label,.sales-focus-info>div>span{font-size:12px}
+.reference-dashboard p,.task-main p,.sales-focus-note p{font-size:max(14px,1em);line-height:1.55}
