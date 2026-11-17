@@ -561,3 +561,11 @@ body{background:#fdf9f8;color:var(--reference-text)}
  .reference-clients-table tbody tr.selected{background:#fff5f7;outline:1px solid #e29eb4;border-radius:9px}
 }
 @media(max-width:375px){.reference-search{min-width:0;width:100%}.reference-inline-filters{min-width:0;max-width:100%}}
+
+@media(max-width:780px){
+ .reference-clients-table thead{display:none}
+ .reference-clients-table tbody td:nth-child(3)::before{content:'Situação: ';font-size:10px;font-weight:700;color:#7d6e72}
+ .reference-clients-table tbody td:nth-child(6)::before{content:'Próximo retorno: ';font-size:10px;font-weight:700;color:#7d6e72}
+ .reference-inline-filters{min-width:0;max-width:100%;align-items:stretch}
+ .reference-inline-filters>*{min-width:0;max-width:100%}
+}
