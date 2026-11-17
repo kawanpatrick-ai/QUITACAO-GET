@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {todayBrazil,daysUntil,taskStatus,sortTaskQueue,filterTaskQueue,queueCounts,isAttendedToday,validateAttendance} from '../lib/tarefas.mjs';
+import {todayBrazil,daysUntil,taskStatus,sortTaskQueue,filterTaskQueue,queueCounts,isAttendedToday,validateAttendance,canLoadTaskQueue} from '../lib/tarefas.mjs';
 
 const TODAY='2026-11-09';
 const base={id:'1',name:'Cliente Exemplo',source_status:'em_andamento',workflow_status:'ativo',next_return:null,due_override:null,priority_level:'normal'};
@@ -55,4 +55,11 @@ test('não registra atendimento vazio nem permite próximo retorno inválido',()
  assert.throws(()=>validateAttendance({body:'',channel:'whatsapp',outcome:'contatado',next_due:'2026-12-09'}),/descreva/i);
  assert.throws(()=>validateAttendance({body:'Falamos',channel:'whatsapp',outcome:'contatado',next_due:'12/09/1899'}),/data/i);
  assert.deepEqual(validateAttendance({body:'Falamos por telefone',channel:'ligacao',outcome:'contatado',next_due:'2026-12-09'}),{body:'Falamos por telefone',channel:'ligacao',outcome:'contatado',next_due:'2026-12-09'});
+});
+
+test('qualquer sessão autenticada pode carregar a fila, sem depender de e-mail fixo',()=>{
+ assert.equal(canLoadTaskQueue({user:{id:'operator-1',email:'operador@get.com'}}),true);
+ assert.equal(canLoadTaskQueue({user:{id:'admin-2',email:'outro-admin@get.com'}}),true);
+ assert.equal(canLoadTaskQueue(null),false);
+ assert.equal(canLoadTaskQueue({user:null}),false);
 });
