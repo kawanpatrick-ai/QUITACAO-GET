@@ -1,5 +1,5 @@
 'use client';
-import {useCallback,useEffect,useMemo,useState} from 'react';
+import {useCallback,useEffect,useMemo,useRef,useState} from 'react';
 import {AlertCircle,AlertTriangle,ArrowLeft,ArrowUpRight,BadgeCheck,CalendarDays,CheckCircle2,ChevronRight,ClipboardCheck,Clock3,FileClock,Filter,Flag,History,Inbox,ListChecks,Loader2,Pencil,NotebookPen,Phone,Plus,RefreshCcw,Search,Send,ShieldCheck,UserRound,Users,X} from 'lucide-react';
 import {getClient} from '../../lib/supabase-client';
 import {fetchAllRows} from '../../lib/supabase-pagination.mjs';
@@ -8,7 +8,7 @@ import ProfessionalAuth from '../../components/professional-auth';
 import EfferdKpi from '../../components/efferd-kpi';
 import {useCrmAccess} from '../../lib/use-crm-access';
 import {ADMIN_EMAIL,signInWithPassword} from '../../lib/login.mjs';
-import {ATTENDANCE_CHANNELS,ATTENDANCE_OUTCOMES,dueDate,filterTaskQueue,queueCounts,taskStatus,todayBrazil,validateAttendance,validateCriticidade,validateNote,validISO} from '../../lib/tarefas.mjs';
+import {ATTENDANCE_CHANNELS,ATTENDANCE_OUTCOMES,dueDate,filterTaskQueue,queueCounts,taskStatus,todayBrazil,validateAttendance,validateCriticidade,validateNote,validISO,canLoadTaskQueue} from '../../lib/tarefas.mjs';
 import {calculateNextReturn} from '../../lib/return-date.mjs';
 import './tarefas.css';
 
@@ -68,6 +68,8 @@ export default function TarefasPage(){
  const [edit,setEdit]=useState({}),[reason,setReason]=useState(''),[noteBody,setNoteBody]=useState('');
  const [attendance,setAttendance]=useState({channel:'whatsapp',outcome:'contatado',body:'',next_due:'',responsible:'Davi Alves Figueredo',priority_level:'normal',note:''});
  const [history,setHistory]=useState([]),[historyLoading,setHistoryLoading]=useState(false),[saving,setSaving]=useState(false);
+ const modalRef=useRef(null);
+ const returnFocusRef=useRef(null);
  const today=todayBrazil();
  useEffect(()=>{
   if(!db){setAuthLoading(false);return;}
@@ -90,7 +92,32 @@ export default function TarefasPage(){
   else{setClients((data||[]).map(client=>{try{const nextReturn=calculateNextReturn(client.last_contact,client.waiting_business_days);return nextReturn?{...client,next_return:nextReturn}:client}catch{return client}}));setNotice('')}
   setLoading(false);
  },[db]);
- useEffect(()=>{if(session?.user?.email?.toLowerCase()===ADMIN_EMAIL)load();else setClients([])},[session?.user?.id,load]);
+ useEffect(()=>{if(canLoadTaskQueue(session))load();else setClients([])},[session,load]);
+ useEffect(()=>{
+  if(!modal)return;
+  const dialog=modalRef.current;
+  if(!dialog)return;
+  returnFocusRef.current=document.activeElement;
+  dialog.focus();
+  function handleModalKeyDown(event){
+   if(event.key==='Escape'){
+    event.preventDefault();
+    closeModal();
+    return;
+   }
+   if(event.key!=='Tab')return;
+   const focusable=[...dialog.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])')];
+   if(!focusable.length){event.preventDefault();dialog.focus();return;}
+   const first=focusable[0],last=focusable[focusable.length-1];
+   if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
+   else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
+  }
+  document.addEventListener('keydown',handleModalKeyDown);
+  return()=>{
+   document.removeEventListener('keydown',handleModalKeyDown);
+   if(returnFocusRef.current instanceof HTMLElement&&returnFocusRef.current.isConnected)returnFocusRef.current.focus();
+  };
+ },[modal,saving]);
  const counts=useMemo(()=>queueCounts(clients,today),[clients,today]);
  const institutionOptions=useMemo(()=>[...new Set(clients.map(c=>normalText(c.institution)).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR')),[clients]);
  const queue=useMemo(()=>filterTaskQueue(clients,{view,today,query:search,priority:priorityFilter,institution:institutionFilter}),[clients,view,today,search,priorityFilter,institutionFilter]);
@@ -268,7 +295,7 @@ export default function TarefasPage(){
    </section>
   </main>
   {modal&&selected&&<div className="task-modal-overlay" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)closeModal()}}>
-   <section className="task-modal" role="dialog" aria-modal="true" aria-label={modal==='attendance'?'Registrar atendimento':modal==='edit'?'Editar cliente':modal==='note'?'Nova anotação':'Histórico do cliente'}>
+   <section ref={modalRef} tabIndex="-1" className="task-modal" role="dialog" aria-modal="true" aria-label={modal==='attendance'?'Registrar atendimento':modal==='edit'?'Editar cliente':modal==='note'?'Nova anotação':'Histórico do cliente'}>
     <div className="task-modal-header"><div><span className="task-kicker">CLIENTE / {selected.name}</span><h2>{modal==='attendance'?'Registrar atendimento':modal==='edit'?'Editar cadastro e criticidade':modal==='note'?'Nova anotação':'Histórico do cliente'}</h2></div><button className="task-close" disabled={saving} onClick={closeModal} aria-label="Fechar"><X size={20}/></button></div>
     {modal==='attendance'&&<form onSubmit={saveAttendance} className="task-modal-body">
       <div className="task-context"><div><span>Situação atual</span><TaskBadge client={selected} today={today}/></div><div><span>Próximo retorno</span><strong>{dateBR(selectedStatus?.date)}</strong></div></div>
