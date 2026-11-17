@@ -156,7 +156,7 @@ html[data-crm-theme] .app-content :is(
 html[data-crm-theme] .app-content :is(
   .reference-status.pending,.reference-status.neutral,.task-badge-hoje,
   .task-badge-sem_data,.task-source-warning,.task-priority-alta,.pill.warn,
-  .reference-notice,.notice,.task-notice,.status-warning
+  .reference-notice:not(.success),.notice,.task-notice,.status-warning
 ) {
   background: var(--ui-warning-bg) !important;
   color: var(--ui-warning-ink) !important;
