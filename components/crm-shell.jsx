@@ -65,9 +65,12 @@ export default function CrmShell({active='Visão geral',email='',onNavigate,onSi
     }}>
    <div className="app-identity">
     <button type="button" className="app-sidebar-toggle" aria-label={sidebarExpanded?'Recolher menu lateral':'Expandir menu lateral'} aria-expanded={sidebarExpanded} onClick={()=>setSidebarExpanded(x=>!x)}>{sidebarExpanded?<PanelLeftClose size={19}/>:<PanelLeftOpen size={19}/>}</button>
-    <a className="app-brand-link" href="/" aria-label="GET CRM — Ir à visão geral" title="Ir à visão geral">
-     <img className="app-brand-compact" src="/branding/get-crm-symbol.svg" alt="" width="54" height="58"/>
-     <img className="app-brand-full" src="/branding/get-crm-wordmark.svg" alt="" width="202" height="65"/>
+    <a className="app-brand-link" href="/" aria-label="Controle de Quitação — Visão geral" title="Controle de Quitação">
+     <img className="app-brand-compact" src="/branding/get-symbol.png" alt="GET" width="54" height="54"/>
+     <span className="app-brand-lockup">
+      <img className="app-brand-full" src="/branding/get-logo-white.png" alt="GET Assessoria Financeira" width="200" height="83"/>
+      <small className="app-brand-product">Controle de Quitação</small>
+     </span>
     </a>
    </div>
    <div className="app-mobile-account">
@@ -92,7 +95,7 @@ export default function CrmShell({active='Visão geral',email='',onNavigate,onSi
      {onPassword?<button onClick={onPassword} type="button"><KeyRound size={14}/> Alterar senha</button>:<a href="/?senha=1"><KeyRound size={14}/> Alterar senha</a>}
      <button onClick={onSignOut} type="button"><LogOut size={14}/> Sair</button>
     </div>
-    <small className="app-copyright" aria-label="Direitos autorais da W1 Capital">© 2026 GET Assessoria Financeira</small>
+    <small className="app-copyright" aria-label="Direitos autorais da GET Assessoria">© 2026 GET Assessoria Financeira · Controle de Quitação</small>
    </footer>
   </aside>
   <div className="app-content"><div className="reference-top-tools">

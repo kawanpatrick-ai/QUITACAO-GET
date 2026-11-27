@@ -11,5 +11,5 @@ import './visual-overrides.css';
 import './brand-auth.css';
 import './theme-accessibility.css';
 import './corporate-design.css';
-export const metadata={title:'GET Assessoria Financeira • CRM de Quitações',description:'Gestão operacional de clientes, negociações, tarefas e processos.'};
+export const metadata={title:'Controle de Quitação | GET Assessoria',description:'Plataforma de gestão de clientes, negociações, retornos e processos da GET Assessoria Financeira.'};
 export default function RootLayout({children}){return <html lang="pt-BR" data-crm-theme="corporate"><body>{children}</body></html>}
