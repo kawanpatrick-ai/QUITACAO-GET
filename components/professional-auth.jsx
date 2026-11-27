@@ -5,7 +5,7 @@ export default function ProfessionalAuth({eyebrow='ÁREA RESTRITA',title='Acesse
  return <main className="w1-auth-screen"><div className="w1-auth-frame">
   <section className="w1-auth-hero" aria-label="Apresentação do Controle de Quitação">
    <div className="w1-auth-hero-top">
-    <img className="w1-auth-hero-logo" src="/branding/get-crm-wordmark.svg" alt="GET Assessoria Financeira" width="340" height="76"/>
+    <img className="w1-auth-hero-logo" src="/branding/get-crm-wordmark.svg" alt="GET Assessoria Financeira" width="340" height="76" decoding="async" loading="eager" fetchPriority="high"/>
     <div className="w1-auth-hero-tag"><i/> GESTÃO DE QUITAÇÃO</div>
    </div>
    <div className="w1-auth-hero-content">
