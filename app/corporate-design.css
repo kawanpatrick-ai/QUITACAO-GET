@@ -46,7 +46,7 @@ body{font-family:"Segoe UI Variable",Inter,ui-sans-serif,system-ui,-apple-system
 .app-sidebar-toggle:hover{background:#2c4965}
 .app-brand-link{display:flex;align-items:center;min-width:0}
 .app-brand-compact{width:38px!important;height:38px!important;object-fit:contain}
-.app-brand-full{width:158px!important;height:42px!important;object-fit:contain}
+.app-brand-full{width:158px!important;height:66px!important;object-fit:contain!important}
 .sidebar-collapsed .app-sidebar{width:78px!important;flex-basis:78px!important;padding-inline:12px!important}
 .sidebar-collapsed .app-identity{justify-content:center;padding-inline:0!important}
 .sidebar-collapsed .app-brand-full{display:none!important}
@@ -88,7 +88,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
  .app-sidebar{width:100%!important;flex-basis:auto!important;padding:10px 12px 8px!important}
  .sidebar-collapsed .app-sidebar,.sidebar-expanded .app-sidebar{width:100%!important;flex-basis:auto!important}
  .app-identity{justify-content:flex-start!important;padding:0 94px 9px 2px!important;margin:0!important;border:0!important}
- .app-brand-full{width:140px!important;height:36px!important}
+ .app-brand-full{width:140px!important;height:58px!important}
  .app-brand-compact{display:none!important}
  .app-sidebar-toggle{display:none!important}
  .app-section-name,.app-nav-footer{display:none!important}
