@@ -12,5 +12,5 @@ test('a aplicação não renderiza mais clientes fictícios quando o Supabase es
 test('os metadados não identificam a aplicação como demonstração ou MVP descartável',async()=>{
  const layout=await readFile(new URL('../app/layout.jsx',import.meta.url),'utf8');
  assert.doesNotMatch(layout,/Demonstração|CRM MVP/);
- assert.match(layout,/CRM de Quitações/);
+ assert.match(layout,/Controle de Quitação/);
 });

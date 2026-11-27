@@ -15,6 +15,6 @@ test('Naruto and Sasuke are no longer selectable or loaded as CRM themes',()=>{
 test('the new identity is GET Assessoria Financeira',()=>{
  const shell=read('components/crm-shell.jsx');
  const layout=read('app/layout.jsx');
- assert.match(shell,/get-crm-wordmark\.svg/);
+ assert.match(shell,/get-logo-white\.png/);
  assert.match(layout,/GET Assessoria Financeira/);
 });
