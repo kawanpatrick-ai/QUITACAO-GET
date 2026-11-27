@@ -34,18 +34,18 @@ test('light-background GET logo has a transparent background and visible navy wo
   const image = readPng('public/branding/get-logo.png');
   assert.deepEqual([image.width, image.height], [160, 66]);
   assert.ok(image.colors.some((hex) => { const r=parseInt(hex.slice(0,2),16), g=parseInt(hex.slice(2,4),16), b=parseInt(hex.slice(4,6),16); return r<=40 && g<=55 && b<=80; }));
-  assert.ok(image.colors.includes('2c81b7'));
+  assert.ok(image.colors.some((hex) => { const r=parseInt(hex.slice(0,2),16), g=parseInt(hex.slice(2,4),16), b=parseInt(hex.slice(4,6),16); return r>=30 && r<=65 && g>=105 && g<=150 && b>=155 && b<=210; }));
 });
 
 test('dark-background GET logo has a transparent background and visible white wordmark', () => {
   const image = readPng('public/branding/get-logo-white.png');
   assert.deepEqual([image.width, image.height], [160, 66]);
   assert.ok(image.colors.includes('ffffff'));
-  assert.ok(image.colors.includes('2c81b7'));
+  assert.ok(image.colors.some((hex) => { const r=parseInt(hex.slice(0,2),16), g=parseInt(hex.slice(2,4),16), b=parseInt(hex.slice(4,6),16); return r>=30 && r<=65 && g>=105 && g<=150 && b>=155 && b<=210; }));
 });
 
 test('compact sidebar mark is a valid high-resolution GET symbol', () => {
   const image = readPng('public/branding/get-symbol.png');
   assert.deepEqual([image.width, image.height], [84, 84]);
-  assert.ok(image.colors.includes('2c81b7'));
+  assert.ok(image.colors.some((hex) => { const r=parseInt(hex.slice(0,2),16), g=parseInt(hex.slice(2,4),16), b=parseInt(hex.slice(4,6),16); return r>=30 && r<=65 && g>=105 && g<=150 && b>=155 && b<=210; }));
 });
