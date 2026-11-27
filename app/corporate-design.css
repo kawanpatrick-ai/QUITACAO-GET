@@ -123,7 +123,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 html{scroll-behavior:auto!important}
 .app-sidebar{
   isolation:isolate;
-  contain:paint;
+  transition:width 150ms cubic-bezier(.2,.7,.2,1),flex-basis 150ms cubic-bezier(.2,.7,.2,1),background-color 120ms ease!important;
 }
 .app-sidebar :is(img,svg){border:0!important;outline:0!important;box-shadow:none!important;image-rendering:auto}
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
