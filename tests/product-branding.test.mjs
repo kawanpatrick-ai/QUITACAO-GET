@@ -22,9 +22,9 @@ test('login and sidebar use the supplied GET logo assets, not the old W1SC mark'
   const auth = read('components/professional-auth.jsx');
   const shell = read('components/crm-shell.jsx');
 
-  assert.match(auth, /\/branding\/get-logo-white\.png/);
-  assert.match(shell, /\/branding\/get-symbol\.png/);
-  assert.match(shell, /\/branding\/get-logo-white\.png/);
+  assert.match(auth, /\/branding\/get-crm-wordmark\.svg/);
+  assert.match(shell, /\/branding\/get-crm-symbol\.svg/);
+  assert.match(shell, /\/branding\/get-crm-wordmark\.svg/);
   assert.ok(existsSync(new URL('../public/branding/get-logo.png', import.meta.url)));
   assert.ok(existsSync(new URL('../public/branding/get-logo-white.png', import.meta.url)));
   assert.ok(existsSync(new URL('../public/branding/get-symbol.png', import.meta.url)));
