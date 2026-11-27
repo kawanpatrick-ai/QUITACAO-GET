@@ -32,7 +32,7 @@ const readPng = (path) => {
 
 test('light-background GET logo has a transparent background and visible navy wordmark', () => {
   const image = readPng('public/branding/get-logo.png');
-  assert.deepEqual([image.width, image.height], [200, 83]);
+  assert.deepEqual([image.width, image.height], [160, 66]);
   assert.ok(image.colors.includes('14283f'));
   assert.ok(image.colors.includes('2c81b7'));
 });
@@ -46,6 +46,6 @@ test('dark-background GET logo has a transparent background and visible white wo
 
 test('compact sidebar mark is a valid high-resolution GET symbol', () => {
   const image = readPng('public/branding/get-symbol.png');
-  assert.deepEqual([image.width, image.height], [186, 186]);
+  assert.deepEqual([image.width, image.height], [84, 84]);
   assert.ok(image.colors.includes('2c81b7'));
 });
