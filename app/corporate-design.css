@@ -28,6 +28,10 @@ html[data-crm-theme="corporate"]{
   --crm-canvas:#f4f7fa;
   --crm-surface:#ffffff;
   --crm-border:#dce4ec;
+  --motion-fast:110ms;
+  --motion-standard:160ms;
+  --motion-enter:180ms;
+  --motion-ease:cubic-bezier(.2,.7,.2,1);
   --crm-shadow:0 2px 8px rgba(20,40,63,.045),0 12px 30px rgba(20,40,63,.035);
   --crm-shadow-hover:0 8px 22px rgba(20,40,63,.09),0 18px 42px rgba(20,40,63,.06);
 }
@@ -36,17 +40,19 @@ body{font-family:"Segoe UI Variable",Inter,ui-sans-serif,system-ui,-apple-system
 .app-shell{background:var(--ui-page)!important;color:var(--ui-ink)!important}
 .app-sidebar{
   width:256px!important;flex-basis:256px!important;
-  background:var(--ui-nav)!important;color:var(--ui-nav-ink)!important;
-  border-right:1px solid #203c58!important;box-shadow:4px 0 20px rgba(15,35,56,.08)!important;
+  background:rgba(20,40,63,.84)!important;color:var(--ui-nav-ink)!important;
+  -webkit-backdrop-filter:blur(16px) saturate(145%)!important;
+  backdrop-filter:blur(16px) saturate(145%)!important;
+  border-right:0!important;box-shadow:5px 0 24px rgba(15,35,56,.10)!important;
   padding:22px 15px 18px!important;
 }
 .app-sidebar::before,.app-sidebar::after{content:none!important;display:none!important}
-.app-identity{display:flex!important;align-items:center!important;gap:10px!important;padding:4px 5px 22px!important;margin:0 0 22px!important;border-bottom:1px solid #2d435b!important;text-align:left!important}
-.app-sidebar-toggle{display:grid;place-items:center;width:34px;height:34px;flex:none;border:1px solid #3b526a;border-radius:9px;background:#203750;color:#e9f1f8}
+.app-identity{display:flex!important;align-items:center!important;gap:10px!important;padding:4px 5px 22px!important;margin:0 0 22px!important;border:0!important;text-align:left!important}
+.app-sidebar-toggle{display:grid;place-items:center;width:34px;height:34px;flex:none;border:0;border-radius:9px;background:rgba(255,255,255,.10);color:#e9f1f8;transition:background-color 120ms ease,color 120ms ease}
 .app-sidebar-toggle:hover{background:#2c4965}
 .app-brand-link{display:flex;align-items:center;min-width:0}
-.app-brand-compact{width:38px!important;height:38px!important;object-fit:contain}
-.app-brand-full{width:158px!important;height:66px!important;object-fit:contain!important}
+.app-brand-compact{width:40px!important;height:40px!important;object-fit:contain!important}
+.app-brand-full{width:min(178px,100%)!important;height:auto!important;max-height:42px!important;object-fit:contain!important;object-position:left center!important}
 .sidebar-collapsed .app-sidebar{width:78px!important;flex-basis:78px!important;padding-inline:12px!important}
 .sidebar-collapsed .app-identity{justify-content:center;padding-inline:0!important}
 .sidebar-collapsed .app-brand-full{display:none!important}
@@ -61,9 +67,9 @@ body{font-family:"Segoe UI Variable",Inter,ui-sans-serif,system-ui,-apple-system
 .app-nav-link:hover{background:#203b56!important;color:#fff!important;transform:none!important}
 .app-nav-link[aria-current="page"],.app-nav-link.active{background:#176b66!important;color:#fff!important;box-shadow:inset 3px 0 #85bee8!important}
 .app-nav-link[aria-current="page"] svg,.app-nav-link.active svg{color:#fff!important}
-.app-nav-footer{border-top:1px solid #2d435b!important;color:#d4e0eb!important;padding:17px 8px 2px!important}
+.app-nav-footer{border-top:0!important;color:#d4e0eb!important;padding:17px 8px 2px!important}
 .app-private,.app-account-email{color:#b9c9d8!important}
-.app-account-actions a,.app-account-actions button{background:#203b56!important;border:1px solid #38516a!important;color:#eef4f9!important;border-radius:8px!important}
+.app-account-actions a,.app-account-actions button{background:rgba(255,255,255,.09)!important;border:0!important;color:#eef4f9!important;border-radius:8px!important;transition:background-color 120ms ease,color 120ms ease}
 .app-account-actions a:hover,.app-account-actions button:hover{background:#2b4b69!important}
 .app-copyright{color:#9eb1c4!important}
 .app-content{min-width:0;background:var(--ui-page)!important}
@@ -88,7 +94,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
  .app-sidebar{width:100%!important;flex-basis:auto!important;padding:10px 12px 8px!important}
  .sidebar-collapsed .app-sidebar,.sidebar-expanded .app-sidebar{width:100%!important;flex-basis:auto!important}
  .app-identity{justify-content:flex-start!important;padding:0 94px 9px 2px!important;margin:0!important;border:0!important}
- .app-brand-full{width:140px!important;height:58px!important}
+ .app-brand-full{width:140px!important;height:auto!important;max-height:34px!important}
  .app-brand-compact{display:none!important}
  .app-sidebar-toggle{display:none!important}
  .app-section-name,.app-nav-footer{display:none!important}
@@ -111,3 +117,72 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .reference-dashboard .reference-primary,.reference-dashboard .reference-outline,.task-main .task-button{font-size:14px;min-height:40px}
 .reference-dashboard .reference-filter-label,.reference-dashboard .reference-activity-form label,.task-main .task-modal-body label,.sales-focus-info>div>span{font-size:12px}
 .reference-dashboard p,.task-main p,.sales-focus-note p{font-size:max(14px,1em);line-height:1.55}
+
+
+/* Refinamento de acabamento e movimento: vetores nítidos, vidro discreto e interações leves. */
+html{scroll-behavior:auto!important}
+.app-sidebar{
+  isolation:isolate;
+  transition:width 150ms cubic-bezier(.2,.7,.2,1),flex-basis 150ms cubic-bezier(.2,.7,.2,1),background-color 120ms ease!important;
+}
+.app-sidebar :is(img,svg){border:0!important;outline:0!important;box-shadow:none!important;image-rendering:auto}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
+  .app-sidebar{
+    -webkit-backdrop-filter:blur(16px) saturate(145%)!important;
+    backdrop-filter:blur(16px) saturate(145%)!important;
+  }
+}
+@supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
+  .app-sidebar{background:rgba(20,40,63,.97)!important}
+}
+.app-brand-full{width:min(178px,100%)!important;height:auto!important;max-height:42px!important;object-fit:contain!important}
+.app-brand-compact{width:42px!important;height:42px!important;object-fit:contain!important}
+.app-brand-link,.app-brand-lockup{min-width:0}
+.app-nav-link{
+  transition:background-color 120ms ease,color 120ms ease,transform 120ms ease!important;
+}
+.app-sidebar-toggle,.app-account-actions a,.app-account-actions button{
+  transition:background-color 120ms ease,color 120ms ease!important;
+}
+.app-content .main,.app-content .task-main{animation-duration:var(--motion-enter)!important}
+.app-content :is(.metric,.panel,.task-metric,.task-board,.reference-panel){
+  transition:transform var(--motion-standard) ease,background-color var(--motion-standard) ease,opacity var(--motion-standard) ease!important;
+  will-change:auto!important;
+}
+.app-content :is(.metric,.task-metric):hover{
+  box-shadow:var(--crm-shadow)!important;
+}
+.w1-auth-hero-logo{
+  width:min(340px,100%)!important;height:auto!important;max-height:76px!important;
+  object-fit:contain!important;object-position:left center!important;
+  border:0!important;outline:0!important;box-shadow:none!important;
+}
+.w1-auth-panel-brand img{
+  display:block;width:min(175px,100%)!important;height:auto!important;max-height:42px!important;
+  object-fit:contain!important;object-position:left center!important;
+  border:0!important;outline:0!important;box-shadow:none!important;
+}
+@media(max-width:780px){
+  .app-brand-full{width:140px!important;height:auto!important;max-height:32px!important}
+  .w1-auth-hero-logo{width:min(220px,100%)!important;max-height:50px!important}
+  .w1-auth-panel-brand img{width:min(130px,100%)!important;max-height:32px!important}
+}
+@media(max-width:700px){
+  .app-sidebar{-webkit-backdrop-filter:blur(12px) saturate(135%)!important;backdrop-filter:blur(12px) saturate(135%)!important}
+  .app-content :is(.metric,.task-metric):hover{box-shadow:var(--crm-shadow)!important}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto!important}
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+
+
+/* Filas e modais também deixam de animar sombras e entram em tela no mesmo ritmo. */
+.app-content .task-item{
+  transition:background-color var(--motion-standard) ease,transform var(--motion-standard) ease!important;
+  will-change:auto!important;
+}
+.app-content .task-item:hover{box-shadow:none!important}
+.app-content .task-list>.task-item:nth-child(-n+8){animation-duration:var(--motion-enter)!important}
+.app-content .task-modal-overlay,.app-content .dialog{animation-duration:var(--motion-standard)!important}
+.app-content .task-modal,.app-content .dialog-inner{animation-duration:var(--motion-enter)!important}
