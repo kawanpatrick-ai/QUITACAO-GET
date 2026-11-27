@@ -11,7 +11,7 @@ test('character panoramas and anime banners are not loaded into the GET CRM',()=
 
 test('the corporate shell uses GET-owned brand assets instead of character marks',()=>{
  const shell=read('components/crm-shell.jsx');
- assert.match(shell,/get-symbol\.png/);
- assert.match(shell,/get-logo-white\.png/);
+ assert.match(shell,/get-crm-symbol\.svg/);
+ assert.match(shell,/get-crm-wordmark\.svg/);
  assert.doesNotMatch(shell,/madara|naruto|sasuke|sharingan/i);
 });
