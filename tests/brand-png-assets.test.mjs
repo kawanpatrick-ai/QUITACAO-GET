@@ -1,0 +1,51 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+
+const readPng = (path) => {
+  const bytes = readFileSync(new URL('../' + path, import.meta.url));
+  assert.equal(bytes.subarray(0, 8).toString('hex'), '89504e470d0a1a0a', path + ' must be a valid PNG');
+  let offset = 8;
+  const chunks = new Map();
+  while (offset + 12 <= bytes.length) {
+    const length = bytes.readUInt32BE(offset);
+    const type = bytes.toString('ascii', offset + 4, offset + 8);
+    const start = offset + 8;
+    const end = start + length;
+    assert.ok(end + 4 <= bytes.length, path + ' has a truncated PNG chunk');
+    chunks.set(type, bytes.subarray(start, end));
+    offset = end + 4;
+    if (type === 'IEND') break;
+  }
+  const header = chunks.get('IHDR');
+  assert.ok(header, path + ' must contain IHDR');
+  const palette = chunks.get('PLTE');
+  const transparency = chunks.get('tRNS');
+  assert.ok(palette && palette.length % 3 === 0, path + ' must contain a palette');
+  assert.ok(transparency && transparency.includes(0) && transparency.includes(255), path + ' must preserve transparent background and opaque artwork');
+  return {
+    width: header.readUInt32BE(0),
+    height: header.readUInt32BE(4),
+    colors: Array.from({ length: palette.length / 3 }, (_, i) => palette.subarray(i * 3, i * 3 + 3).toString('hex')),
+  };
+};
+
+test('light-background GET logo has a transparent background and visible navy wordmark', () => {
+  const image = readPng('public/branding/get-logo.png');
+  assert.deepEqual([image.width, image.height], [160, 66]);
+  assert.ok(image.colors.some((hex) => { const r=parseInt(hex.slice(0,2),16), g=parseInt(hex.slice(2,4),16), b=parseInt(hex.slice(4,6),16); return r<=40 && g<=55 && b<=80; }));
+  assert.ok(image.colors.some((hex) => { const r=parseInt(hex.slice(0,2),16), g=parseInt(hex.slice(2,4),16), b=parseInt(hex.slice(4,6),16); return r>=30 && r<=65 && g>=105 && g<=150 && b>=155 && b<=210; }));
+});
+
+test('dark-background GET logo has a transparent background and visible white wordmark', () => {
+  const image = readPng('public/branding/get-logo-white.png');
+  assert.deepEqual([image.width, image.height], [160, 66]);
+  assert.ok(image.colors.includes('ffffff'));
+  assert.ok(image.colors.some((hex) => { const r=parseInt(hex.slice(0,2),16), g=parseInt(hex.slice(2,4),16), b=parseInt(hex.slice(4,6),16); return r>=30 && r<=65 && g>=105 && g<=150 && b>=155 && b<=210; }));
+});
+
+test('compact sidebar mark is a valid high-resolution GET symbol', () => {
+  const image = readPng('public/branding/get-symbol.png');
+  assert.deepEqual([image.width, image.height], [84, 84]);
+  assert.ok(image.colors.some((hex) => { const r=parseInt(hex.slice(0,2),16), g=parseInt(hex.slice(2,4),16), b=parseInt(hex.slice(4,6),16); return r>=30 && r<=65 && g>=105 && g<=150 && b>=155 && b<=210; }));
+});

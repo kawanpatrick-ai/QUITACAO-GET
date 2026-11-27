@@ -1,23 +1,35 @@
 'use client';
 import {ShieldCheck,ChartNoAxesCombined,History,LockKeyhole} from 'lucide-react';
 
-export default function ProfessionalAuth({eyebrow='ÁREA RESTRITA',title='Bem-vindo de volta',description='Entre com seu acesso autorizado.',children}){
+export default function ProfessionalAuth({eyebrow='ÁREA RESTRITA',title='Acesse o Controle de Quitação',description='Entre com seu acesso autorizado.',children}){
  return <main className="w1-auth-screen"><div className="w1-auth-frame">
-  <section className="w1-auth-hero" aria-label="Apresentação ProjectW1SC">
-   <div className="w1-auth-hero-top"><img className="w1-auth-hero-logo" src="/branding/projectw1sc-wordmark.svg" alt="ProjectW1SC — Negociações e CRM" width="390" height="120"/><div className="w1-auth-hero-tag"><i/> PLATAFORMA OPERACIONAL</div></div>
-   <div className="w1-auth-hero-content"><span>UM AMBIENTE. TODA A OPERAÇÃO.</span><h2>Mais clareza em cada decisão.</h2><p>Clientes, negociações e retornos organizados em um espaço pensado para tornar o trabalho mais simples.</p>
+  <section className="w1-auth-hero" aria-label="Apresentação do Controle de Quitação">
+   <div className="w1-auth-hero-top">
+    <img className="w1-auth-hero-logo" src="/branding/get-logo-white.png" alt="GET Assessoria Financeira" width="390" height="162"/>
+    <div className="w1-auth-hero-tag"><i/> GESTÃO DE QUITAÇÃO</div>
+   </div>
+   <div className="w1-auth-hero-content">
+    <span>CONTROLE DE QUITAÇÃO · GET ASSESSORIA</span>
+    <h2>Quitações organizadas. Decisões mais claras.</h2>
+    <p>Clientes, negociações, retornos e histórico de atendimento em um ambiente único, seguro e preparado para a operação.</p>
     <div className="w1-auth-capabilities">
-     <div><span><ChartNoAxesCombined size={19}/></span><div><strong>Visão inteligente</strong><small>Indicadores e prioridades em um só lugar</small></div></div>
-     <div><span><History size={19}/></span><div><strong>Histórico organizado</strong><small>Informações e atendimentos rastreáveis</small></div></div>
-     <div><span><ShieldCheck size={19}/></span><div><strong>Acesso controlado</strong><small>Autenticação e permissões no banco</small></div></div>
+     <div><span><ChartNoAxesCombined size={19}/></span><div><strong>Carteira centralizada</strong><small>Acompanhamento de clientes e negociações</small></div></div>
+     <div><span><History size={19}/></span><div><strong>Histórico rastreável</strong><small>Contatos, retornos e tarefas organizados</small></div></div>
+     <div><span><ShieldCheck size={19}/></span><div><strong>Acesso seguro</strong><small>Autenticação e permissões controladas</small></div></div>
     </div>
    </div>
-   <div className="w1-auth-hero-footer"><span>PROJECTW1SC · W1 CAPITAL</span><span>© 2026 W1 Capital</span></div>
+   <div className="w1-auth-hero-footer"><span>GET ASSESSORIA FINANCEIRA</span><span>CONTROLE DE QUITAÇÃO · © 2026</span></div>
   </section>
-  <section className="w1-auth-panel" aria-label="Acesso ao sistema">
-   <div className="w1-auth-panel-top"><span>PROJECTW1SC · CONSOLE OPERACIONAL</span><span className="w1-auth-lock"><LockKeyhole size={14}/> Acesso privado</span></div>
+  <section className="w1-auth-panel" aria-label="Acesso ao Controle de Quitação">
+   <div className="w1-auth-panel-top">
+    <div className="w1-auth-panel-brand">
+     <img src="/branding/get-logo.png" alt="GET Assessoria Financeira" width="200" height="83"/>
+     <span>CONTROLE DE QUITAÇÃO</span>
+    </div>
+    <span className="w1-auth-lock"><LockKeyhole size={14}/> Acesso privado</span>
+   </div>
    <div className="w1-auth-panel-center"><div className="w1-auth-heading"><span className="w1-auth-eyebrow">{eyebrow}</span><h1>{title}</h1><p>{description}</p></div>{children}</div>
-   <div className="w1-auth-panel-footer"><ShieldCheck size={15}/> Protegido por autenticação e políticas de acesso · W1 Capital</div>
+   <div className="w1-auth-panel-footer"><ShieldCheck size={15}/> Protegido por autenticação e políticas de acesso · GET Assessoria Financeira</div>
   </section>
  </div></main>;
 }
