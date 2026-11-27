@@ -66,9 +66,9 @@ export default function CrmShell({active='Visão geral',email='',onNavigate,onSi
    <div className="app-identity">
     <button type="button" className="app-sidebar-toggle" aria-label={sidebarExpanded?'Recolher menu lateral':'Expandir menu lateral'} aria-expanded={sidebarExpanded} onClick={()=>setSidebarExpanded(x=>!x)}>{sidebarExpanded?<PanelLeftClose size={19}/>:<PanelLeftOpen size={19}/>}</button>
     <a className="app-brand-link" href="/" aria-label="Controle de Quitação — Visão geral" title="Controle de Quitação">
-     <img className="app-brand-compact" src="/branding/get-symbol.png" alt="GET" width="54" height="54"/>
+     <img className="app-brand-compact" src="/branding/get-crm-symbol.svg" alt="GET" width="64" height="64"/>
      <span className="app-brand-lockup">
-      <img className="app-brand-full" src="/branding/get-logo-white.png" alt="GET Assessoria Financeira" width="200" height="83"/>
+      <img className="app-brand-full" src="/branding/get-crm-wordmark.svg" alt="GET Assessoria Financeira" width="340" height="76"/>
       <small className="app-brand-product">Controle de Quitação</small>
      </span>
     </a>
