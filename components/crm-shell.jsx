@@ -66,9 +66,9 @@ export default function CrmShell({active='Visão geral',email='',onNavigate,onSi
    <div className="app-identity">
     <button type="button" className="app-sidebar-toggle" aria-label={sidebarExpanded?'Recolher menu lateral':'Expandir menu lateral'} aria-expanded={sidebarExpanded} onClick={()=>setSidebarExpanded(x=>!x)}>{sidebarExpanded?<PanelLeftClose size={19}/>:<PanelLeftOpen size={19}/>}</button>
     <a className="app-brand-link" href="/" aria-label="Controle de Quitação — Visão geral" title="Controle de Quitação">
-     <img className="app-brand-compact" src="/branding/get-crm-symbol.svg" alt="GET" width="64" height="64"/>
+     <img className="app-brand-compact" src="/branding/get-crm-symbol.svg" alt="GET" width="64" height="64" decoding="async"/>
      <span className="app-brand-lockup">
-      <img className="app-brand-full" src="/branding/get-crm-wordmark.svg" alt="GET Assessoria Financeira" width="340" height="76"/>
+      <img className="app-brand-full" src="/branding/get-crm-wordmark.svg" alt="GET Assessoria Financeira" width="340" height="76" decoding="async"/>
       <small className="app-brand-product">Controle de Quitação</small>
      </span>
     </a>
@@ -100,6 +100,6 @@ export default function CrmShell({active='Visão geral',email='',onNavigate,onSi
   </aside>
   <div className="app-content"><div className="reference-top-tools">
    
-   <a href="/tarefas?fila=vencidos" aria-label="Ver retornos vencidos" title="Ver retornos vencidos" className="reference-top-alert"><Bell size={20}/>{overdueCount>0&&<span className="reference-notification-dot"/>}</a><span className="reference-top-divider"/><a className="reference-top-avatar" href="/configuracoes" title={profile.display_name||'Configurações do perfil'} aria-label="Abrir configurações do perfil">{avatarUrl?<img src={avatarUrl} alt="Foto do perfil"/>:(profile.display_name||email||'W').charAt(0).toLocaleUpperCase('pt-BR')}</a></div><div id="conteudo" tabIndex="-1">{children}</div></div>
+   <a href="/tarefas?fila=vencidos" aria-label="Ver retornos vencidos" title="Ver retornos vencidos" className="reference-top-alert"><Bell size={20}/>{overdueCount>0&&<span className="reference-notification-dot"/>}</a><span className="reference-top-divider"/><a className="reference-top-avatar" href="/configuracoes" title={profile.display_name||'Configurações do perfil'} aria-label="Abrir configurações do perfil">{avatarUrl?<img src={avatarUrl} alt="Foto do perfil" width="36" height="36" decoding="async"/>:(profile.display_name||email||'W').charAt(0).toLocaleUpperCase('pt-BR')}</a></div><div id="conteudo" tabIndex="-1">{children}</div></div>
  </div>;
 }
