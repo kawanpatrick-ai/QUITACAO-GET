@@ -7,7 +7,7 @@ test('the application loads one corporate design system and no character theme l
  assert.doesNotMatch(layout,/madara-theme|anime-themes|anime-immersive|anime-header-banners/);
 });
 test('the CRM shell uses the supplied GET identity and the new product name',async()=>{
- const shell=await read('components/crm-shell.jsx');assert.ok(shell.includes('get-symbol.png'));assert.ok(shell.includes('get-logo-white.png'));
+ const shell=await read('components/crm-shell.jsx');assert.ok(shell.includes('get-crm-symbol.svg'));assert.ok(shell.includes('get-crm-wordmark.svg'));
  assert.ok(shell.includes('Controle de Quitação'));assert.doesNotMatch(shell,/ProjectW1SC|W1 Capital|GET CRM/);
  assert.doesNotMatch(shell,/madara|CRM_THEMES|resolveTheme|crm-theme/i);
 });
