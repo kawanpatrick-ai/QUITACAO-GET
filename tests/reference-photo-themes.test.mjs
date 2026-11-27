@@ -12,7 +12,7 @@ test('anime artwork is no longer loaded into the application',()=>{
 test('the CRM shell and theme registry contain only the corporate GET identity',()=>{
  const shell=read('components/crm-shell.jsx');
  const themes=read('lib/crm-themes.mjs');
- assert.ok(shell.includes('get-logo-white.png'));
+ assert.ok(shell.includes('get-crm-wordmark.svg'));
  assert.doesNotMatch(themes,/id:'naruto'|id:'sasuke'|id:'madara'/);
  assert.doesNotMatch(shell,/naruto|sasuke|madara|sharingan/i);
 });
